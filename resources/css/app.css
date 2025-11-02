@@ -1,0 +1,54 @@
+@import 'tailwindcss';
+@import 'tw-prose';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Inter', sans-serif;
+
+    /* Custom color palette */
+    --color-primary: #B2071B;
+    --color-secondary: #48585F;
+    --color-black: #000000;
+
+    /* Tailwind color extensions */
+    --color-red-primary: #B2071B;
+    --color-gray-secondary: #48585F;
+}
+
+:root {
+    --primary: #B2071B;
+    --secondary: #48585F;
+    --black: #000000;
+    --white: #F0FFFF;
+    font-family: Inter, sans-serif;
+    font-feature-settings: 'liga' 1, 'calt' 1;
+}
+
+@supports (font-variation-settings: normal) {
+    :root {
+        font-family: InterVariable, sans-serif;
+    }
+}
+
+.nav-link {
+    position: relative;
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}

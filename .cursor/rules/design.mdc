@@ -1,0 +1,502 @@
+# Design Document
+
+## Overview
+
+The NGO Content Management System will be built as a Laravel application with Filament admin panel integration. The system will provide a comprehensive content management solution that allows administrators to manage projects, blog posts, testimonials, announcements, and reports through an intuitive admin interface, while providing a seamless public-facing website for visitors to access all content.
+
+The architecture follows Laravel best practices with Eloquent models, proper relationships, and a clean separation between admin and public interfaces. The system leverages Filament's powerful admin panel capabilities for content management and uses Laravel's built-in features for public content delivery.
+
+## Architecture
+
+### System Architecture
+
+```mermaid
+graph TB
+    A[Public Website] --> B[Laravel Application]
+    C[Filament Admin Panel] --> B
+    B --> D[Database Layer]
+    B --> E[File Storage]
+    B --> F[Cache Layer]
+    
+    subgraph "Public Interface"
+        A1[Projects Page]
+        A2[Blog Page]
+        A3[Reports Page]
+        A4[Home with Announcements]
+    end
+    
+    subgraph "Admin Interface"
+        C1[Project Management]
+        C2[Blog Management]
+        C3[Testimonial Management]
+        C4[Announcement Management]
+        C5[Report Management]
+    end
+    
+    subgraph "Data Layer"
+        D1[Projects Table]
+        D2[Blog Posts Table]
+        D3[Testimonials Table]
+        D4[Announcements Table]
+        D5[Reports Table]
+        D6[Media Table]
+    end
+```
+
+### Database Schema Design
+
+```mermaid
+erDiagram
+    projects {
+        id bigint PK
+        title varchar
+        slug varchar
+        description text
+        content longtext
+        status enum
+        start_date date
+        end_date date
+        budget decimal
+        location varchar
+        beneficiaries_count int
+        featured_image varchar
+        gallery_images json
+        is_featured boolean
+        created_at timestamp
+        updated_at timestamp
+    }
+    
+    blog_posts {
+        id bigint PK
+        title varchar
+        slug varchar
+        excerpt text
+        content longtext
+        author varchar
+        featured_image varchar
+        status enum
+        published_at timestamp
+        tags json
+        views_count int
+        created_at timestamp
+        updated_at timestamp
+    }
+    
+    testimonials {
+        id bigint PK
+        name varchar
+        role varchar
+        organization varchar
+        content text
+        photo varchar
+        location varchar
+        rating int
+        status enum
+        is_featured boolean
+        created_at timestamp
+        updated_at timestamp
+    }
+    
+    announcements {
+        id bigint PK
+        title varchar
+        content text
+        priority enum
+        status enum
+        published_at timestamp
+        expires_at timestamp
+        created_at timestamp
+        updated_at timestamp
+    }
+    
+    reports {
+        id bigint PK
+        title varchar
+        description text
+        file_path varchar
+        file_name varchar
+        file_size int
+        category varchar
+        visibility enum
+        published_at timestamp
+        download_count int
+        created_at timestamp
+        updated_at timestamp
+    }
+    
+    partners {
+        id bigint PK
+        name varchar
+        logo varchar
+        website_url varchar
+        description text
+        partnership_type varchar
+        display_order int
+        status enum
+        created_at timestamp
+        updated_at timestamp
+    }
+```
+
+## Components and Interfaces
+
+### Model Layer
+
+#### Project Model
+- Handles project data with status management (draft, published, archived)
+- Implements slug generation for SEO-friendly URLs
+- Manages featured image and gallery images through Laravel's file storage
+- Provides scopes for filtering by status and featured projects
+- Implements search functionality across title, description, and content
+
+#### BlogPost Model
+- Manages blog content with rich text support
+- Handles author information and publication scheduling
+- Implements tag system using JSON field for flexibility
+- Tracks view counts for analytics
+- Provides search and filtering capabilities
+
+#### Testimonial Model
+- Stores testimonial data with approval workflow
+- Manages optional photo uploads
+- Implements rating system (1-5 stars)
+- Provides featured testimonial functionality
+
+#### Announcement Model
+- Handles time-based announcements with expiration
+- Implements priority system (low, medium, high, urgent)
+- Provides active announcement scopes based on dates
+- Manages publication scheduling
+
+#### Report Model
+- Manages file uploads with validation
+- Tracks download statistics
+- Implements category-based organization
+- Handles public/private visibility settings
+
+#### Partner Model
+- Manages partner organization information
+- Handles logo uploads with optimization
+- Implements display ordering for carousel
+- Validates website URLs and manages status
+
+### Filament Admin Resources
+
+#### Project Resource
+- Full CRUD operations with rich form fields
+- Image upload handling for featured and gallery images
+- Status management with visual indicators
+- Bulk actions for status changes
+- Advanced filtering and search capabilities
+
+#### Blog Resource
+- Rich text editor integration for content creation
+- Tag management with autocomplete
+- Publication scheduling interface
+- Author selection and management
+- SEO optimization fields
+
+#### Testimonial Resource
+- Approval workflow with status indicators
+- Photo upload with image optimization
+- Rating display with star visualization
+- Featured testimonial selection
+- Bulk approval actions
+
+#### Announcement Resource
+- Priority-based organization
+- Date range picker for publication/expiration
+- Preview functionality
+- Status management with visual cues
+- Automatic expiration handling
+
+#### Report Resource
+- File upload with type validation
+- Category management system
+- Download statistics dashboard
+- Visibility toggle with clear indicators
+- Bulk operations for category assignment
+
+### Public Controllers
+
+#### ProjectController
+- Index method for project listing with pagination
+- Show method for individual project details
+- Search functionality across projects
+- Featured projects highlighting
+- SEO optimization with meta tags
+
+#### BlogController
+- Index method with search and tag filtering
+- Show method for individual blog posts
+- View count tracking
+- Related posts suggestions
+- RSS feed generation
+
+#### ReportController
+- Public reports listing with category filtering
+- Secure file download handling
+- Download count tracking
+- Search functionality
+- Year-based filtering
+
+#### HomeController
+- Active announcements display
+- Featured content aggregation
+- Testimonials rotation
+- Recent blog posts preview
+- Project highlights
+- Partners carousel with proper ordering
+- Hero section content management
+
+## Page Layout and Design System
+
+### Navigation Layout
+```
+[Logo]                    [Menu Items]                    [Donate Button]
+```
+
+#### Navigation Components
+- **Logo**: Left-aligned organization logo with link to homepage
+- **Menu**: Center-aligned navigation items (Home, About, Projects, Blog, Reports, Contact)
+- **Donate Button**: Right-aligned prominent call-to-action button
+
+### Homepage Layout Structure
+
+#### Hero Section
+```
+[Overlapping Background Images]
+    [Main Heading]
+    [Short Descriptive Paragraph]
+    [Donate Button] [About Us Button]
+```
+
+#### Who We Are Section
+```
+[Image]    [Text Content]
+           [Read More Button]
+```
+
+#### Our Projects Section
+```
+[Section Title]
+[Project Carousel]
+  [Card 1: Image, Title, Description, Read More]
+  [Card 2: Image, Title, Description, Read More]
+  [Card 3: Image, Title, Description, Read More]
+```
+
+#### Partners Section
+```
+[Section Title]
+[Partners Logo Carousel]
+  [Partner Logo 1 - Clickable]
+  [Partner Logo 2 - Clickable]
+  [Partner Logo 3 - Clickable]
+```
+
+#### Latest Blog Posts Section
+```
+[Section Title]
+[Blog Post Cards Grid]
+  [Card 1: Image, Title, Excerpt, Read More]
+  [Card 2: Image, Title, Excerpt, Read More]
+  [Card 3: Image, Title, Excerpt, Read More]
+```
+
+#### Call-to-Action Section
+```
+[Background Image/Color]
+    [CTA Heading]
+    [CTA Description]
+    [Primary Action Button] [Secondary Action Button]
+```
+
+### Component Specifications
+
+#### Project Card Component
+- Featured image with overlay
+- Project title (max 2 lines)
+- Short description (max 3 lines)
+- Read more button with hover effects
+- Responsive design for mobile/tablet/desktop
+
+#### Partner Logo Component
+- Logo image with consistent sizing
+- Hover effects for interactivity
+- External link functionality (opens in new tab)
+- Fallback for missing logos
+
+#### Blog Post Card Component
+- Featured image with aspect ratio preservation
+- Post title with character limits
+- Excerpt with truncation
+- Publication date display
+- Author information
+- Read more link
+
+#### Hero Section Component
+- Multiple background images with parallax effect
+- Overlay for text readability
+- Responsive typography scaling
+- Call-to-action buttons with distinct styling
+- Mobile-optimized layout
+
+## Data Models
+
+### Project Data Structure
+```php
+[
+    'title' => 'Clean Water Initiative',
+    'slug' => 'clean-water-initiative',
+    'description' => 'Providing clean water access to rural communities',
+    'content' => '<p>Detailed project description...</p>',
+    'status' => 'published', // draft, published, archived
+    'start_date' => '2024-01-15',
+    'end_date' => '2024-12-31',
+    'budget' => 50000.00,
+    'location' => 'Rural Kenya',
+    'beneficiaries_count' => 1500,
+    'featured_image' => 'projects/clean-water-featured.jpg',
+    'gallery_images' => [
+        'projects/clean-water-1.jpg',
+        'projects/clean-water-2.jpg'
+    ],
+    'is_featured' => true
+]
+```
+
+### Blog Post Data Structure
+```php
+[
+    'title' => 'Impact Report: Q4 2024',
+    'slug' => 'impact-report-q4-2024',
+    'excerpt' => 'Our quarterly impact summary...',
+    'content' => '<p>Full blog post content...</p>',
+    'author' => 'Jane Smith',
+    'featured_image' => 'blog/impact-report-featured.jpg',
+    'status' => 'published',
+    'published_at' => '2024-01-15 10:00:00',
+    'tags' => ['impact', 'quarterly', 'report'],
+    'views_count' => 245
+]
+```
+
+### Testimonial Data Structure
+```php
+[
+    'name' => 'John Doe',
+    'role' => 'Community Leader',
+    'organization' => 'Local Village Council',
+    'content' => 'This NGO has transformed our community...',
+    'photo' => 'testimonials/john-doe.jpg',
+    'location' => 'Nairobi, Kenya',
+    'rating' => 5,
+    'status' => 'approved', // pending, approved, rejected
+    'is_featured' => true
+]
+```
+
+### Announcement Data Structure
+```php
+[
+    'title' => 'New Partnership Announcement',
+    'content' => 'We are excited to announce our new partnership...',
+    'priority' => 'high', // low, medium, high, urgent
+    'status' => 'published',
+    'published_at' => '2024-01-15 09:00:00',
+    'expires_at' => '2024-02-15 23:59:59'
+]
+```
+
+### Report Data Structure
+```php
+[
+    'title' => 'Annual Impact Report 2024',
+    'description' => 'Comprehensive overview of our 2024 activities and impact',
+    'file_path' => 'reports/annual-impact-2024.pdf',
+    'file_name' => 'Annual_Impact_Report_2024.pdf',
+    'file_size' => 2048576, // bytes
+    'category' => 'Annual Reports',
+    'visibility' => 'public', // public, private
+    'published_at' => '2024-01-15 00:00:00',
+    'download_count' => 156
+]
+```
+
+### Partner Data Structure
+```php
+[
+    'name' => 'Global Health Initiative',
+    'logo' => 'partners/global-health-logo.png',
+    'website_url' => 'https://globalhealthinitiative.org',
+    'description' => 'Partnership focused on healthcare access in rural communities',
+    'partnership_type' => 'Healthcare',
+    'display_order' => 1,
+    'status' => 'active' // active, inactive
+]
+```
+
+## Error Handling
+
+### File Upload Errors
+- Implement comprehensive validation for file types, sizes, and formats
+- Provide clear error messages for upload failures
+- Handle storage quota limitations gracefully
+- Implement retry mechanisms for failed uploads
+
+### Content Validation Errors
+- Validate required fields with user-friendly error messages
+- Implement slug uniqueness validation with suggestions
+- Handle rich text content validation and sanitization
+- Provide real-time validation feedback in admin forms
+
+### Public Access Errors
+- Handle missing content with appropriate 404 pages
+- Implement graceful degradation for expired announcements
+- Provide fallback content for missing images
+- Handle search query errors with helpful suggestions
+
+### Database Errors
+- Implement proper error logging for database issues
+- Provide fallback content during database unavailability
+- Handle relationship constraint violations gracefully
+- Implement database connection retry logic
+
+## Testing Strategy
+
+### Unit Testing
+- Model validation and business logic testing
+- File upload and storage functionality testing
+- Search and filtering logic verification
+- Date-based query testing for announcements and reports
+
+### Feature Testing
+- Complete CRUD operations for all content types
+- File download functionality and security testing
+- Search functionality across different content types
+- Admin panel workflow testing
+
+### Integration Testing
+- Filament admin panel integration testing
+- Public website and admin panel data consistency
+- File storage and retrieval integration testing
+- Cache invalidation and content updates testing
+
+### Browser Testing
+- Admin panel user interface testing
+- Public website responsive design testing
+- File upload and download user experience testing
+- Search functionality user interface testing
+
+### Performance Testing
+- Large dataset handling for projects and blog posts
+- File download performance under load
+- Search query performance optimization
+- Image optimization and loading performance
+
+### Security Testing
+- File upload security validation
+- Admin panel access control testing
+- Public content access permission testing
+- SQL injection and XSS vulnerability testing

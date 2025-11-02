@@ -1,0 +1,63 @@
+---
+alwaysApply: true
+---
+
+# Technology Stack
+
+## Backend
+- **PHP 8.2+** - Modern PHP with latest features
+- **Laravel 12.0** - Full-stack web framework
+- **Filament 4.0** - Admin panel and form builder
+- **Livewire 3.6** - Dynamic frontend components
+
+## Frontend
+- **Tailwind CSS 4.0** - Utility-first CSS framework
+- **Vite 7.0** - Build tool and dev server
+- **Blade Templates** - Laravel's templating engine
+
+## Testing
+- **Pest 4.1** - PHP testing framework
+- **Laravel Pint** - Code style fixer
+
+## Development Tools
+- **Laravel Boost** - Development productivity tools
+- **Laravel Sail** - Docker development environment
+- **Laravel Pail** - Log viewer
+
+## Common Commands
+
+### Development
+```bash
+# Start development environment (all services)
+composer dev
+
+# Individual services
+php artisan serve          # Start Laravel server
+npm run dev               # Start Vite dev server
+php artisan queue:listen  # Start queue worker
+php artisan pail          # View logs
+
+# Build for production
+npm run build
+```
+
+### Testing
+```bash
+composer test             # Run all tests
+php artisan test         # Alternative test command
+```
+
+### Code Quality
+```bash
+./vendor/bin/pint        # Fix code style
+```
+
+### Database
+```bash
+php artisan migrate      # Run migrations
+php artisan db:seed      # Seed database
+```
+
+### Filament Admin
+- Admin panel available at `/admin`
+- Auto-discovers resources, pages, and widgets in `app/Filament/`

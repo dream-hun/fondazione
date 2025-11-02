@@ -1,0 +1,23 @@
+---
+alwaysApply: true
+---
+# Product Overview
+
+This is an NGO (Non-Governmental Organization) web platform built with Laravel. The application appears to be designed to connect volunteers with NGOs and facilitate donations.
+
+## Key Features
+- NGO directory and exploration
+- Volunteer registration and management
+- Contact and information pages
+- Admin panel for content management
+- Blog functionality
+- Team and resource pages
+- TVET (Technical and Vocational Education and Training) programs
+
+## Target Users
+- NGOs looking to showcase their work
+- Volunteers seeking opportunities
+- Donors wanting to contribute to causes
+- Administrators managing the platform
+
+The platform serves as a bridge between charitable organizations and people who want to help through volunteering or donations.
