@@ -1,4 +1,10 @@
 <x-app-layout>
+    @section('title')
+    Our Projects
+    @endsection
+    @section('description')
+    Fondazione Marcegaglia Onlus Rwanda(FMO) is a non-profit organization that empowers women and communities in Rwanda. We have a range of projects that we are working on to help the community.
+    @endsection
     <!-- Hero Section -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <img src="{{ asset('images/_DSC8103.jpg') }}"
@@ -29,71 +35,27 @@
             @if($projects->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($projects as $project)
-                        <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                            <div class="h-48 bg-gradient-to-br from-blue-500 to-blue-600 relative overflow-hidden">
-                                @if($project->featured_image_url)
-                                    <img src="{{ $project->featured_image_url }}"
-                                         alt="{{ $project->title }}"
-                                         class="w-full h-full object-cover">
-                                @endif
-                                <div class="absolute inset-0 bg-black/20"></div>
-                                <div class="absolute top-4 right-4">
-                                    @if($project->is_featured)
-                                        <span class="px-3 py-1 bg-amber-500 text-white text-sm font-medium rounded-full">
-                                            Featured
-                                        </span>
-                                    @endif
-                                </div>
-                                <div class="absolute bottom-4 left-4">
-                                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h4M9 7h6m-6 4h6m-6 4h6"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-6">
-                                <div class="flex items-center gap-2 mb-3">
-                                    @if($project->location)
-                                        <span class="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                            </svg>
-                                            {{ $project->location }}
-                                        </span>
-                                    @endif
-                                    <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-600 text-xs rounded-full">
-                                        {{ $project->status_label }}
-                                    </span>
-                                </div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-3">{{ $project->title }}</h3>
-                                <p class="text-gray-600 mb-4 line-clamp-3">{{ $project->description }}</p>
-
-                                @if($project->beneficiaries_count)
-                                    <div class="flex items-center gap-2 mb-4 text-sm text-gray-500">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                        </svg>
-                                        {{ number_format($project->beneficiaries_count) }} beneficiaries
-                                    </div>
-                                @endif
-
-                                <div class="flex items-center justify-between">
-                                    <a href="{{ route('projects.show', $project) }}"
-                                       class="inline-flex items-center text-red-primary hover:text-red-700 font-medium text-sm">
-                                        Learn more
-                                        <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                                        </svg>
-                                    </a>
-                                    @if($project->budget)
-                                        <span class="text-sm font-semibold text-gray-900">
-                                            ${{ number_format($project->budget) }}
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
+                    <article class="flex flex-col items-start justify-between">
+                        <div class="relative w-full">
+                            <img src="https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80"
+                                alt="Blog post image"
+                                class="aspect-video w-full rounded-2xl bg-gray-800 object-cover sm:aspect-[2/1] lg:aspect-[3/2]" />
+                            <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10"></div>
                         </div>
+                        <div class="flex max-w-xl grow flex-col justify-between">
+                            
+                            <div class="group relative grow">
+                                <h3 class="mt-3 text-lg font-semibold text-gray-800 group-hover:text-gray-900">
+                                    <a href="{{ route('projects.show', $project->slug) }}">
+                                        <span class="absolute inset-0"></span>
+                                        {{ $project->title }}
+                                    </a>
+                                </h3>
+                                <p class="mt-5 line-clamp-3 text-sm text-gray-400">{{$project->description}}</p>
+                            </div>
+                            
+                        </div>
+                    </article>
                     @endforeach
                 </div>
 

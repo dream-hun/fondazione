@@ -1,4 +1,10 @@
 <x-app-layout>
+    @section('title')
+    Home
+    @endsection
+    @section('description')
+    Fondazione Marcegaglia Onlus Rwanda(FMO) is a non-profit organization that empowers women and communities in Rwanda.
+    @endsection
     <!-- Hero Section -->
     <section
         class="relative bg-gradient-to-br from-red-primary via-red-600 to-red-800 text-white overflow-hidden opacity-85">
