@@ -49,6 +49,10 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'auth', 'admin'])->gr
     // User management
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     Route::post('users/bulk-action', [\App\Http\Controllers\Admin\UserController::class, 'bulkAction'])->name('users.bulk-action');
+
+    // Team management
+    Route::resource('teams', \App\Http\Controllers\Admin\TeamController::class);
+    Route::post('teams/bulk-action', [\App\Http\Controllers\Admin\TeamController::class, 'bulkAction'])->name('teams.bulk-action');
     
     // API endpoints for dashboard
     Route::get('api/stats', [\App\Http\Controllers\Admin\DashboardController::class, 'getStats'])->name('api.stats');

@@ -238,54 +238,20 @@
                     </p>
                 </div>
 
-                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach ($teams as $team)  
                     <div class="group">
                         <div class="aspect-square rounded-xl overflow-hidden mb-4 relative">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=8&w=400&h=400&q=80"
-                                 alt="Maria Rossi"
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <img src="{{ $team->image_url }}" alt="{{ $team->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
-                        <h3 class="text-xl font-bold mb-1">Maria Rossi</h3>
-                        <p class="text-red-primary font-semibold mb-1">Executive Director</p>
-                        <p class="text-gray-400 text-sm">Kigali, Rwanda</p>
+                        <h3 class="text-xl font-bold mb-1">{{ $team->name }}</h3>
+                        <p class="text-red-primary font-semibold mb-1">{{ $team->position }}</p>
+                        <p class="text-gray-400 text-sm">{{ $team->email }}</p>
                     </div>
+                    @endforeach
 
-                    <div class="group">
-                        <div class="aspect-square rounded-xl overflow-hidden mb-4 relative">
-                            <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=8&w=400&h=400&q=80"
-                                 alt="Jean Claude Mugabo"
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        </div>
-                        <h3 class="text-xl font-bold mb-1">Jean Claude Mugabo</h3>
-                        <p class="text-red-primary font-semibold mb-1">Program Director</p>
-                        <p class="text-gray-400 text-sm">Kigali, Rwanda</p>
-                    </div>
-
-                    <div class="group">
-                        <div class="aspect-square rounded-xl overflow-hidden mb-4 relative">
-                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=8&w=400&h=400&q=80"
-                                 alt="Diane Uwase"
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        </div>
-                        <h3 class="text-xl font-bold mb-1">Diane Uwase</h3>
-                        <p class="text-red-primary font-semibold mb-1">Community Coordinator</p>
-                        <p class="text-gray-400 text-sm">Kigali, Rwanda</p>
-                    </div>
-
-                    <div class="group">
-                        <div class="aspect-square rounded-xl overflow-hidden mb-4 relative">
-                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=8&w=400&h=400&q=80"
-                                 alt="Giuseppe Bianchi"
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        </div>
-                        <h3 class="text-xl font-bold mb-1">Giuseppe Bianchi</h3>
-                        <p class="text-red-primary font-semibold mb-1">Operations Manager</p>
-                        <p class="text-gray-400 text-sm">Kigali, Rwanda</p>
-                    </div>
+                    
                 </div>
             </div>
         </div>
