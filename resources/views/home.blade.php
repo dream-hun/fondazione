@@ -337,7 +337,7 @@
                             
                             <div class="group relative grow">
                                 <h3 class="mt-3 text-lg font-semibold text-gray-800 group-hover:text-gray-900">
-                                    <a href="#">
+                                    <a href="{{ route('projects.show', $project->slug) }}">
                                         <span class="absolute inset-0"></span>
                                         {{ $project->title }}
                                     </a>
