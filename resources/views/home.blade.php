@@ -78,7 +78,7 @@
                             class="absolute -bottom-4 -right-4 w-16 h-16 bg-white rounded-full opacity-20 animate-pulse delay-1000">
                         </div>
 
-                        <img src="{{ asset('images/_DSC8049.jpg') }}" alt="Community volunteers working together"
+                        <img src="{{ asset('images/herosection.avif') }}" alt="Community volunteers working together"
                             class="w-full h-full object-cover rounded-3xl shadow-2xl">
 
                         <!-- Overlay Card -->

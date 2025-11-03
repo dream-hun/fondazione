@@ -78,7 +78,7 @@
                     </div>
                     <div class="relative">
                         <div class="aspect-square rounded-2xl overflow-hidden shadow-2xl">
-                            <img src="https://images.unsplash.com/photo-1497375628654-29454c732e46?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            <img src="{{ asset('images/Child-protection-program.avif')}}"
                                  alt="Our story"
                                  class="w-full h-full object-cover">
                         </div>
