@@ -26,7 +26,7 @@ final class UpdateTeamRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'position' => ['required', 'string', 'max:255'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp,avif', 'max:2048'],
+            'image' => ['nullable', 'file', 'mimes:jpeg,png,jpg,gif,webp,avif', 'max:2048'],
             'email' => ['nullable', 'email', 'max:255'],
         ];
     }
@@ -39,7 +39,6 @@ final class UpdateTeamRequest extends FormRequest
         return [
             'name.required' => 'The team member name is required.',
             'position.required' => 'The team member position is required.',
-            'image.image' => 'The image must be a valid image file.',
             'image.mimes' => 'The image must be a JPEG, PNG, JPG, GIF, WebP, or AVIF file.',
             'image.max' => 'The image must not be larger than 2MB.',
             'email.email' => 'The email must be a valid email address.',
