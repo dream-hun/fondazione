@@ -2,7 +2,7 @@
     <!-- Hero Section - Minimal -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 bg-cover bg-center z-0"
-             style="background-image: url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+             style="background-image: url('/images/Mvtc students in ICT skills.avif');">
             <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
         </div>
 
