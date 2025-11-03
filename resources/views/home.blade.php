@@ -334,7 +334,7 @@
                 @foreach ($projects as $project)
                     <article class="flex flex-col items-start justify-between">
                         <div class="relative w-full">
-                            <img src="https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80"
+                            <img src="{{ $project->featured_image_url }}"
                                 alt="Blog post image"
                                 class="aspect-video w-full rounded-2xl bg-gray-800 object-cover sm:aspect-[2/1] lg:aspect-[3/2]" />
                             <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10"></div>
