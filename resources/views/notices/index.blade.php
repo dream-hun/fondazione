@@ -59,10 +59,9 @@
         <div class="container mx-auto px-6 max-w-7xl">
 
             @if ($notices->count() > 0)
-                <div class="space-y-16 gap-8">
+                <div class="space-y-16 gap-8 divide-y divide-gray-200">
                     @foreach ($notices as $notice)
-                        <article
-                            class="flex max-w-full flex-col items-start justify-between border-b border-primary py-4">
+                        <article class="flex max-w-full flex-col items-start justify-between py-4">
                             <div class="flex items-center gap-x-4 text-xs">
                                 <time datetime="{{ $notice->formatted_date }}"
                                     class="text-gray-500">{{ $notice->formatted_date }}</time>
