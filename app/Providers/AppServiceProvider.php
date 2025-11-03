@@ -6,6 +6,8 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Project;
+use Illuminate\Support\Facades\View;
 
 final class AppServiceProvider extends ServiceProvider
 {
@@ -23,5 +25,10 @@ final class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
+        try {
+            View::share('projects', Project::all());
+        } catch (\Exception) {
+            View::share('projects');
+        }
     }
 }
