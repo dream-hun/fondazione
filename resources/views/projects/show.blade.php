@@ -229,7 +229,7 @@
     <!-- Related Projects -->
     @if ($relatedProjects->count() > 0)
         <section class="py-20 bg-gray-50">
-            <div class="container mx-auto px-4">
+            <div class="container max-w-7xl mx-auto px-4">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-gray-900 mb-4">Related Projects</h2>
                     <p class="text-lg text-gray-600">Discover other impactful initiatives in similar areas</p>
