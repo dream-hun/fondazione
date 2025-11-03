@@ -1,4 +1,15 @@
 <x-app-layout>
+    @section('title', $project->title)
+    @section('og:title', $project->title)
+    @section('description', $project->description)
+    @section('og:description', $project->description)
+    @section('og:image', $project->featured_image_url)
+    @section('og:url', route('projects.show', $project->slug))
+    @section('og:type', 'website')
+    @section('og:locale', 'en_US')
+    @section('og:site_name', 'Fondazione Marcegaglia Onlus Rwanda')
+    @section('og:locale', 'en_US')
+    @section('og:locale', 'en_US')
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
         @if ($project->featured_image_url)

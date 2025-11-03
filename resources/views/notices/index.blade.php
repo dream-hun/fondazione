@@ -1,4 +1,10 @@
 <x-app-layout>
+    @section('title')
+        Notices
+    @endsection
+    @section('description')
+        Important announcements and updates from our organization
+    @endsection
     <!-- Hero Section - Minimal -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 bg-cover bg-center z-0"
