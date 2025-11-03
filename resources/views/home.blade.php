@@ -371,7 +371,7 @@
                 @foreach ($posts as $post)
                     <article
                         class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-800 px-8 pt-80 pb-8 sm:pt-48 lg:pt-80">
-                        <img src="/images/post-1.jpg" alt=""
+                        <img src="{{ $post->featured_image_url }}" alt=""
                             class="absolute inset-0 -z-10 size-full object-cover" />
                         <div class="absolute inset-0 -z-10 bg-linear-to-t from-black/80 via-black/40"></div>
                         <div class="absolute inset-0 -z-10 rounded-2xl inset-ring inset-ring-white/10"></div>
@@ -382,7 +382,7 @@
                                     <circle cx="1" cy="1" r="1" />
                                 </svg>
                                 <div class="flex gap-x-2.5">
-                                    <img src="/images/author-1.jpg" alt=""
+                                    <img src="{{ $post->author_image_url }}" alt=""
                                         class="size-6 flex-none rounded-full bg-gray-800/10" />
                                     {{ $post->author_name }}
                                 </div>

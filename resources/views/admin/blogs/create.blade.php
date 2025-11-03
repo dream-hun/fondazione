@@ -70,7 +70,7 @@
                                     Title *
                                 </label>
                                 <input type="text" id="title" name="title" value="{{ old('title') }}"
-                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('title') border-red-500 @enderror"
+                                    class="w-full px-4 py-2 border  dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white @error('title') border-red-500 @enderror"
                                     placeholder="Enter blog title..." required>
                                 @error('title')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
