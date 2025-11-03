@@ -55,7 +55,7 @@
                     </h2>
                     <div class="space-y-4 text-gray-700 leading-relaxed">
                         <p>
-                            The Marcegaglia Vocational Training Center (MVTC) is a technical school by Fondazione
+                            The Marcegaglia Vocational Training Center (MVTC) is a technical training center by Fondazione
                             Marcegaglia Onlus (FMO) aimed at empowering young individuals and reducing school dropout
                             rates in Rwanda.
                         </p>

@@ -38,8 +38,8 @@ final class UpdateProjectRequest extends FormRequest
             'location' => ['nullable', 'string', 'max:255'],
             'beneficiaries_count' => ['nullable', 'integer', 'min:0'],
             'is_featured' => ['boolean'],
-            'featured_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp,avif', 'max:2048'],
-            'gallery_images.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp,avif', 'max:2048'],
+            'featured_image' => ['nullable', 'mimes:jpeg,png,jpg,gif,webp,avif', 'max:2048'],
+            'gallery_images.*' => ['nullable', 'mimes:jpeg,png,jpg,gif,webp,avif', 'max:2048'],
             'remove_featured_image' => ['boolean'],
             'remove_gallery_images' => ['array'],
         ];

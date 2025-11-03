@@ -23,7 +23,7 @@
                         <div
                             class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium">
                             <span class="w-2 h-2 bg-ray-500 rounded-full mr-2"></span>
-                            Making a difference since 2010
+                            Making a difference since 2013
                         </div>
                         <h1 class="text-3xl md:text-4xl lg:text-6xl font-bold leading-tight">
                             Empowering women and communities in Rwanda.
@@ -109,7 +109,7 @@
     <section class="bg-white py-12 overflow-hidden">
         <div class="container mx-auto max-w-7xl px-4">
             <div class="text-center mb-8">
-                <p class="text-gray-600 font-medium">Trusted by Leading Organizations</p>
+            
                 <h3 class="text-2xl font-bold text-gray-900 mt-2">Our Partners</h3>
             </div>
 
