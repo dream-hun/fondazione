@@ -32,28 +32,32 @@ Route::get('/announcements', [NoticeController::class, 'index'])->name('notices.
 Route::get('/announcements/{notice:slug}', [NoticeController::class, 'show'])->name('notices.show');
 // Admin routes
 Route::prefix('admin')->name('admin.')->middleware(['web', 'auth', 'admin'])->group(function () {
-    Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-    
+    Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
     // Blog management
-    Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
-    Route::post('blogs/bulk-action', [\App\Http\Controllers\Admin\BlogController::class, 'bulkAction'])->name('blogs.bulk-action');
-    
+    Route::resource('blogs', App\Http\Controllers\Admin\BlogController::class);
+    Route::post('blogs/bulk-action', [App\Http\Controllers\Admin\BlogController::class, 'bulkAction'])->name('blogs.bulk-action');
+
     // Project management
-    Route::resource('projects', \App\Http\Controllers\Admin\ProjectController::class);
-    Route::post('projects/bulk-action', [\App\Http\Controllers\Admin\ProjectController::class, 'bulkAction'])->name('projects.bulk-action');
-    
+    Route::resource('projects', App\Http\Controllers\Admin\ProjectController::class);
+    Route::post('projects/bulk-action', [App\Http\Controllers\Admin\ProjectController::class, 'bulkAction'])->name('projects.bulk-action');
+
     // Notice management
-    Route::resource('notices', \App\Http\Controllers\Admin\NoticeController::class);
-    Route::post('notices/bulk-action', [\App\Http\Controllers\Admin\NoticeController::class, 'bulkAction'])->name('notices.bulk-action');
-    
+    Route::resource('notices', App\Http\Controllers\Admin\NoticeController::class);
+    Route::post('notices/bulk-action', [App\Http\Controllers\Admin\NoticeController::class, 'bulkAction'])->name('notices.bulk-action');
+
     // User management
-    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
-    Route::post('users/bulk-action', [\App\Http\Controllers\Admin\UserController::class, 'bulkAction'])->name('users.bulk-action');
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+    Route::post('users/bulk-action', [App\Http\Controllers\Admin\UserController::class, 'bulkAction'])->name('users.bulk-action');
 
     // Team management
-    Route::resource('teams', \App\Http\Controllers\Admin\TeamController::class);
-    Route::post('teams/bulk-action', [\App\Http\Controllers\Admin\TeamController::class, 'bulkAction'])->name('teams.bulk-action');
-    
+    Route::resource('teams', App\Http\Controllers\Admin\TeamController::class);
+    Route::post('teams/bulk-action', [App\Http\Controllers\Admin\TeamController::class, 'bulkAction'])->name('teams.bulk-action');
+
+    // Department management
+    Route::resource('departments', App\Http\Controllers\Admin\DepartmentController::class);
+    Route::post('departments/bulk-action', [App\Http\Controllers\Admin\DepartmentController::class, 'bulkAction'])->name('departments.bulk-action');
+
     // API endpoints for dashboard
-    Route::get('api/stats', [\App\Http\Controllers\Admin\DashboardController::class, 'getStats'])->name('api.stats');
+    Route::get('api/stats', [App\Http\Controllers\Admin\DashboardController::class, 'getStats'])->name('api.stats');
 });

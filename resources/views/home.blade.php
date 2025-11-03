@@ -1,9 +1,9 @@
 <x-app-layout>
     @section('title')
-    Home
+        Home
     @endsection
     @section('description')
-    Fondazione Marcegaglia Onlus Rwanda(FMO) is a non-profit organization that empowers women and communities in Rwanda.
+        Fondazione Marcegaglia Onlus Rwanda(FMO) is a non-profit organization that empowers women and communities in Rwanda.
     @endsection
     <!-- Hero Section -->
     <section
@@ -340,7 +340,7 @@
                             <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10"></div>
                         </div>
                         <div class="flex max-w-xl grow flex-col justify-between">
-                            
+
                             <div class="group relative grow">
                                 <h3 class="mt-3 text-lg font-semibold text-gray-800 group-hover:text-gray-900">
                                     <a href="{{ route('projects.show', $project->slug) }}">
@@ -348,9 +348,9 @@
                                         {{ $project->title }}
                                     </a>
                                 </h3>
-                                <p class="mt-5 line-clamp-3 text-sm text-gray-400">{{$project->description}}</p>
+                                <p class="mt-5 line-clamp-3 text-sm text-gray-400">{{ $project->description }}</p>
                             </div>
-                            
+
                         </div>
                     </article>
                 @endforeach
@@ -376,15 +376,19 @@
                         <div class="absolute inset-0 -z-10 bg-linear-to-t from-black/80 via-black/40"></div>
                         <div class="absolute inset-0 -z-10 rounded-2xl inset-ring inset-ring-white/10"></div>
                         <div class="flex flex-wrap items-center gap-y-1 overflow-hidden text-sm/6 text-gray-300">
-                            <time datetime="{{ $post->created_at }}" class="mr-8">{{ $post->created_at }}</time>
+                            <time datetime="{{ $post->created_at }}"
+                                class="mr-8">{{ $post->created_at->format('M j, Y') }}</time>
                             <div class="-ml-4 flex items-center gap-x-4">
                                 <svg viewBox="0 0 2 2" class="-ml-0.5 size-0.5 flex-none fill-gray-300/50">
                                     <circle cx="1" cy="1" r="1" />
                                 </svg>
-                                <div class="flex gap-x-2.5">
-                                    <img src="{{ $post->author_image_url }}" alt=""
-                                        class="size-6 flex-none rounded-full bg-gray-800/10" />
-                                    {{ $post->author_name }}
+                                <div class="flex items-center gap-x-2.5">
+                                    <div
+                                        class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                        <span
+                                            class="text-sm font-medium text-white">{{ substr($post->author_name, 0, 1) }}</span>
+                                    </div>
+                                    <span class="leading-none">{{ $post->author_name }}</span>
                                 </div>
                             </div>
                         </div>

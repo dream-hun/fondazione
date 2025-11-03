@@ -1,4 +1,10 @@
 <x-app-layout>
+    @section('title')
+        {{ $blog->title }}
+    @endsection
+    @section('description')
+        {{ $blog->excerpt }}
+    @endsection
     <!-- Hero Section with Featured Image -->
     @if($blog->featured_image_url)
         <section class="relative h-[70vh] flex items-end overflow-hidden">
