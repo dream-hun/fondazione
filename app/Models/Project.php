@@ -93,13 +93,26 @@ final class Project extends Model
             return null;
         }
 
+        // Handle string or common array shapes from uploaders
+        $featured = $this->featured_image;
+        if (is_array($featured)) {
+            $featured = $featured['url']
+                ?? $featured['path']
+                ?? $featured['name']
+                ?? $featured['filename']
+                ?? null;
+        }
 
-        if (str_starts_with($this->featured_image, 'http')) {
-            return $this->featured_image;
+        if (! is_string($featured) || $featured === '') {
+            return null;
+        }
+
+        if (str_starts_with($featured, 'http')) {
+            return $featured;
         }
 
         // Otherwise, return the storage URL
-        return asset('storage/'.$this->featured_image);
+        return asset('storage/'.$featured);
     }
 
     public function getGalleryImageUrlsAttribute(): array
@@ -108,7 +121,20 @@ final class Project extends Model
             return [];
         }
 
-        return array_map(function ($image) {
+        $normalized = array_map(function ($image) {
+            // Normalize possible array shapes into a path/url string
+            if (is_array($image)) {
+                $image = $image['url']
+                    ?? $image['path']
+                    ?? $image['name']
+                    ?? $image['filename']
+                    ?? null;
+            }
+
+            if (! is_string($image) || $image === '') {
+                return null;
+            }
+
             // If it's already a full URL (from factory), return as is
             if (str_starts_with($image, 'http')) {
                 return $image;
@@ -117,6 +143,9 @@ final class Project extends Model
             // Otherwise, return the storage URL
             return asset('storage/'.$image);
         }, $this->gallery_images);
+
+        // Remove any nulls produced by unrecognized shapes
+        return array_values(array_filter($normalized, fn ($v) => is_string($v) && $v !== ''));
     }
 
     public function archive(): bool
