@@ -245,7 +245,7 @@
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                            Supported formats: JPEG, PNG, JPG, GIF, WebP. Max size: 2MB.
+                            Supported formats: JPEG, PNG, JPG, GIF, WebP, AVIF. Max size: 2MB.
                             @if($blog->featured_image_url)
                                 <br>Leave empty to keep current image.
                             @endif
