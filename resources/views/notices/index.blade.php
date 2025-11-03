@@ -65,7 +65,7 @@
             @if($notices->count() > 0)
                 <div class="space-y-16">
                     @foreach($notices as $notice)
-                        <article class="flex max-w-full flex-col items-start justify-between border-b border-b-red-primary py-4">
+                        <article class="flex max-w-full flex-col items-start justify-between border-b border-t-red-primary py-4">
                             <div class="flex items-center gap-x-4 text-xs">
                                 <time datetime="{{$notice->formatted_date}}"
                                       class="text-gray-500">{{$notice->formatted_date}}</time>
