@@ -109,7 +109,7 @@
                             Content *
                         </label>
                         <div id="editor" style="height: 400px;" class="bg-white"></div>
-                        <textarea id="body" name="body" class="hidden">{{ old('body', $notice->body) }}</textarea>
+                        <textarea id="content" name="body" class="hidden">{{ old('body', $notice->body) }}</textarea>
                         @error('body')
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror

@@ -30,7 +30,7 @@ final class UpdateNoticeRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', Rule::unique('notices', 'slug')->ignore($noticeId)],
-            'content' => ['required', 'string'],
+            'body' => ['required', 'string'],
             'status' => ['required', Rule::enum(Status::class)],
             'attachment' => ['nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,txt,jpg,jpeg,png,gif,webp,avif', 'max:5120'], // 5MB max
         ];
@@ -43,7 +43,7 @@ final class UpdateNoticeRequest extends FormRequest
     {
         return [
             'title.required' => 'The notice title is required.',
-            'content.required' => 'The notice content is required.',
+            'body.required' => 'The notice content is required.',
             'status.required' => 'Please select a status for the notice.',
             'attachment.mimes' => 'The attachment must be a PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, or image file (JPG, JPEG, PNG, GIF, WebP, AVIF).',
             'attachment.max' => 'The attachment must not be larger than 5MB.',
