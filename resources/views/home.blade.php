@@ -456,7 +456,7 @@
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                     <a href="{{ route('donate') }}"
-                        class="inline-flex items-center justify-center px-8 py-4 bg-amber-500 text-white hover:bg-amber-600 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        class="inline-flex items-center justify-center px-8 py-4 bg-white text-black hover:bg-gray-600 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                         Donate Now
                         <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

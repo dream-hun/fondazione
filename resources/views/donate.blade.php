@@ -421,7 +421,7 @@
                                 </p>
                                 <p class="text-gray-600">
                                     <span class="font-semibold text-gray-900">Phone:</span><br>
-                                    +250 788 123 456
+                                    +250 791 314 155
                                 </p>
                                 <p class="text-gray-600">
                                     <span class="font-semibold text-gray-900">Office:</span><br>

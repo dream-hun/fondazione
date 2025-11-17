@@ -244,7 +244,7 @@
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                    <a href="mailto:tvet@fmorwanda.org"
+                    <a href="https://mvtc.fmorwanda.org/student-application" target="_blank"
                         class="inline-flex items-center justify-center px-8 py-4 bg-white text-red-primary hover:bg-gray-100 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
                         Apply Now
                         <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -252,7 +252,7 @@
                                 d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
                     </a>
-                    <a href="tel:+250788123456"
+                    <a href="tel:+250791314155"
                         class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white border-2 border-white/30 hover:bg-white/10 rounded-xl font-semibold transition-all duration-300">
                         Call Us
                     </a>
