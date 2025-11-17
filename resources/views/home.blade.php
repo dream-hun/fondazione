@@ -493,7 +493,7 @@
                             </svg>
                         </div>
                         <h3 class="font-semibold mb-1">Call Us</h3>
-                        <p class="text-red-100">+250 788 123 456</p>
+                        <p class="text-red-100">+250 791 314 155</p>
                     </div>
                     <div>
                         <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
