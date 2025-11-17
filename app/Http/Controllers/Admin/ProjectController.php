@@ -78,6 +78,8 @@ final class ProjectController extends Controller
     public function update(UpdateProjectRequest $request, Project $project)
     {
         $validated = $request->validated();
+        $currentGallery = $project->gallery_images ?? [];
+        $galleryUpdated = false;
 
         // Handle featured image removal
         if ($request->boolean('remove_featured_image') && $project->featured_image) {
@@ -95,28 +97,31 @@ final class ProjectController extends Controller
         }
 
         // Handle gallery images removal
-        if ($request->has('remove_gallery_images') && $project->gallery_images) {
-            $currentGallery = $project->gallery_images;
+        if ($request->filled('remove_gallery_images') && $currentGallery) {
             $indicesToRemove = $request->input('remove_gallery_images', []);
 
             foreach ($indicesToRemove as $index) {
                 if (isset($currentGallery[$index])) {
                     Storage::disk('public')->delete($currentGallery[$index]);
                     unset($currentGallery[$index]);
+                    $galleryUpdated = true;
                 }
             }
 
-            $validated['gallery_images'] = array_values($currentGallery);
+            $currentGallery = array_values($currentGallery);
         }
 
         // Handle new gallery images upload
         if ($request->hasFile('gallery_images')) {
-            $currentGallery = $validated['gallery_images'] ?? $project->gallery_images ?? [];
-
             foreach ($request->file('gallery_images') as $image) {
                 $currentGallery[] = $image->store('projects/gallery', 'public');
             }
 
+            $currentGallery = array_values($currentGallery);
+            $galleryUpdated = true;
+        }
+
+        if ($galleryUpdated) {
             $validated['gallery_images'] = $currentGallery;
         }
 

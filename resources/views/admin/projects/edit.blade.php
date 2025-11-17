@@ -324,18 +324,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Add Gallery Images</h3>
                     
-                    <div>
-                        <input type="file" 
-                               id="gallery_images" 
-                               name="gallery_images[]" 
-                               accept="image/*"
-                               multiple
-                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Upload additional images for the project gallery</p>
-                        @error('gallery_images')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    @include('admin.projects.partials.gallery-dropzone')
 
                     @if($project->gallery_image_urls && count($project->gallery_image_urls) > 0)
                         <div class="mt-4">

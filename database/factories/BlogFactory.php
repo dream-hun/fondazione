@@ -32,7 +32,7 @@ final class BlogFactory extends Factory
             'author_name' => fake()->name(),
             'author_email' => fake()->safeEmail(),
             'tags' => implode(', ', fake()->words(fake()->numberBetween(2, 5))),
-            'is_featured' => fake()->boolean(20),
+            'is_featured' => false,
             'reading_time' => fake()->numberBetween(2, 15),
         ];
     }

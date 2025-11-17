@@ -96,10 +96,10 @@
         <div class="container mx-auto max-w-7xl px-4">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold text-gray-900 mb-4">
-                    Five <span class="text-red-primary">Essential Trades</span>
+                    Six <span class="text-red-primary">Essential Trades</span>
                 </h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    MVTC offers training in five specialized trades, providing youth with practical skills for
+                    MVTC offers training in six specialized trades, providing youth with practical skills for
                     self-employment and contributing to Rwanda's development goals.
                 </p>
             </div>

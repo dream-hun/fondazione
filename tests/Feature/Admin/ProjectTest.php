@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -66,6 +68,34 @@ test('admin can create a project', function (): void {
     ]);
 });
 
+test('admin can upload multiple gallery images when creating a project', function (): void {
+    Storage::fake('public');
+
+    $galleryFiles = [
+        UploadedFile::fake()->image('gallery-one.jpg'),
+        UploadedFile::fake()->image('gallery-two.jpg'),
+        UploadedFile::fake()->image('gallery-three.jpg'),
+    ];
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.projects.store'), [
+            'title' => 'Gallery Project',
+            'description' => 'Project with gallery images',
+            'content' => 'Rich content about the gallery project',
+            'status' => 'published',
+            'gallery_images' => $galleryFiles,
+        ])
+        ->assertRedirect(route('admin.projects.index'))
+        ->assertSessionHas('success');
+
+    $project = Project::first();
+
+    expect($project)->not->toBeNull();
+    expect($project->gallery_images)->toHaveCount(3);
+
+    collect($project->gallery_images)->each(fn ($path) => Storage::disk('public')->assertExists($path));
+});
+
 test('admin can create a project with save and continue', function (): void {
     $projectData = [
         'title' => 'Test Project',
@@ -121,6 +151,40 @@ test('admin can update a project', function (): void {
         'title' => 'Updated Title',
         'status' => 'published',
     ]);
+});
+
+test('admin can append gallery images when updating a project', function (): void {
+    Storage::fake('public');
+
+    $existingPath = 'projects/gallery/existing-image.jpg';
+    Storage::disk('public')->put($existingPath, 'dummy');
+
+    $project = Project::factory()->create([
+        'gallery_images' => [$existingPath],
+    ]);
+
+    $newImages = [
+        UploadedFile::fake()->image('extra-one.jpg'),
+        UploadedFile::fake()->image('extra-two.jpg'),
+    ];
+
+    $this->actingAs($this->admin)
+        ->patch(route('admin.projects.update', $project), [
+            'title' => $project->title,
+            'description' => $project->description,
+            'content' => $project->content,
+            'status' => $project->status,
+            'gallery_images' => $newImages,
+        ])
+        ->assertRedirect(route('admin.projects.index'))
+        ->assertSessionHas('success');
+
+    $project->refresh();
+
+    dump($project->gallery_images);
+
+    expect($project->gallery_images)->toHaveCount(3);
+    collect($project->gallery_images)->each(fn ($path) => Storage::disk('public')->assertExists($path));
 });
 
 test('admin can update project with save and continue', function (): void {
@@ -184,7 +248,10 @@ test('admin can filter projects by status', function (): void {
 
 test('admin can filter projects by featured', function (): void {
     Project::factory()->featured()->create(['title' => 'Featured Project']);
-    Project::factory()->create(['title' => 'Regular Project']);
+    Project::factory()->create([
+        'title' => 'Regular Project',
+        'is_featured' => false,
+    ]);
 
     $response = $this->actingAs($this->admin)
         ->get(route('admin.projects.index', ['featured' => '1']));
