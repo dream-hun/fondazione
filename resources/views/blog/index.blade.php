@@ -55,6 +55,39 @@
         </div>
     </section>
 
+    <!-- Featured Stories -->
+    @if(isset($featuredBlogs) && $featuredBlogs->count() > 0)
+        <section class="py-16 bg-gray-50">
+            <div class="container mx-auto px-6 max-w-6xl">
+                <h2 class="text-3xl font-light text-gray-900 mb-8">Featured Stories</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    @foreach($featuredBlogs as $featuredBlog)
+                        <article class="group">
+                            @if($featuredBlog->featured_image_url)
+                                <a href="{{ route('blog.show', $featuredBlog) }}" class="block mb-4 overflow-hidden">
+                                    <img src="{{ $featuredBlog->featured_image_url }}" alt="{{ $featuredBlog->title }}"
+                                        class="w-full aspect-[4/3] object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                                </a>
+                            @endif
+                            <h3 class="text-xl font-light text-gray-900 mb-2">
+                                <a href="{{ route('blog.show', $featuredBlog) }}"
+                                    class="hover:text-gray-600 transition-colors">
+                                    {{ $featuredBlog->title }}
+                                </a>
+                            </h3>
+                            <p class="text-sm text-gray-500 mb-3">
+                                {{ $featuredBlog->published_at->format('M j, Y') }} · {{ $featuredBlog->reading_time }} min
+                            </p>
+                            @if($featuredBlog->excerpt)
+                                <p class="text-gray-600 text-sm line-clamp-2">{{ $featuredBlog->excerpt }}</p>
+                            @endif
+                        </article>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
     <!-- All Blog Posts -->
     <section class="py-20 bg-white">
         <div class="container mx-auto px-6 max-w-6xl">

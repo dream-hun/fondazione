@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\ServiceProvider;
 use App\Models\Project;
+use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
 {
@@ -26,9 +27,9 @@ final class AppServiceProvider extends ServiceProvider
     {
         Model::unguard();
         try {
-            View::share('projects', Project::all());
-        } catch (\Exception) {
-            View::share('projects');
+            View::share('projects', Project::published()->limit(5)->get());
+        } catch (Exception) {
+            View::share('projects', collect([]));
         }
     }
 }

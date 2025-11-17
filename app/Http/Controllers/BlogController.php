@@ -16,10 +16,14 @@ final class BlogController extends Controller
         if ($search = $request->get('search')) {
             $query->search($search);
         }
+        if ($tag = $request->get('tag')) {
+            $query->byTag($tag);
+        }
 
         $blogs = $query->paginate(15);
+        $featuredBlogs = Blog::published()->featured()->latest('published_at')->take(3)->get();
 
-        return view('blog.index', ['blogs' => $blogs]);
+        return view('blog.index', ['blogs' => $blogs, 'featuredBlogs' => $featuredBlogs]);
     }
 
     public function show(Blog $blog): View

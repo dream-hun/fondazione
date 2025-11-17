@@ -26,14 +26,6 @@ final class Team extends Model
         });
     }
 
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     public function getImageUrlAttribute(): ?string
     {
         if (! $this->image) {
@@ -47,5 +39,13 @@ final class Team extends Model
 
         // Otherwise, return the storage URL
         return asset('storage/'.$this->image);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

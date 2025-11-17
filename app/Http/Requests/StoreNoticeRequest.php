@@ -54,7 +54,7 @@ final class StoreNoticeRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Generate UUID if not provided
-        if (!$this->uuid) {
+        if (! $this->uuid) {
             $this->merge([
                 'uuid' => (string) \Illuminate\Support\Str::uuid(),
             ]);

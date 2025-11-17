@@ -67,12 +67,14 @@
             <div>
                 <h3 class="text-lg font-bold mb-6 text-white">Our Programs</h3>
                 <ul class="space-y-3">
-                    @foreach ($projects as $project)
+                    @forelse ($projects ?? [] as $project)
                         <li><a href="{{ route('projects.show', $project->slug) }}" class="text-gray-300 hover:text-primary transition-colors duration-200 flex items-center group">
                             <span class="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                             {{ $project->title }}
                         </a></li>
-                    @endforeach
+                    @empty
+                        <li class="text-gray-400 text-sm">No programs available</li>
+                    @endforelse
                 </ul>
             </div>
 

@@ -64,8 +64,8 @@ final class UpdateBlogRequest extends FormRequest
     {
         $this->merge([
             'is_featured' => $this->boolean('is_featured'),
-            'published_at' => $this->status === 'published' && !$this->published_at 
-                ? now() 
+            'published_at' => $this->status === 'published' && ! $this->published_at
+                ? now()
                 : $this->published_at,
         ]);
     }

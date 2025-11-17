@@ -82,14 +82,14 @@ final class BlogController extends Controller
         $originalSlug = $validated['slug'];
         $counter = 1;
         while (Blog::where('slug', $validated['slug'])->exists()) {
-            $validated['slug'] = $originalSlug . '-' . $counter;
+            $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
 
         $blog = Blog::create($validated);
 
         return redirect()->route('admin.blogs.index')
-            ->with('success', 'Blog "' . $blog->title . '" created successfully.');
+            ->with('success', 'Blog "'.$blog->title.'" created successfully.');
     }
 
     /**
@@ -135,14 +135,14 @@ final class BlogController extends Controller
         $originalSlug = $validated['slug'];
         $counter = 1;
         while (Blog::where('slug', $validated['slug'])->where('id', '!=', $blog->id)->exists()) {
-            $validated['slug'] = $originalSlug . '-' . $counter;
+            $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
 
         $blog->update($validated);
 
         return redirect()->route('admin.blogs.index')
-            ->with('success', 'Blog "' . $blog->title . '" updated successfully.');
+            ->with('success', 'Blog "'.$blog->title.'" updated successfully.');
     }
 
     /**
@@ -151,7 +151,7 @@ final class BlogController extends Controller
     public function destroy(Blog $blog): RedirectResponse
     {
         $title = $blog->title;
-        
+
         // Delete featured image if exists
         if ($blog->featured_image && Storage::disk('public')->exists($blog->featured_image)) {
             Storage::disk('public')->delete($blog->featured_image);
@@ -160,7 +160,7 @@ final class BlogController extends Controller
         $blog->delete();
 
         return redirect()->route('admin.blogs.index')
-            ->with('success', 'Blog "' . $title . '" deleted successfully.');
+            ->with('success', 'Blog "'.$title.'" deleted successfully.');
     }
 
     /**

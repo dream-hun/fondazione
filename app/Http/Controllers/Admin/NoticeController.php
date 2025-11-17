@@ -28,7 +28,7 @@ final class NoticeController extends Controller
         if ($search = $request->get('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('body', 'like', "%{$search}%");
+                    ->orWhere('body', 'like', "%{$search}%");
             });
         }
 
@@ -77,7 +77,7 @@ final class NoticeController extends Controller
         $originalSlug = $validated['slug'];
         $counter = 1;
         while (Notice::where('slug', $validated['slug'])->exists()) {
-            $validated['slug'] = $originalSlug . '-' . $counter;
+            $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
 
@@ -89,7 +89,7 @@ final class NoticeController extends Controller
         $notice = Notice::create($validated);
 
         return redirect()->route('admin.notices.index')
-            ->with('success', 'Notice "' . $notice->title . '" created successfully.');
+            ->with('success', 'Notice "'.$notice->title.'" created successfully.');
     }
 
     /**
@@ -135,14 +135,14 @@ final class NoticeController extends Controller
         $originalSlug = $validated['slug'];
         $counter = 1;
         while (Notice::where('slug', $validated['slug'])->where('id', '!=', $notice->id)->exists()) {
-            $validated['slug'] = $originalSlug . '-' . $counter;
+            $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
 
         $notice->update($validated);
 
         return redirect()->route('admin.notices.index')
-            ->with('success', 'Notice "' . $notice->title . '" updated successfully.');
+            ->with('success', 'Notice "'.$notice->title.'" updated successfully.');
     }
 
     /**
@@ -151,7 +151,7 @@ final class NoticeController extends Controller
     public function destroy(Notice $notice): RedirectResponse
     {
         $title = $notice->title;
-        
+
         // Delete attachment if exists
         if ($notice->attachment && Storage::disk('public')->exists($notice->attachment)) {
             Storage::disk('public')->delete($notice->attachment);
@@ -160,7 +160,7 @@ final class NoticeController extends Controller
         $notice->delete();
 
         return redirect()->route('admin.notices.index')
-            ->with('success', 'Notice "' . $title . '" deleted successfully.');
+            ->with('success', 'Notice "'.$title.'" deleted successfully.');
     }
 
     /**

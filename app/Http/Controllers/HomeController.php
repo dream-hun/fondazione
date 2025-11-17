@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\Notice;
 use App\Models\Project;
 use Illuminate\Http\Request;
-use App\Models\Notice;
 
 final class HomeController extends Controller
 {

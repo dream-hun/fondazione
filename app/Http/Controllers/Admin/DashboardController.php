@@ -20,7 +20,7 @@ final class DashboardController extends Controller
     public function index(): View
     {
         $stats = $this->getDashboardStats();
-        
+
         return view('admin.dashboard.index', compact('stats'));
     }
 
@@ -30,7 +30,7 @@ final class DashboardController extends Controller
     public function getStats(): JsonResponse
     {
         $stats = $this->getDashboardStats();
-        
+
         return response()->json($stats);
     }
 
@@ -72,7 +72,7 @@ final class DashboardController extends Controller
     {
         $currentYear = now()->year;
         $months = [];
-        
+
         for ($month = 1; $month <= 12; $month++) {
             $months[] = [
                 'month' => date('M', mktime(0, 0, 0, $month, 1)),
@@ -87,7 +87,7 @@ final class DashboardController extends Controller
                     ->count(),
             ];
         }
-        
+
         return $months;
     }
 }

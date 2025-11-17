@@ -60,7 +60,6 @@ final class Project extends Model
         });
     }
 
-
     public function getRouteKeyName(): string
     {
         return 'slug';
@@ -172,9 +171,9 @@ final class Project extends Model
         $counter = 1;
 
         while (self::where('slug', $slug)
-            ->when($excludeId, fn($query) => $query->where('id', '!=', $excludeId))
+            ->when($excludeId, fn ($query) => $query->where('id', '!=', $excludeId))
             ->exists()) {
-            $slug = $baseSlug . '-' . $counter;
+            $slug = $baseSlug.'-'.$counter;
             $counter++;
         }
 
@@ -187,14 +186,14 @@ final class Project extends Model
 
         self::creating(function (Project $project): void {
             if (empty($project->slug)) {
-                $baseSlug = Str::slug($project->title) ?: 'project-' . time();
+                $baseSlug = Str::slug($project->title) ?: 'project-'.time();
                 $project->slug = $project->generateUniqueSlug($baseSlug);
             }
         });
 
         self::updating(function (Project $project): void {
             if ($project->isDirty('title') && empty($project->slug)) {
-                $baseSlug = Str::slug($project->title) ?: 'project-' . $project->id;
+                $baseSlug = Str::slug($project->title) ?: 'project-'.$project->id;
                 $project->slug = $project->generateUniqueSlug($baseSlug, $project->id);
             }
         });
