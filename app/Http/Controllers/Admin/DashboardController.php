@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enum\Notices\Status as NoticeStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Department;
@@ -53,12 +54,12 @@ final class DashboardController extends Controller
             'published' => [
                 'blogs' => Blog::query()->where('status', 'published')->count(),
                 'projects' => Project::query()->where('status', 'published')->count(),
-                'notices' => Notice::query()->where('status', 'Published')->count(),
+                'notices' => Notice::query()->where('status', NoticeStatus::Published)->count(),
             ],
             'drafts' => [
                 'blogs' => Blog::query()->where('status', 'draft')->count(),
                 'projects' => Project::query()->where('status', 'draft')->count(),
-                'notices' => Notice::query()->where('status', 'Draft')->count(),
+                'notices' => Notice::query()->where('status', NoticeStatus::Draft)->count(),
             ],
             'active' => [
                 'departments' => Department::query()->where('is_active', true)->count(),

@@ -236,8 +236,8 @@
                                     <p class="font-medium text-gray-900 dark:text-white truncate">{{ $notice->title }}</p>
                                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ $notice->created_at->diffForHumans() }}</p>
                                 </div>
-                                <span class="px-2 py-1 text-xs rounded-full ml-3 flex-shrink-0 {{ $notice->status === 'Published' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200' }}">
-                                    {{ ucfirst($notice->status) }}
+                                <span class="px-2 py-1 text-xs rounded-full ml-3 flex-shrink-0 {{ $notice->status === \App\Enum\Notices\Status::Published ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200' }}">
+                                    {{ ucfirst($notice->status->value) }}
                                 </span>
                             </div>
                         @endforeach
