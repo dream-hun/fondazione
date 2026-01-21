@@ -23,6 +23,7 @@ final class TvetController extends Controller
                 'color' => 'red',
                 'duration' => 'Short Course',
                 'certification' => 'RTB Certified',
+                'image' => 'images/mvtc/Welding class.avif',
                 'features' => [
                     'Arc and gas welding techniques',
                     'Metal fabrication skills',
@@ -38,6 +39,7 @@ final class TvetController extends Controller
                 'color' => 'rose',
                 'duration' => 'Short Course',
                 'certification' => 'RTB Certified',
+                'image' => 'images/mvtc/Hair dressing class.avif',
                 'features' => [
                     'Hair cutting and styling',
                     'Professional coloring techniques',
@@ -53,6 +55,7 @@ final class TvetController extends Controller
                 'color' => 'blue',
                 'duration' => 'Short Course',
                 'certification' => 'RTB Certified',
+                'image' => 'images/mvtc/Tailoring.avif',
                 'features' => [
                     'Pattern making and design',
                     'Professional sewing techniques',
@@ -68,6 +71,7 @@ final class TvetController extends Controller
                 'color' => 'amber',
                 'duration' => 'Short Course',
                 'certification' => 'RTB Certified',
+                'image' => 'images/mvtc/Multimedia.avif',
                 'features' => [
                     'Graphic design fundamentals',
                     'Video editing and production',
@@ -83,11 +87,28 @@ final class TvetController extends Controller
                 'color' => 'gray',
                 'duration' => 'Short Course',
                 'certification' => 'RTB Certified',
+                'image' => 'images/mvtc/Masonry at field work.avif',
                 'features' => [
                     'Bricklaying and blockwork',
                     'Concrete mixing and pouring',
                     'Construction safety practices',
                     'Building code compliance',
+                ],
+            ],
+            [
+                'name' => 'Autoengine Repair',
+                'slug' => 'autoengine-repair',
+                'description' => 'Master automotive engine repair and maintenance skills. Learn engine diagnostics, repair techniques, and preventive maintenance for a career in the automotive industry.',
+                'icon' => 'engine',
+                'color' => 'emerald',
+                'duration' => 'Short Course',
+                'certification' => 'RTB Certified',
+                'image' => 'images/mvtc/Autoengine.avif',
+                'features' => [
+                    'Engine diagnostics and troubleshooting',
+                    'Repair and maintenance techniques',
+                    'Preventive maintenance practices',
+                    'Automotive safety standards',
                 ],
             ],
         ];
