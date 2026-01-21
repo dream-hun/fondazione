@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Models\Department;
 use App\Models\Notice;
 use App\Models\Project;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
@@ -45,6 +47,8 @@ final class DashboardController extends Controller
                 'projects' => Project::query()->count(),
                 'notices' => Notice::query()->count(),
                 'users' => User::query()->count(),
+                'departments' => Department::query()->count(),
+                'teams' => Team::query()->count(),
             ],
             'published' => [
                 'blogs' => Blog::query()->where('status', 'published')->count(),
@@ -56,10 +60,14 @@ final class DashboardController extends Controller
                 'projects' => Project::query()->where('status', 'draft')->count(),
                 'notices' => Notice::query()->where('status', 'Draft')->count(),
             ],
+            'active' => [
+                'departments' => Department::query()->where('is_active', true)->count(),
+            ],
             'recent_activity' => [
                 'blogs' => Blog::query()->latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
                 'projects' => Project::query()->latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
                 'notices' => Notice::query()->latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
+                'users' => User::query()->latest()->take(5)->get(['id', 'name', 'email', 'is_admin', 'created_at']),
             ],
             'monthly_trends' => $this->getMonthlyTrends(),
         ];
