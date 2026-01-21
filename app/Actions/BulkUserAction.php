@@ -28,23 +28,23 @@ final class BulkUserAction
         switch ($action) {
             case 'delete':
                 // Prevent deleting yourself
-                $userIds = array_filter($userIds, fn ($id) => (int) $id !== auth()->id());
-                User::whereIn('id', $userIds)->delete();
-                $message = count($userIds) > 0
+                $userIds = array_filter($userIds, fn ($id): bool => (int) $id !== auth()->id());
+                User::query()->whereIn('id', $userIds)->delete();
+                $message = $userIds !== []
                     ? count($userIds).' user(s) deleted successfully.'
                     : 'You cannot delete yourself.';
                 break;
 
             case 'make_admin':
-                User::whereIn('id', $userIds)->update(['is_admin' => true]);
-                $message = "{$count} user(s) granted admin privileges.";
+                User::query()->whereIn('id', $userIds)->update(['is_admin' => true]);
+                $message = $count . ' user(s) granted admin privileges.';
                 break;
 
             case 'remove_admin':
                 // Prevent removing admin from yourself
-                $userIds = array_filter($userIds, fn ($id) => (int) $id !== auth()->id());
-                User::whereIn('id', $userIds)->update(['is_admin' => false]);
-                $message = count($userIds) > 0
+                $userIds = array_filter($userIds, fn ($id): bool => (int) $id !== auth()->id());
+                User::query()->whereIn('id', $userIds)->update(['is_admin' => false]);
+                $message = $userIds !== []
                     ? count($userIds).' user(s) removed from admin privileges.'
                     : 'You cannot remove admin privileges from yourself.';
                 break;
@@ -53,6 +53,6 @@ final class BulkUserAction
                 $message = 'Invalid action selected.';
         }
 
-        return redirect()->route('admin.users.index')->with('success', $message);
+        return to_route('admin.users.index')->with('success', $message);
     }
 }

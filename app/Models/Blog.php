@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,35 +30,40 @@ final class Blog extends Model
     ];
 
     // Scopes
-    public function scopePublished(Builder $query): Builder
+    #[Scope]
+    protected function published(Builder $query): Builder
     {
         return $query->where('status', 'published')
             ->where('published_at', '<=', now());
     }
 
-    public function scopeDraft(Builder $query): Builder
+    #[Scope]
+    protected function draft(Builder $query): Builder
     {
         return $query->where('status', 'draft');
     }
 
-    public function scopeFeatured(Builder $query): Builder
+    #[Scope]
+    protected function featured(Builder $query): Builder
     {
         return $query->where('is_featured', true);
     }
 
-    public function scopeSearch(Builder $query, string $search): Builder
+    #[Scope]
+    protected function search(Builder $query, string $search): Builder
     {
         return $query->where(function (Builder $q) use ($search): void {
-            $q->where('title', 'like', "%{$search}%")
-                ->orWhere('excerpt', 'like', "%{$search}%")
-                ->orWhere('content', 'like', "%{$search}%")
-                ->orWhere('tags', 'like', "%{$search}%");
+            $q->where('title', 'like', sprintf('%%%s%%', $search))
+                ->orWhere('excerpt', 'like', sprintf('%%%s%%', $search))
+                ->orWhere('content', 'like', sprintf('%%%s%%', $search))
+                ->orWhere('tags', 'like', sprintf('%%%s%%', $search));
         });
     }
 
-    public function scopeByTag(Builder $query, string $tag): Builder
+    #[Scope]
+    protected function byTag(Builder $query, string $tag): Builder
     {
-        return $query->where('tags', 'like', "%{$tag}%");
+        return $query->where('tags', 'like', sprintf('%%%s%%', $tag));
     }
 
     // Accessors
@@ -66,7 +72,7 @@ final class Blog extends Model
         return 'slug';
     }
 
-    public function getStatusLabelAttribute(): string
+    protected function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
             'draft' => 'Draft',
@@ -75,12 +81,12 @@ final class Blog extends Model
         };
     }
 
-    public function getIsActiveAttribute(): bool
+    protected function getIsActiveAttribute(): bool
     {
         return $this->status === 'published' && $this->published_at <= now();
     }
 
-    public function getFeaturedImageUrlAttribute(): ?string
+    protected function getFeaturedImageUrlAttribute(): ?string
     {
         if (! $this->featured_image) {
             return null;
@@ -93,16 +99,16 @@ final class Blog extends Model
         return asset('storage/'.$this->featured_image);
     }
 
-    public function getTagsArrayAttribute(): array
+    protected function getTagsArrayAttribute(): array
     {
         if (! $this->tags) {
             return [];
         }
 
-        return array_map('trim', explode(',', $this->tags));
+        return array_map(trim(...), explode(',', $this->tags));
     }
 
-    public function getReadingTimeAttribute(): int
+    protected function getReadingTimeAttribute(): int
     {
         if ($this->attributes['reading_time']) {
             return $this->attributes['reading_time'];

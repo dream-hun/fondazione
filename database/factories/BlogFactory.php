@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use Illuminate\Support\Str;
+use App\Models\Blog;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Blog>
+ * @extends Factory<Blog>
  */
 final class BlogFactory extends Factory
 {
@@ -23,7 +25,7 @@ final class BlogFactory extends Factory
 
         return [
             'title' => $title,
-            'slug' => \Illuminate\Support\Str::slug($title),
+            'slug' => Str::slug($title),
             'excerpt' => fake()->paragraph(3),
             'content' => $content,
             'status' => fake()->randomElement(['draft', 'published']),
@@ -39,7 +41,7 @@ final class BlogFactory extends Factory
 
     public function published(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => 'published',
             'published_at' => fake()->dateTimeBetween('-3 months', 'now'),
         ]);
@@ -47,14 +49,14 @@ final class BlogFactory extends Factory
 
     public function featured(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'is_featured' => true,
         ]);
     }
 
     public function draft(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => 'draft',
             'published_at' => null,
         ]);

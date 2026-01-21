@@ -12,7 +12,7 @@ final class BlogController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Blog::published()->latest('published_at');
+        $query = Blog::query()->published()->latest('published_at');
 
         $search = $request->get('search');
         $tag = $request->get('tag');
@@ -30,7 +30,7 @@ final class BlogController extends Controller
         $blogs = $query->paginate(15);
         $featuredBlogs = $isFiltering
             ? collect()
-            : Blog::published()->featured()->latest('published_at')->take(3)->get();
+            : Blog::query()->published()->featured()->latest('published_at')->take(3)->get();
 
         return view('blog.index', [
             'blogs' => $blogs,
@@ -41,11 +41,9 @@ final class BlogController extends Controller
 
     public function show(Blog $blog): View
     {
-        if (! $blog->is_active) {
-            abort(404);
-        }
+        abort_unless($blog->is_active, 404);
 
-        $relatedBlogs = Blog::published()
+        $relatedBlogs = Blog::query()->published()
             ->where('id', '!=', $blog->id)
             ->latest('published_at')
             ->take(3)

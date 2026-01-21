@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,33 +31,38 @@ final class Project extends Model
     ];
 
     // Scopes
-    public function scopePublished(Builder $query): Builder
+    #[Scope]
+    protected function published(Builder $query): Builder
     {
         return $query->where('status', 'published');
     }
 
-    public function scopeDraft(Builder $query): Builder
+    #[Scope]
+    protected function draft(Builder $query): Builder
     {
         return $query->where('status', 'draft');
     }
 
-    public function scopeArchived(Builder $query): Builder
+    #[Scope]
+    protected function archived(Builder $query): Builder
     {
         return $query->where('status', 'archived');
     }
 
-    public function scopeFeatured(Builder $query): Builder
+    #[Scope]
+    protected function featured(Builder $query): Builder
     {
         return $query->where('is_featured', true);
     }
 
-    public function scopeSearch(Builder $query, string $search): Builder
+    #[Scope]
+    protected function search(Builder $query, string $search): Builder
     {
         return $query->where(function (Builder $q) use ($search): void {
-            $q->where('title', 'like', "%{$search}%")
-                ->orWhere('description', 'like', "%{$search}%")
-                ->orWhere('content', 'like', "%{$search}%")
-                ->orWhere('location', 'like', "%{$search}%");
+            $q->where('title', 'like', sprintf('%%%s%%', $search))
+                ->orWhere('description', 'like', sprintf('%%%s%%', $search))
+                ->orWhere('content', 'like', sprintf('%%%s%%', $search))
+                ->orWhere('location', 'like', sprintf('%%%s%%', $search));
         });
     }
 
@@ -65,7 +71,7 @@ final class Project extends Model
         return 'slug';
     }
 
-    public function getStatusLabelAttribute(): string
+    protected function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
             'draft' => 'Draft',
@@ -75,7 +81,7 @@ final class Project extends Model
         };
     }
 
-    public function getIsActiveAttribute(): bool
+    protected function getIsActiveAttribute(): bool
     {
         return $this->status === 'published';
     }
@@ -86,7 +92,7 @@ final class Project extends Model
         return $this->update(['status' => 'published']);
     }
 
-    public function getFeaturedImageUrlAttribute(): ?string
+    protected function getFeaturedImageUrlAttribute(): ?string
     {
         if (! $this->featured_image) {
             return null;
@@ -114,13 +120,13 @@ final class Project extends Model
         return asset('storage/'.$featured);
     }
 
-    public function getGalleryImageUrlsAttribute(): array
+    protected function getGalleryImageUrlsAttribute(): array
     {
         if (! $this->gallery_images || ! is_array($this->gallery_images)) {
             return [];
         }
 
-        $normalized = array_map(function ($image) {
+        $normalized = array_map(function ($image): ?string {
             // Normalize possible array shapes into a path/url string
             if (is_array($image)) {
                 $image = $image['url']
@@ -144,7 +150,7 @@ final class Project extends Model
         }, $this->gallery_images);
 
         // Remove any nulls produced by unrecognized shapes
-        return array_values(array_filter($normalized, fn ($v) => is_string($v) && $v !== ''));
+        return array_values(array_filter($normalized, fn ($v): bool => is_string($v) && $v !== ''));
     }
 
     public function archive(): bool
@@ -170,7 +176,7 @@ final class Project extends Model
         $slug = $baseSlug;
         $counter = 1;
 
-        while (self::where('slug', $slug)
+        while (self::query()->where('slug', $slug)
             ->when($excludeId, fn ($query) => $query->where('id', '!=', $excludeId))
             ->exists()) {
             $slug = $baseSlug.'-'.$counter;

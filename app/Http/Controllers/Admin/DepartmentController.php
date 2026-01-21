@@ -41,7 +41,7 @@ final class DepartmentController extends Controller
 
         $departments = $query->paginate(15)->withQueryString();
 
-        return view('admin.departments.index', compact('departments'));
+        return view('admin.departments.index', ['departments' => $departments]);
     }
 
     /**
@@ -67,14 +67,14 @@ final class DepartmentController extends Controller
         // Ensure unique slug
         $originalSlug = $validated['slug'];
         $counter = 1;
-        while (Department::where('slug', $validated['slug'])->exists()) {
+        while (Department::query()->where('slug', $validated['slug'])->exists()) {
             $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
 
-        $department = Department::create($validated);
+        $department = Department::query()->create($validated);
 
-        return redirect()->route('admin.departments.index')
+        return to_route('admin.departments.index')
             ->with('success', 'Department "'.$department->name.'" created successfully.');
     }
 
@@ -83,7 +83,7 @@ final class DepartmentController extends Controller
      */
     public function show(Department $department): View
     {
-        return view('admin.departments.show', compact('department'));
+        return view('admin.departments.show', ['department' => $department]);
     }
 
     /**
@@ -91,7 +91,7 @@ final class DepartmentController extends Controller
      */
     public function edit(Department $department): View
     {
-        return view('admin.departments.edit', compact('department'));
+        return view('admin.departments.edit', ['department' => $department]);
     }
 
     /**
@@ -109,14 +109,14 @@ final class DepartmentController extends Controller
         // Ensure unique slug (excluding current department)
         $originalSlug = $validated['slug'];
         $counter = 1;
-        while (Department::where('slug', $validated['slug'])->where('id', '!=', $department->id)->exists()) {
+        while (Department::query()->where('slug', $validated['slug'])->where('id', '!=', $department->id)->exists()) {
             $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
 
         $department->update($validated);
 
-        return redirect()->route('admin.departments.index')
+        return to_route('admin.departments.index')
             ->with('success', 'Department "'.$department->name.'" updated successfully.');
     }
 
@@ -128,7 +128,7 @@ final class DepartmentController extends Controller
         $name = $department->name;
         $department->delete();
 
-        return redirect()->route('admin.departments.index')
+        return to_route('admin.departments.index')
             ->with('success', 'Department "'.$name.'" deleted successfully.');
     }
 
@@ -138,9 +138,9 @@ final class DepartmentController extends Controller
     public function bulkAction(Request $request): RedirectResponse
     {
         $request->validate([
-            'action' => 'required|in:delete,activate,deactivate',
-            'selected_departments' => 'required|array|min:1',
-            'selected_departments.*' => 'exists:departments,id',
+            'action' => ['required', 'in:delete,activate,deactivate'],
+            'selected_departments' => ['required', 'array', 'min:1'],
+            'selected_departments.*' => ['exists:departments,id'],
         ]);
 
         $departmentIds = $request->selected_departments;
@@ -148,35 +148,35 @@ final class DepartmentController extends Controller
         $count = count($departmentIds);
 
         match ($action) {
-            'delete' => $this->bulkDelete($departmentIds, $count),
-            'activate' => $this->bulkActivate($departmentIds, $count),
-            'deactivate' => $this->bulkDeactivate($departmentIds, $count),
+            'delete' => $this->bulkDelete($departmentIds),
+            'activate' => $this->bulkActivate($departmentIds),
+            'deactivate' => $this->bulkDeactivate($departmentIds),
         };
 
-        return redirect()->route('admin.departments.index')->with('success', $this->getBulkActionMessage($action, $count));
+        return to_route('admin.departments.index')->with('success', $this->getBulkActionMessage($action, $count));
     }
 
-    private function bulkDelete(array $departmentIds, int $count): void
+    private function bulkDelete(array $departmentIds): void
     {
-        Department::whereIn('id', $departmentIds)->delete();
+        Department::query()->whereIn('id', $departmentIds)->delete();
     }
 
-    private function bulkActivate(array $departmentIds, int $count): void
+    private function bulkActivate(array $departmentIds): void
     {
-        Department::whereIn('id', $departmentIds)->update(['is_active' => true]);
+        Department::query()->whereIn('id', $departmentIds)->update(['is_active' => true]);
     }
 
-    private function bulkDeactivate(array $departmentIds, int $count): void
+    private function bulkDeactivate(array $departmentIds): void
     {
-        Department::whereIn('id', $departmentIds)->update(['is_active' => false]);
+        Department::query()->whereIn('id', $departmentIds)->update(['is_active' => false]);
     }
 
     private function getBulkActionMessage(string $action, int $count): string
     {
         return match ($action) {
-            'delete' => "{$count} department(s) deleted successfully.",
-            'activate' => "{$count} department(s) activated successfully.",
-            'deactivate' => "{$count} department(s) deactivated successfully.",
+            'delete' => $count . ' department(s) deleted successfully.',
+            'activate' => $count . ' department(s) activated successfully.',
+            'deactivate' => $count . ' department(s) deactivated successfully.',
         };
     }
 }

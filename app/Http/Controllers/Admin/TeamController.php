@@ -27,9 +27,9 @@ final class TeamController extends Controller
         // Search functionality
         if ($search = $request->get('search')) {
             $query->where(function ($q) use ($search): void {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('position', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                $q->where('name', 'like', sprintf('%%%s%%', $search))
+                    ->orWhere('position', 'like', sprintf('%%%s%%', $search))
+                    ->orWhere('email', 'like', sprintf('%%%s%%', $search));
             });
         }
 
@@ -40,7 +40,7 @@ final class TeamController extends Controller
 
         $teams = $query->paginate(15)->withQueryString();
 
-        return view('admin.teams.index', compact('teams'));
+        return view('admin.teams.index', ['teams' => $teams]);
     }
 
     /**
@@ -63,17 +63,17 @@ final class TeamController extends Controller
             $validated['image'] = $request->file('image')->store('teams', 'public');
         }
 
-        Team::create($validated);
+        Team::query()->create($validated);
 
         $message = 'Team member created successfully.';
 
         if ($request->has('save_and_continue')) {
-            $team = Team::latest()->first();
+            $team = Team::query()->latest()->first();
 
-            return redirect()->route('admin.teams.edit', $team)->with('success', $message);
+            return to_route('admin.teams.edit', $team)->with('success', $message);
         }
 
-        return redirect()->route('admin.teams.index')->with('success', $message);
+        return to_route('admin.teams.index')->with('success', $message);
     }
 
     /**
@@ -81,7 +81,7 @@ final class TeamController extends Controller
      */
     public function show(Team $team): View
     {
-        return view('admin.teams.show', compact('team'));
+        return view('admin.teams.show', ['team' => $team]);
     }
 
     /**
@@ -89,7 +89,7 @@ final class TeamController extends Controller
      */
     public function edit(Team $team): View
     {
-        return view('admin.teams.edit', compact('team'));
+        return view('admin.teams.edit', ['team' => $team]);
     }
 
     /**
@@ -111,6 +111,7 @@ final class TeamController extends Controller
             if ($team->image) {
                 Storage::disk('public')->delete($team->image);
             }
+
             $validated['image'] = $request->file('image')->store('teams', 'public');
         }
 
@@ -122,10 +123,10 @@ final class TeamController extends Controller
         $message = 'Team member updated successfully.';
 
         if ($request->has('save_and_continue')) {
-            return redirect()->route('admin.teams.edit', $team)->with('success', $message);
+            return to_route('admin.teams.edit', $team)->with('success', $message);
         }
 
-        return redirect()->route('admin.teams.index')->with('success', $message);
+        return to_route('admin.teams.index')->with('success', $message);
     }
 
     /**
@@ -136,7 +137,7 @@ final class TeamController extends Controller
         $action = new DeleteTeamAction();
         $action->execute($team);
 
-        return redirect()->route('admin.teams.index')->with('success', 'Team member deleted successfully.');
+        return to_route('admin.teams.index')->with('success', 'Team member deleted successfully.');
     }
 
     /**

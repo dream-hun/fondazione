@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,7 +28,7 @@ final class Department extends Model
         'display_order',
     ];
 
-    public static function boot(): void
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -38,27 +39,31 @@ final class Department extends Model
         });
     }
 
-    public function scopeActive(Builder $query): Builder
+    #[Scope]
+    protected function active(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
 
-    public function scopeInactive(Builder $query): Builder
+    #[Scope]
+    protected function inactive(Builder $query): Builder
     {
         return $query->where('is_active', false);
     }
 
-    public function scopeSearch(Builder $query, string $search): Builder
+    #[Scope]
+    protected function search(Builder $query, string $search): Builder
     {
         return $query->where(function (Builder $q) use ($search): void {
-            $q->where('name', 'like', "%{$search}%")
-                ->orWhere('description', 'like', "%{$search}%")
-                ->orWhere('head_of_department', 'like', "%{$search}%")
-                ->orWhere('location', 'like', "%{$search}%");
+            $q->where('name', 'like', sprintf('%%%s%%', $search))
+                ->orWhere('description', 'like', sprintf('%%%s%%', $search))
+                ->orWhere('head_of_department', 'like', sprintf('%%%s%%', $search))
+                ->orWhere('location', 'like', sprintf('%%%s%%', $search));
         });
     }
 
-    public function scopeOrdered(Builder $query): Builder
+    #[Scope]
+    protected function ordered(Builder $query): Builder
     {
         return $query->orderBy('display_order')->orderBy('name');
     }
@@ -68,7 +73,7 @@ final class Department extends Model
         return 'slug';
     }
 
-    public function getStatusLabelAttribute(): string
+    protected function getStatusLabelAttribute(): string
     {
         return $this->is_active ? 'Active' : 'Inactive';
     }

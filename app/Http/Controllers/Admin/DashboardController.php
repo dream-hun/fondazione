@@ -21,7 +21,7 @@ final class DashboardController extends Controller
     {
         $stats = $this->getDashboardStats();
 
-        return view('admin.dashboard.index', compact('stats'));
+        return view('admin.dashboard.index', ['stats' => $stats]);
     }
 
     /**
@@ -41,25 +41,25 @@ final class DashboardController extends Controller
     {
         return [
             'totals' => [
-                'blogs' => Blog::count(),
-                'projects' => Project::count(),
-                'notices' => Notice::count(),
-                'users' => User::count(),
+                'blogs' => Blog::query()->count(),
+                'projects' => Project::query()->count(),
+                'notices' => Notice::query()->count(),
+                'users' => User::query()->count(),
             ],
             'published' => [
-                'blogs' => Blog::where('status', 'published')->count(),
-                'projects' => Project::where('status', 'published')->count(),
-                'notices' => Notice::where('status', 'Published')->count(),
+                'blogs' => Blog::query()->where('status', 'published')->count(),
+                'projects' => Project::query()->where('status', 'published')->count(),
+                'notices' => Notice::query()->where('status', 'Published')->count(),
             ],
             'drafts' => [
-                'blogs' => Blog::where('status', 'draft')->count(),
-                'projects' => Project::where('status', 'draft')->count(),
-                'notices' => Notice::where('status', 'Draft')->count(),
+                'blogs' => Blog::query()->where('status', 'draft')->count(),
+                'projects' => Project::query()->where('status', 'draft')->count(),
+                'notices' => Notice::query()->where('status', 'Draft')->count(),
             ],
             'recent_activity' => [
-                'blogs' => Blog::latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
-                'projects' => Project::latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
-                'notices' => Notice::latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
+                'blogs' => Blog::query()->latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
+                'projects' => Project::query()->latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
+                'notices' => Notice::query()->latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
             ],
             'monthly_trends' => $this->getMonthlyTrends(),
         ];
@@ -76,13 +76,13 @@ final class DashboardController extends Controller
         for ($month = 1; $month <= 12; $month++) {
             $months[] = [
                 'month' => date('M', mktime(0, 0, 0, $month, 1)),
-                'blogs' => Blog::whereYear('created_at', $currentYear)
+                'blogs' => Blog::query()->whereYear('created_at', $currentYear)
                     ->whereMonth('created_at', $month)
                     ->count(),
-                'projects' => Project::whereYear('created_at', $currentYear)
+                'projects' => Project::query()->whereYear('created_at', $currentYear)
                     ->whereMonth('created_at', $month)
                     ->count(),
-                'notices' => Notice::whereYear('created_at', $currentYear)
+                'notices' => Notice::query()->whereYear('created_at', $currentYear)
                     ->whereMonth('created_at', $month)
                     ->count(),
             ];

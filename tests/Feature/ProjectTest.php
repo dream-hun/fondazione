@@ -106,17 +106,17 @@ test('project model scopes work correctly', function (): void {
     Project::factory()->archived()->create(['is_featured' => false]);
     Project::factory()->featured()->create();
 
-    expect(Project::published()->count())->toBe(2); // published + featured
-    expect(Project::draft()->count())->toBe(1);
-    expect(Project::archived()->count())->toBe(1);
-    expect(Project::featured()->count())->toBe(1);
+    expect(Project::query()->published()->count())->toBe(2); // published + featured
+    expect(Project::query()->draft()->count())->toBe(1);
+    expect(Project::query()->archived()->count())->toBe(1);
+    expect(Project::query()->featured()->count())->toBe(1);
 });
 
 test('project search scope works correctly', function (): void {
     Project::factory()->create(['title' => 'Water Project', 'description' => 'Clean water initiative']);
     Project::factory()->create(['title' => 'Education Program', 'content' => 'Teaching children']);
 
-    $results = Project::search('water')->get();
+    $results = Project::query()->search('water')->get();
     expect($results)->toHaveCount(1);
     expect($results->first()->title)->toBe('Water Project');
 });

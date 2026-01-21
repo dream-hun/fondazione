@@ -88,7 +88,7 @@ test('admin can upload multiple gallery images when creating a project', functio
         ->assertRedirect(route('admin.projects.index'))
         ->assertSessionHas('success');
 
-    $project = Project::first();
+    $project = Project::query()->first();
 
     expect($project)->not->toBeNull();
     expect($project->gallery_images)->toHaveCount(3);

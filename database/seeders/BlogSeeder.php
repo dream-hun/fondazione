@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Blog;
 use Illuminate\Database\Seeder;
 
 final class BlogSeeder extends Seeder
@@ -14,7 +15,7 @@ final class BlogSeeder extends Seeder
     public function run(): void
     {
         // Create some featured blog posts
-        \App\Models\Blog::factory()->published()->featured()->create([
+        Blog::factory()->published()->featured()->create([
             'title' => 'Empowering Women Through Microfinance: A Success Story from Huye',
             'excerpt' => 'Discover how our microfinance program has transformed the lives of women entrepreneurs in rural Rwanda, creating sustainable livelihoods and strengthening communities.',
             'content' => 'In the rolling hills of Huye district, a quiet revolution is taking place. Through our microfinance program, women who once struggled to make ends meet are now thriving entrepreneurs, supporting their families and contributing to their communities.
@@ -38,7 +39,7 @@ Our microfinance program has reached over 2,000 women across five districts, wit
             'reading_time' => 8,
         ]);
 
-        \App\Models\Blog::factory()->published()->featured()->create([
+        Blog::factory()->published()->featured()->create([
             'title' => 'Clean Water Changes Everything: The Transformation of Nyamirambo Village',
             'excerpt' => 'Follow the incredible journey of how a simple water project brought health, education, and hope to an entire community in rural Rwanda.',
             'content' => 'Water is life. This simple truth became profoundly clear during our recent visit to Nyamirambo village, where a community water project has transformed not just access to clean water, but the entire fabric of village life.
@@ -54,8 +55,8 @@ Health improvements were equally dramatic. Cases of diarrheal diseases dropped b
             'reading_time' => 6,
         ]);
 
-        \App\Models\Blog::factory()->published()->featured()->create([
-            'title' => 'From Dropout to Graduate: How Education Support Changed Marie\'s Life',
+        Blog::factory()->published()->featured()->create([
+            'title' => "From Dropout to Graduate: How Education Support Changed Marie's Life",
             'excerpt' => 'Meet Marie Uwimana, whose journey from school dropout to university graduate showcases the transformative power of educational support and community investment.',
             'content' => 'Education is the most powerful weapon which you can use to change the world. Nelson Mandela\'s words ring especially true in the story of Marie Uwimana, whose educational journey embodies the transformative power of opportunity and support.
 
@@ -73,9 +74,9 @@ Marie\'s academic performance was exceptional. She consistently ranked among the
         ]);
 
         // Create additional regular blog posts
-        \App\Models\Blog::factory()->published()->count(12)->create();
+        Blog::factory()->published()->count(12)->create();
 
         // Create some draft posts
-        \App\Models\Blog::factory()->draft()->count(3)->create();
+        Blog::factory()->draft()->count(3)->create();
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Str;
+use Illuminate\Contracts\Validation\ValidationRule;
 use App\Enum\Notices\Status;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -21,7 +23,7 @@ final class StoreNoticeRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -56,7 +58,7 @@ final class StoreNoticeRequest extends FormRequest
         // Generate UUID if not provided
         if (! $this->uuid) {
             $this->merge([
-                'uuid' => (string) \Illuminate\Support\Str::uuid(),
+                'uuid' => (string) Str::uuid(),
             ]);
         }
     }

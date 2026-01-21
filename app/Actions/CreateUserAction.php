@@ -21,6 +21,6 @@ final class CreateUserAction
             'is_admin' => $data['is_admin'] ?? false,
         ];
 
-        return User::create($userData);
+        return User::query()->create($userData);
     }
 }

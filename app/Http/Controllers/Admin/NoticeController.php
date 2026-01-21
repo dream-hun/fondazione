@@ -26,9 +26,9 @@ final class NoticeController extends Controller
 
         // Search functionality
         if ($search = $request->get('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('body', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search): void {
+                $q->where('title', 'like', sprintf('%%%s%%', $search))
+                    ->orWhere('body', 'like', sprintf('%%%s%%', $search));
             });
         }
 
@@ -44,7 +44,7 @@ final class NoticeController extends Controller
 
         $notices = $query->paginate(15)->withQueryString();
 
-        return view('admin.notices.index', compact('notices'));
+        return view('admin.notices.index', ['notices' => $notices]);
     }
 
     /**
@@ -76,7 +76,7 @@ final class NoticeController extends Controller
         // Ensure unique slug
         $originalSlug = $validated['slug'];
         $counter = 1;
-        while (Notice::where('slug', $validated['slug'])->exists()) {
+        while (Notice::query()->where('slug', $validated['slug'])->exists()) {
             $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
@@ -86,9 +86,9 @@ final class NoticeController extends Controller
             $validated['uuid'] = (string) Str::uuid();
         }
 
-        $notice = Notice::create($validated);
+        $notice = Notice::query()->create($validated);
 
-        return redirect()->route('admin.notices.index')
+        return to_route('admin.notices.index')
             ->with('success', 'Notice "'.$notice->title.'" created successfully.');
     }
 
@@ -97,7 +97,7 @@ final class NoticeController extends Controller
      */
     public function show(Notice $notice): View
     {
-        return view('admin.notices.show', compact('notice'));
+        return view('admin.notices.show', ['notice' => $notice]);
     }
 
     /**
@@ -105,7 +105,7 @@ final class NoticeController extends Controller
      */
     public function edit(Notice $notice): View
     {
-        return view('admin.notices.edit', compact('notice'));
+        return view('admin.notices.edit', ['notice' => $notice]);
     }
 
     /**
@@ -134,14 +134,14 @@ final class NoticeController extends Controller
         // Ensure unique slug (excluding current notice)
         $originalSlug = $validated['slug'];
         $counter = 1;
-        while (Notice::where('slug', $validated['slug'])->where('id', '!=', $notice->id)->exists()) {
+        while (Notice::query()->where('slug', $validated['slug'])->where('id', '!=', $notice->id)->exists()) {
             $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
 
         $notice->update($validated);
 
-        return redirect()->route('admin.notices.index')
+        return to_route('admin.notices.index')
             ->with('success', 'Notice "'.$notice->title.'" updated successfully.');
     }
 
@@ -159,7 +159,7 @@ final class NoticeController extends Controller
 
         $notice->delete();
 
-        return redirect()->route('admin.notices.index')
+        return to_route('admin.notices.index')
             ->with('success', 'Notice "'.$title.'" deleted successfully.');
     }
 
@@ -169,9 +169,9 @@ final class NoticeController extends Controller
     public function bulkAction(Request $request): RedirectResponse
     {
         $request->validate([
-            'action' => 'required|in:delete,publish,unpublish,draft',
-            'selected_notices' => 'required|array|min:1',
-            'selected_notices.*' => 'exists:notices,id',
+            'action' => ['required', 'in:delete,publish,unpublish,draft'],
+            'selected_notices' => ['required', 'array', 'min:1'],
+            'selected_notices.*' => ['exists:notices,id'],
         ]);
 
         $noticeIds = $request->selected_notices;
@@ -180,33 +180,34 @@ final class NoticeController extends Controller
 
         switch ($action) {
             case 'delete':
-                $notices = Notice::whereIn('id', $noticeIds)->get();
+                $notices = Notice::query()->whereIn('id', $noticeIds)->get();
                 foreach ($notices as $notice) {
                     // Delete attachments
                     if ($notice->attachment && Storage::disk('public')->exists($notice->attachment)) {
                         Storage::disk('public')->delete($notice->attachment);
                     }
                 }
-                Notice::whereIn('id', $noticeIds)->delete();
-                $message = "{$count} notice(s) deleted successfully.";
+
+                Notice::query()->whereIn('id', $noticeIds)->delete();
+                $message = $count . ' notice(s) deleted successfully.';
                 break;
 
             case 'publish':
-                Notice::whereIn('id', $noticeIds)->update(['status' => Status::Published]);
-                $message = "{$count} notice(s) published successfully.";
+                Notice::query()->whereIn('id', $noticeIds)->update(['status' => Status::Published]);
+                $message = $count . ' notice(s) published successfully.';
                 break;
 
             case 'unpublish':
-                Notice::whereIn('id', $noticeIds)->update(['status' => Status::Unpublished]);
-                $message = "{$count} notice(s) unpublished successfully.";
+                Notice::query()->whereIn('id', $noticeIds)->update(['status' => Status::Unpublished]);
+                $message = $count . ' notice(s) unpublished successfully.';
                 break;
 
             case 'draft':
-                Notice::whereIn('id', $noticeIds)->update(['status' => Status::Draft]);
-                $message = "{$count} notice(s) moved to draft.";
+                Notice::query()->whereIn('id', $noticeIds)->update(['status' => Status::Draft]);
+                $message = $count . ' notice(s) moved to draft.';
                 break;
         }
 
-        return redirect()->route('admin.notices.index')->with('success', $message);
+        return to_route('admin.notices.index')->with('success', $message);
     }
 }

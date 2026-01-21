@@ -36,7 +36,9 @@ test('blog show page displays published blog', function (): void {
     $response->assertStatus(200);
     $response->assertSee($blog->title);
     $response->assertSee($blog->excerpt);
-    $response->assertSee(mb_substr($blog->content, 0, 100)); // Check first 100 characters
+    // Check first paragraph of content (before any newlines)
+    $firstParagraph = explode("\n", (string) $blog->content)[0];
+    $response->assertSee($firstParagraph);
     $response->assertSee($blog->author_name);
 });
 
@@ -90,9 +92,9 @@ test('blog model scopes work correctly', function (): void {
     $draftBlog = Blog::factory()->draft()->create();
     $featuredBlog = Blog::factory()->published()->featured()->create();
 
-    expect(Blog::published()->count())->toBe(2);
-    expect(Blog::draft()->count())->toBe(1);
-    expect(Blog::featured()->count())->toBe(1);
+    expect(Blog::query()->published()->count())->toBe(2);
+    expect(Blog::query()->draft()->count())->toBe(1);
+    expect(Blog::query()->featured()->count())->toBe(1);
 });
 
 test('blog model generates reading time correctly', function (): void {

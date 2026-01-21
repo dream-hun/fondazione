@@ -3,8 +3,9 @@
         "cursor"
     ],
     "editors": [
-        "cursor",
-        "phpstorm"
+        "cursor"
     ],
-    "guidelines": []
+    "guidelines": [
+        "laravel/fortify"
+    ]
 }

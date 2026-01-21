@@ -49,7 +49,7 @@ final class BlogController extends Controller
 
         $blogs = $query->paginate(15)->withQueryString();
 
-        return view('admin.blogs.index', compact('blogs'));
+        return view('admin.blogs.index', ['blogs' => $blogs]);
     }
 
     /**
@@ -81,14 +81,14 @@ final class BlogController extends Controller
         // Ensure unique slug
         $originalSlug = $validated['slug'];
         $counter = 1;
-        while (Blog::where('slug', $validated['slug'])->exists()) {
+        while (Blog::query()->where('slug', $validated['slug'])->exists()) {
             $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
 
-        $blog = Blog::create($validated);
+        $blog = Blog::query()->create($validated);
 
-        return redirect()->route('admin.blogs.index')
+        return to_route('admin.blogs.index')
             ->with('success', 'Blog "'.$blog->title.'" created successfully.');
     }
 
@@ -97,7 +97,7 @@ final class BlogController extends Controller
      */
     public function show(Blog $blog): View
     {
-        return view('admin.blogs.show', compact('blog'));
+        return view('admin.blogs.show', ['blog' => $blog]);
     }
 
     /**
@@ -105,7 +105,7 @@ final class BlogController extends Controller
      */
     public function edit(Blog $blog): View
     {
-        return view('admin.blogs.edit', compact('blog'));
+        return view('admin.blogs.edit', ['blog' => $blog]);
     }
 
     /**
@@ -134,14 +134,14 @@ final class BlogController extends Controller
         // Ensure unique slug (excluding current blog)
         $originalSlug = $validated['slug'];
         $counter = 1;
-        while (Blog::where('slug', $validated['slug'])->where('id', '!=', $blog->id)->exists()) {
+        while (Blog::query()->where('slug', $validated['slug'])->where('id', '!=', $blog->id)->exists()) {
             $validated['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
 
         $blog->update($validated);
 
-        return redirect()->route('admin.blogs.index')
+        return to_route('admin.blogs.index')
             ->with('success', 'Blog "'.$blog->title.'" updated successfully.');
     }
 
@@ -159,7 +159,7 @@ final class BlogController extends Controller
 
         $blog->delete();
 
-        return redirect()->route('admin.blogs.index')
+        return to_route('admin.blogs.index')
             ->with('success', 'Blog "'.$title.'" deleted successfully.');
     }
 
@@ -169,9 +169,9 @@ final class BlogController extends Controller
     public function bulkAction(Request $request): RedirectResponse
     {
         $request->validate([
-            'action' => 'required|in:delete,publish,unpublish,feature,unfeature',
-            'selected_blogs' => 'required|array|min:1',
-            'selected_blogs.*' => 'exists:blogs,id',
+            'action' => ['required', 'in:delete,publish,unpublish,feature,unfeature'],
+            'selected_blogs' => ['required', 'array', 'min:1'],
+            'selected_blogs.*' => ['exists:blogs,id'],
         ]);
 
         $blogIds = $request->selected_blogs;
@@ -180,41 +180,42 @@ final class BlogController extends Controller
 
         switch ($action) {
             case 'delete':
-                $blogs = Blog::whereIn('id', $blogIds)->get();
+                $blogs = Blog::query()->whereIn('id', $blogIds)->get();
                 foreach ($blogs as $blog) {
                     // Delete featured images
                     if ($blog->featured_image && Storage::disk('public')->exists($blog->featured_image)) {
                         Storage::disk('public')->delete($blog->featured_image);
                     }
                 }
-                Blog::whereIn('id', $blogIds)->delete();
-                $message = "{$count} blog(s) deleted successfully.";
+
+                Blog::query()->whereIn('id', $blogIds)->delete();
+                $message = $count . ' blog(s) deleted successfully.';
                 break;
 
             case 'publish':
-                Blog::whereIn('id', $blogIds)->update([
+                Blog::query()->whereIn('id', $blogIds)->update([
                     'status' => 'published',
                     'published_at' => now(),
                 ]);
-                $message = "{$count} blog(s) published successfully.";
+                $message = $count . ' blog(s) published successfully.';
                 break;
 
             case 'unpublish':
-                Blog::whereIn('id', $blogIds)->update(['status' => 'draft']);
-                $message = "{$count} blog(s) unpublished successfully.";
+                Blog::query()->whereIn('id', $blogIds)->update(['status' => 'draft']);
+                $message = $count . ' blog(s) unpublished successfully.';
                 break;
 
             case 'feature':
-                Blog::whereIn('id', $blogIds)->update(['is_featured' => true]);
-                $message = "{$count} blog(s) marked as featured.";
+                Blog::query()->whereIn('id', $blogIds)->update(['is_featured' => true]);
+                $message = $count . ' blog(s) marked as featured.';
                 break;
 
             case 'unfeature':
-                Blog::whereIn('id', $blogIds)->update(['is_featured' => false]);
-                $message = "{$count} blog(s) removed from featured.";
+                Blog::query()->whereIn('id', $blogIds)->update(['is_featured' => false]);
+                $message = $count . ' blog(s) removed from featured.';
                 break;
         }
 
-        return redirect()->route('admin.blogs.index')->with('success', $message);
+        return to_route('admin.blogs.index')->with('success', $message);
     }
 }

@@ -28,7 +28,7 @@ final class BulkTeamAction
 
         switch ($action) {
             case 'delete':
-                $teams = Team::whereIn('id', $teamIds)->get();
+                $teams = Team::query()->whereIn('id', $teamIds)->get();
 
                 foreach ($teams as $team) {
                     // Delete associated images
@@ -37,14 +37,14 @@ final class BulkTeamAction
                     }
                 }
 
-                Team::whereIn('id', $teamIds)->delete();
-                $message = "{$count} team member(s) deleted successfully.";
+                Team::query()->whereIn('id', $teamIds)->delete();
+                $message = $count . ' team member(s) deleted successfully.';
                 break;
 
             default:
                 $message = 'Invalid action selected.';
         }
 
-        return redirect()->route('admin.teams.index')->with('success', $message);
+        return to_route('admin.teams.index')->with('success', $message);
     }
 }

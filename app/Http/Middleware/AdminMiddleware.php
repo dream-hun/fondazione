@@ -17,13 +17,11 @@ final class AdminMiddleware
     {
         // Check if user is authenticated
         if (! auth()->check()) {
-            return redirect()->route('login')->with('error', 'Please login to access the admin panel.');
+            return to_route('login')->with('error', 'Please login to access the admin panel.');
         }
 
         // Check if user has admin role
-        if (! auth()->user()->is_admin) {
-            abort(403, 'Access denied. Admin privileges required.');
-        }
+        abort_unless(auth()->user()->is_admin, 403, 'Access denied. Admin privileges required.');
 
         return $next($request);
     }

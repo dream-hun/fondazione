@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use Illuminate\Support\Str;
+use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Project>
+ * @extends Factory<Project>
  */
 final class ProjectFactory extends Factory
 {
@@ -22,7 +24,7 @@ final class ProjectFactory extends Factory
 
         return [
             'title' => $title,
-            'slug' => \Illuminate\Support\Str::slug($title),
+            'slug' => Str::slug($title),
             'description' => fake()->paragraph(3),
             'content' => fake()->paragraphs(5, true),
             'status' => fake()->randomElement(['draft', 'published', 'archived']),
@@ -46,7 +48,7 @@ final class ProjectFactory extends Factory
      */
     public function published(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => 'published',
         ]);
     }
@@ -56,7 +58,7 @@ final class ProjectFactory extends Factory
      */
     public function draft(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => 'draft',
         ]);
     }
@@ -66,7 +68,7 @@ final class ProjectFactory extends Factory
      */
     public function archived(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => 'archived',
         ]);
     }
@@ -76,7 +78,7 @@ final class ProjectFactory extends Factory
      */
     public function featured(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'is_featured' => true,
             'status' => 'published', // Featured projects should be published
         ]);
@@ -87,7 +89,7 @@ final class ProjectFactory extends Factory
      */
     public function ongoing(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'end_date' => null,
         ]);
     }
@@ -97,7 +99,7 @@ final class ProjectFactory extends Factory
      */
     public function completed(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'end_date' => fake()->dateTimeBetween('-1 year', 'now'),
         ]);
     }

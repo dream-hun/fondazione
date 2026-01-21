@@ -16,15 +16,12 @@ final class AdminUserSeeder extends Seeder
     public function run(): void
     {
         // Create admin user if it doesn't exist
-        User::firstOrCreate(
-            ['email' => 'admin@fondazione.org'],
-            [
-                'name' => 'Admin User',
-                'password' => Hash::make('password'),
-                'is_admin' => true,
-                'email_verified_at' => now(),
-            ]
-        );
+        User::query()->firstOrCreate(['email' => 'admin@fondazione.org'], [
+            'name' => 'Admin User',
+            'password' => Hash::make('password'),
+            'is_admin' => true,
+            'email_verified_at' => now(),
+        ]);
 
         $this->command->info('Admin user created: admin@fondazione.org / password');
     }

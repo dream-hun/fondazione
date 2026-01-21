@@ -15,11 +15,11 @@ final class NoticeController extends Controller
     {
         $notices = Notice::query()
             ->where('status', Status::Published)
-            ->when($request->search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('body', 'like', "%{$search}%")
-                        ->orWhere('excerpt', 'like', "%{$search}%");
+            ->when($request->search, function ($query, $search): void {
+                $query->where(function ($q) use ($search): void {
+                    $q->where('title', 'like', sprintf('%%%s%%', $search))
+                        ->orWhere('body', 'like', sprintf('%%%s%%', $search))
+                        ->orWhere('excerpt', 'like', sprintf('%%%s%%', $search));
                 });
             })
             ->latest()

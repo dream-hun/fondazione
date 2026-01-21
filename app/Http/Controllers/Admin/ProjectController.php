@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
@@ -13,25 +15,25 @@ use Illuminate\Support\Facades\Storage;
 
 final class ProjectController extends Controller
 {
-    public function index()
+    public function index(): Factory|View
     {
         $projects = Project::query()
-            ->when(request('search'), function ($query, $search) {
+            ->when(request('search'), function ($query, $search): void {
                 $query->search($search);
             })
-            ->when(request('status'), function ($query, $status) {
+            ->when(request('status'), function ($query, $status): void {
                 $query->where('status', $status);
             })
-            ->when(request('featured') === '1', function ($query) {
+            ->when(request('featured') === '1', function ($query): void {
                 $query->featured();
             })
             ->orderBy(request('sort', 'created_at'), 'desc')
             ->paginate(15);
 
-        return view('admin.projects.index', compact('projects'));
+        return view('admin.projects.index', ['projects' => $projects]);
     }
 
-    public function create()
+    public function create(): Factory|View
     {
         return view('admin.projects.create');
     }
@@ -51,28 +53,29 @@ final class ProjectController extends Controller
             foreach ($request->file('gallery_images') as $image) {
                 $galleryImages[] = $image->store('projects/gallery', 'public');
             }
+
             $validated['gallery_images'] = $galleryImages;
         }
 
-        $project = Project::create($validated);
+        $project = Project::query()->create($validated);
 
         $message = 'Project created successfully.';
 
         if ($request->has('save_and_continue')) {
-            return redirect()->route('admin.projects.edit', $project)->with('success', $message);
+            return to_route('admin.projects.edit', $project)->with('success', $message);
         }
 
-        return redirect()->route('admin.projects.index')->with('success', $message);
+        return to_route('admin.projects.index')->with('success', $message);
     }
 
-    public function show(Project $project)
+    public function show(Project $project): Factory|View
     {
-        return view('admin.projects.show', compact('project'));
+        return view('admin.projects.show', ['project' => $project]);
     }
 
-    public function edit(Project $project)
+    public function edit(Project $project): Factory|View
     {
-        return view('admin.projects.edit', compact('project'));
+        return view('admin.projects.edit', ['project' => $project]);
     }
 
     public function update(UpdateProjectRequest $request, Project $project)
@@ -93,6 +96,7 @@ final class ProjectController extends Controller
             if ($project->featured_image) {
                 Storage::disk('public')->delete($project->featured_image);
             }
+
             $validated['featured_image'] = $request->file('featured_image')->store('projects/featured', 'public');
         }
 
@@ -133,10 +137,10 @@ final class ProjectController extends Controller
         $message = 'Project updated successfully.';
 
         if ($request->has('save_and_continue')) {
-            return redirect()->route('admin.projects.edit', $project)->with('success', $message);
+            return to_route('admin.projects.edit', $project)->with('success', $message);
         }
 
-        return redirect()->route('admin.projects.index')->with('success', $message);
+        return to_route('admin.projects.index')->with('success', $message);
     }
 
     public function destroy(Project $project)
@@ -154,15 +158,15 @@ final class ProjectController extends Controller
 
         $project->delete();
 
-        return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully.');
+        return to_route('admin.projects.index')->with('success', 'Project deleted successfully.');
     }
 
     public function bulkAction(Request $request)
     {
         $request->validate([
-            'action' => 'required|in:publish,unpublish,archive,feature,unfeature,delete',
-            'selected_projects' => 'required|array|min:1',
-            'selected_projects.*' => 'exists:projects,id',
+            'action' => ['required', 'in:publish,unpublish,archive,feature,unfeature,delete'],
+            'selected_projects' => ['required', 'array', 'min:1'],
+            'selected_projects.*' => ['exists:projects,id'],
         ]);
 
         $projectIds = $request->input('selected_projects');
@@ -171,27 +175,27 @@ final class ProjectController extends Controller
 
         switch ($action) {
             case 'publish':
-                $count = Project::whereIn('id', $projectIds)->update(['status' => 'published']);
+                $count = Project::query()->whereIn('id', $projectIds)->update(['status' => 'published']);
                 break;
 
             case 'unpublish':
-                $count = Project::whereIn('id', $projectIds)->update(['status' => 'draft']);
+                $count = Project::query()->whereIn('id', $projectIds)->update(['status' => 'draft']);
                 break;
 
             case 'archive':
-                $count = Project::whereIn('id', $projectIds)->update(['status' => 'archived']);
+                $count = Project::query()->whereIn('id', $projectIds)->update(['status' => 'archived']);
                 break;
 
             case 'feature':
-                $count = Project::whereIn('id', $projectIds)->update(['is_featured' => true]);
+                $count = Project::query()->whereIn('id', $projectIds)->update(['is_featured' => true]);
                 break;
 
             case 'unfeature':
-                $count = Project::whereIn('id', $projectIds)->update(['is_featured' => false]);
+                $count = Project::query()->whereIn('id', $projectIds)->update(['is_featured' => false]);
                 break;
 
             case 'delete':
-                $projects = Project::whereIn('id', $projectIds)->get();
+                $projects = Project::query()->whereIn('id', $projectIds)->get();
 
                 foreach ($projects as $project) {
                     // Delete associated images
@@ -206,7 +210,7 @@ final class ProjectController extends Controller
                     }
                 }
 
-                $count = Project::whereIn('id', $projectIds)->delete();
+                $count = Project::query()->whereIn('id', $projectIds)->delete();
                 break;
         }
 
@@ -219,7 +223,7 @@ final class ProjectController extends Controller
             'delete' => 'deleted',
         };
 
-        return redirect()->route('admin.projects.index')
-            ->with('success', "{$count} project(s) {$actionText} successfully.");
+        return to_route('admin.projects.index')
+            ->with('success', sprintf('%s project(s) %s successfully.', $count, $actionText));
     }
 }

@@ -27,9 +27,9 @@ final class UserController extends Controller
 
         // Search functionality
         if ($search = $request->get('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search): void {
+                $q->where('name', 'like', sprintf('%%%s%%', $search))
+                    ->orWhere('email', 'like', sprintf('%%%s%%', $search));
             });
         }
 
@@ -47,7 +47,7 @@ final class UserController extends Controller
 
         $users = $query->paginate(15)->withQueryString();
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index', ['users' => $users]);
     }
 
     /**
@@ -66,7 +66,7 @@ final class UserController extends Controller
         $validated = $request->validated();
         $user = $action->execute($validated);
 
-        return redirect()->route('admin.users.index')
+        return to_route('admin.users.index')
             ->with('success', 'User "'.$user->name.'" created successfully.');
     }
 
@@ -75,7 +75,7 @@ final class UserController extends Controller
      */
     public function show(User $user): View
     {
-        return view('admin.users.show', compact('user'));
+        return view('admin.users.show', ['user' => $user]);
     }
 
     /**
@@ -83,7 +83,7 @@ final class UserController extends Controller
      */
     public function edit(User $user): View
     {
-        return view('admin.users.edit', compact('user'));
+        return view('admin.users.edit', ['user' => $user]);
     }
 
     /**
@@ -94,7 +94,7 @@ final class UserController extends Controller
         $validated = $request->validated();
         $user = $action->execute($user, $validated);
 
-        return redirect()->route('admin.users.index')
+        return to_route('admin.users.index')
             ->with('success', 'User "'.$user->name.'" updated successfully.');
     }
 
@@ -105,14 +105,14 @@ final class UserController extends Controller
     {
         // Prevent deleting yourself
         if ($user->id === auth()->id()) {
-            return redirect()->route('admin.users.index')
+            return to_route('admin.users.index')
                 ->with('error', 'You cannot delete your own account.');
         }
 
         $name = $user->name;
         $action->execute($user);
 
-        return redirect()->route('admin.users.index')
+        return to_route('admin.users.index')
             ->with('success', 'User "'.$name.'" deleted successfully.');
     }
 

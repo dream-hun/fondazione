@@ -27,7 +27,7 @@ final class AppServiceProvider extends ServiceProvider
     {
         Model::unguard();
         try {
-            View::share('projects', Project::published()->limit(5)->get());
+            View::share('projects', Project::query()->published()->limit(5)->get());
         } catch (Exception) {
             View::share('projects', collect([]));
         }
