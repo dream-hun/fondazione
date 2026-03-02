@@ -52,6 +52,7 @@ test('admin can create a project', function (): void {
         'description' => 'Test Description',
         'content' => 'Test Content',
         'status' => 'published',
+        'category' => 'cdsp',
         'location' => 'Kigali, Rwanda',
         'beneficiaries_count' => 100,
         'budget' => 10000.00,
@@ -83,6 +84,7 @@ test('admin can upload multiple gallery images when creating a project', functio
             'description' => 'Project with gallery images',
             'content' => 'Rich content about the gallery project',
             'status' => 'published',
+            'category' => 'cdsp',
             'gallery_images' => $galleryFiles,
         ])
         ->assertRedirect(route('admin.projects.index'))
@@ -102,6 +104,7 @@ test('admin can create a project with save and continue', function (): void {
         'description' => 'Test Description',
         'content' => 'Test Content',
         'status' => 'published',
+        'category' => 'cdsp',
     ];
 
     $this->actingAs($this->admin)
@@ -115,7 +118,7 @@ test('admin can create a project with save and continue', function (): void {
 test('admin cannot create project without required fields', function (): void {
     $this->actingAs($this->admin)
         ->post(route('admin.projects.store'), [])
-        ->assertSessionHasErrors(['title', 'description', 'content', 'status']);
+        ->assertSessionHasErrors(['title', 'description', 'content', 'status', 'category']);
 });
 
 test('admin can view edit project page', function (): void {
@@ -139,6 +142,7 @@ test('admin can update a project', function (): void {
         'description' => $project->description,
         'content' => $project->content,
         'status' => 'published',
+        'category' => $project->category->value,
     ];
 
     $this->actingAs($this->admin)
@@ -174,6 +178,7 @@ test('admin can append gallery images when updating a project', function (): voi
             'description' => $project->description,
             'content' => $project->content,
             'status' => $project->status,
+            'category' => $project->category->value,
             'gallery_images' => $newImages,
         ])
         ->assertRedirect(route('admin.projects.index'))
@@ -196,6 +201,7 @@ test('admin can update project with save and continue', function (): void {
             'description' => $project->description,
             'content' => $project->content,
             'status' => 'published',
+            'category' => $project->category->value,
             'save_and_continue' => true,
         ])
         ->assertRedirect()
@@ -379,6 +385,7 @@ test('project slug is auto-generated from title if not provided', function (): v
             'description' => 'Test Description',
             'content' => 'Test Content',
             'status' => 'published',
+            'category' => 'cdsp',
         ]);
 
     $this->assertDatabaseHas('projects', [
@@ -396,6 +403,7 @@ test('project slug is unique when auto-generated', function (): void {
             'description' => 'Test Description',
             'content' => 'Test Content',
             'status' => 'published',
+            'category' => 'cdsp',
         ]);
 
     $this->assertDatabaseHas('projects', [
@@ -411,6 +419,7 @@ test('validates end_date is after start_date', function (): void {
             'description' => 'Test Description',
             'content' => 'Test Content',
             'status' => 'published',
+            'category' => 'cdsp',
             'start_date' => '2024-12-31',
             'end_date' => '2024-01-01',
         ])
@@ -424,6 +433,7 @@ test('validates budget is non-negative', function (): void {
             'description' => 'Test Description',
             'content' => 'Test Content',
             'status' => 'published',
+            'category' => 'cdsp',
             'budget' => -100,
         ])
         ->assertSessionHasErrors('budget');
@@ -436,6 +446,7 @@ test('validates beneficiaries_count is non-negative', function (): void {
             'description' => 'Test Description',
             'content' => 'Test Content',
             'status' => 'published',
+            'category' => 'cdsp',
             'beneficiaries_count' => -10,
         ])
         ->assertSessionHasErrors('beneficiaries_count');
@@ -451,6 +462,7 @@ test('validates unique slug', function (): void {
             'description' => 'Test Description',
             'content' => 'Test Content',
             'status' => 'published',
+            'category' => 'cdsp',
         ])
         ->assertSessionHasErrors('slug');
 });
@@ -465,7 +477,50 @@ test('allows updating slug to same value for same project', function (): void {
             'description' => $project->description,
             'content' => $project->content,
             'status' => $project->status,
+            'category' => $project->category->value,
         ])
         ->assertRedirect()
         ->assertSessionHas('success');
+});
+
+test('admin cannot create project with invalid category', function (): void {
+    $this->actingAs($this->admin)
+        ->post(route('admin.projects.store'), [
+            'title' => 'Test Project',
+            'description' => 'Test Description',
+            'content' => 'Test Content',
+            'status' => 'published',
+            'category' => 'invalid-category',
+        ])
+        ->assertSessionHasErrors('category');
+});
+
+test('admin can filter projects by category', function (): void {
+    Project::factory()->cdsp()->create(['title' => 'CDSP Project']);
+    Project::factory()->wdp()->create(['title' => 'WDP Project']);
+
+    $response = $this->actingAs($this->admin)
+        ->get(route('admin.projects.index', ['category' => 'cdsp']));
+
+    $response->assertSuccessful()
+        ->assertSee('CDSP Project')
+        ->assertDontSee('WDP Project');
+});
+
+test('admin can create a project with wdp category', function (): void {
+    $this->actingAs($this->admin)
+        ->post(route('admin.projects.store'), [
+            'title' => 'WDP Initiative',
+            'description' => 'Test Description',
+            'content' => 'Test Content',
+            'status' => 'published',
+            'category' => 'wdp',
+        ])
+        ->assertRedirect(route('admin.projects.index'))
+        ->assertSessionHas('success');
+
+    $this->assertDatabaseHas('projects', [
+        'title' => 'WDP Initiative',
+        'category' => 'wdp',
+    ]);
 });

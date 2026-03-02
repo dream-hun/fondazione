@@ -22,6 +22,14 @@
 
         <div class="container mx-auto px-4 py-24 lg:py-32 relative">
             <div class="max-w-7xl mx-auto space-y-6">
+                <div class="inline-flex items-center gap-2 mb-4">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold
+                        {{ $project->category === \App\Enum\Projects\Category::Cdsp
+                            ? 'bg-blue-500/20 text-blue-300 ring-1 ring-blue-400/30'
+                            : 'bg-green-500/20 text-green-300 ring-1 ring-green-400/30' }}">
+                        {{ $project->category->getLabel() }}
+                    </span>
+                </div>
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                     {{ $project->title }}
                 </h1>
@@ -125,6 +133,17 @@
                         <div class="bg-gray-50 rounded-2xl p-6">
                             <h3 class="text-xl font-bold text-gray-900 mb-4">Project Details</h3>
                             <div class="space-y-4">
+                                <!-- Category -->
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                    <div>
+                                        <div class="text-sm text-gray-500">Programme</div>
+                                        <div class="font-medium text-gray-900">{{ $project->category->getLabel() }}</div>
+                                    </div>
+                                </div>
+
                                 @if ($project->location)
                                     <div class="flex items-center gap-3">
                                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
@@ -232,7 +251,7 @@
             <div class="container max-w-7xl mx-auto px-4">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-gray-900 mb-4">Related Projects</h2>
-                    <p class="text-lg text-gray-600">Discover other impactful initiatives in similar areas</p>
+                    <p class="text-lg text-gray-600">More initiatives from the {{ $project->category->getLabel() }} programme</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">

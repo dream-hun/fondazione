@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enum\Projects\Category;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,7 +29,71 @@ final class Project extends Model
         'featured_image',
         'gallery_images',
         'is_featured',
+        'category',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    // Helper methods
+    public function publish(): bool
+    {
+        return $this->update(['status' => 'published']);
+    }
+
+    public function archive(): bool
+    {
+        return $this->update(['status' => 'archived']);
+    }
+
+    public function makeFeatured(): bool
+    {
+        return $this->update(['is_featured' => true]);
+    }
+
+    public function removeFeatured(): bool
+    {
+        return $this->update(['is_featured' => false]);
+    }
+
+    /**
+     * Generate a unique slug for the project
+     */
+    public function generateUniqueSlug(string $baseSlug, ?int $excludeId = null): string
+    {
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (self::query()->where('slug', $slug)
+            ->when($excludeId, fn ($query) => $query->where('id', '!=', $excludeId))
+            ->exists()) {
+            $slug = $baseSlug.'-'.$counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        self::creating(function (Project $project): void {
+            if (empty($project->slug)) {
+                $baseSlug = Str::slug($project->title) ?: 'project-'.time();
+                $project->slug = $project->generateUniqueSlug($baseSlug);
+            }
+        });
+
+        self::updating(function (Project $project): void {
+            if ($project->isDirty('title') && empty($project->slug)) {
+                $baseSlug = Str::slug($project->title) ?: 'project-'.$project->id;
+                $project->slug = $project->generateUniqueSlug($baseSlug, $project->id);
+            }
+        });
+    }
 
     // Scopes
     #[Scope]
@@ -56,6 +121,12 @@ final class Project extends Model
     }
 
     #[Scope]
+    protected function category(Builder $query, Category $category): Builder
+    {
+        return $query->where('category', $category->value);
+    }
+
+    #[Scope]
     protected function search(Builder $query, string $search): Builder
     {
         return $query->where(function (Builder $q) use ($search): void {
@@ -64,11 +135,6 @@ final class Project extends Model
                 ->orWhere('content', 'like', sprintf('%%%s%%', $search))
                 ->orWhere('location', 'like', sprintf('%%%s%%', $search));
         });
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
     }
 
     protected function getStatusLabelAttribute(): string
@@ -84,12 +150,6 @@ final class Project extends Model
     protected function getIsActiveAttribute(): bool
     {
         return $this->status === 'published';
-    }
-
-    // Helper methods
-    public function publish(): bool
-    {
-        return $this->update(['status' => 'published']);
     }
 
     protected function getFeaturedImageUrlAttribute(): ?string
@@ -153,58 +213,6 @@ final class Project extends Model
         return array_values(array_filter($normalized, fn ($v): bool => is_string($v) && $v !== ''));
     }
 
-    public function archive(): bool
-    {
-        return $this->update(['status' => 'archived']);
-    }
-
-    public function makeFeatured(): bool
-    {
-        return $this->update(['is_featured' => true]);
-    }
-
-    public function removeFeatured(): bool
-    {
-        return $this->update(['is_featured' => false]);
-    }
-
-    /**
-     * Generate a unique slug for the project
-     */
-    public function generateUniqueSlug(string $baseSlug, ?int $excludeId = null): string
-    {
-        $slug = $baseSlug;
-        $counter = 1;
-
-        while (self::query()->where('slug', $slug)
-            ->when($excludeId, fn ($query) => $query->where('id', '!=', $excludeId))
-            ->exists()) {
-            $slug = $baseSlug.'-'.$counter;
-            $counter++;
-        }
-
-        return $slug;
-    }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        self::creating(function (Project $project): void {
-            if (empty($project->slug)) {
-                $baseSlug = Str::slug($project->title) ?: 'project-'.time();
-                $project->slug = $project->generateUniqueSlug($baseSlug);
-            }
-        });
-
-        self::updating(function (Project $project): void {
-            if ($project->isDirty('title') && empty($project->slug)) {
-                $baseSlug = Str::slug($project->title) ?: 'project-'.$project->id;
-                $project->slug = $project->generateUniqueSlug($baseSlug, $project->id);
-            }
-        });
-    }
-
     protected function casts(): array
     {
         return [
@@ -213,6 +221,7 @@ final class Project extends Model
             'budget' => 'decimal:2',
             'gallery_images' => 'array',
             'is_featured' => 'boolean',
+            'category' => Category::class,
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

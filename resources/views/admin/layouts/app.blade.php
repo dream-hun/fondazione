@@ -31,7 +31,7 @@
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
              @click="mobileMenuOpen = false"
-             class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 lg:hidden"
+             class="fixed inset-0 bg-gray-900/50 z-40 lg:hidden"
              style="display: none;"></div>
 
         <!-- Sidebar -->
@@ -242,17 +242,8 @@
                         </svg>
                     </button>
 
-                    <!-- Desktop sidebar toggle -->
-                    <button @click="toggleCollapse()" 
-                            class="hidden lg:flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors"
-                            title="Toggle sidebar">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-
                     <!-- Breadcrumbs -->
-                    <nav class="flex-1 flex justify-center lg:justify-start" aria-label="Breadcrumb">
+                    <nav class="flex-1 flex items-center" aria-label="Breadcrumb">
                         <ol class="inline-flex items-center space-x-1 md:space-x-3">
                             @yield('breadcrumbs')
                         </ol>

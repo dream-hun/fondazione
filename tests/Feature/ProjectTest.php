@@ -70,16 +70,10 @@ test('projects can be filtered by location', function (): void {
         ->assertDontSee('Nairobi, Kenya');
 });
 
-test('project show page displays related projects', function (): void {
-    $project = Project::factory()->published()->create(['location' => 'Kigali, Rwanda']);
-    $relatedProject = Project::factory()->published()->create([
-        'location' => 'Kigali, Rwanda',
-        'title' => 'Related Project',
-    ]);
-    $unrelatedProject = Project::factory()->published()->create([
-        'location' => 'Nairobi, Kenya',
-        'title' => 'Unrelated Project',
-    ]);
+test('project show page displays related projects from the same category', function (): void {
+    $project = Project::factory()->published()->cdsp()->create();
+    $relatedProject = Project::factory()->published()->cdsp()->create(['title' => 'Related Project']);
+    $unrelatedProject = Project::factory()->published()->wdp()->create(['title' => 'Unrelated Project']);
 
     $response = $this->get(route('projects.show', $project));
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Enum\Projects\Category;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,7 @@ final class UpdateProjectRequest extends FormRequest
             'description' => ['required', 'string'],
             'content' => ['required', 'string'],
             'status' => ['required', 'in:draft,published,archived'],
+            'category' => ['required', Rule::enum(Category::class)],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'budget' => ['nullable', 'numeric', 'min:0'],
@@ -58,6 +60,7 @@ final class UpdateProjectRequest extends FormRequest
             'description.required' => 'The project description is required.',
             'content.required' => 'The project content is required.',
             'status.required' => 'Please select a status for the project.',
+            'category.required' => 'Please select a category for the project.',
             'status.in' => 'The status must be either draft, published, or archived.',
             'end_date.after_or_equal' => 'The end date must be after or equal to the start date.',
             'budget.numeric' => 'The budget must be a valid number.',

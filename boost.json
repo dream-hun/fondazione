@@ -1,11 +1,9 @@
 {
     "agents": [
-        "cursor"
+        "claude_code"
     ],
     "editors": [
-        "cursor"
+        "claude_code"
     ],
-    "guidelines": [
-        "laravel/fortify"
-    ]
+    "guidelines": []
 }

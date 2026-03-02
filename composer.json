@@ -11,23 +11,23 @@
     "require": {
         "php": "^8.2",
         "blade-ui-kit/blade-heroicons": "^2.6",
-        "laravel/fortify": "^1.31.2",
-        "laravel/framework": "^12.32.5",
-        "laravel/tinker": "^2.10.1",
-        "livewire/livewire": "^3.6.4"
+        "laravel/fortify": "^1.33.0",
+        "laravel/framework": "^12.48.1",
+        "laravel/tinker": "^2.11.0",
+        "livewire/livewire": "^3.7.4"
     },
     "require-dev": {
-        "driftingly/rector-laravel": "^2.1.1",
+        "driftingly/rector-laravel": "^2.1.9",
         "fakerphp/faker": "^1.24.1",
-        "laravel/boost": "^1.3",
-        "laravel/pail": "^1.2.3",
-        "laravel/pint": "^1.25.1",
-        "laravel/sail": "^1.46",
+        "laravel/boost": "^1.8.10",
+        "laravel/pail": "^1.2.4",
+        "laravel/pint": "^1.27.0",
+        "laravel/sail": "^1.52",
         "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "^8.8.2",
-        "pestphp/pest": "^4.1.1",
+        "nunomaduro/collision": "^8.8.3",
+        "pestphp/pest": "^4.3.1",
         "pestphp/pest-plugin-laravel": "^4.0",
-        "rector/rector": "^2.1.7"
+        "rector/rector": "^2.3.2"
     },
     "autoload": {
         "psr-4": {

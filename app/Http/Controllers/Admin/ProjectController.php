@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
+use App\Enum\Projects\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,6 +27,12 @@ final class ProjectController extends Controller
             })
             ->when(request('featured') === '1', function ($query): void {
                 $query->featured();
+            })
+            ->when(request('category'), function ($query, $categoryValue): void {
+                $category = Category::tryFrom($categoryValue);
+                if ($category !== null) {
+                    $query->category($category);
+                }
             })
             ->orderBy(request('sort', 'created_at'), 'desc')
             ->paginate(15);

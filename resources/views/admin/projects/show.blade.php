@@ -165,6 +165,19 @@
                         </div>
                     @endif
 
+                    <!-- Category -->
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Category</dt>
+                        <dd class="mt-1">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                {{ $project->category === \App\Enum\Projects\Category::Cdsp
+                                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                                    : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' }}">
+                                {{ $project->category->getLabel() }}
+                            </span>
+                        </dd>
+                    </div>
+
                     <!-- Slug -->
                     <div>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Slug</dt>
@@ -244,7 +257,7 @@
 </div>
 
 <!-- Image Modal -->
-<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 hidden z-50 flex items-center justify-center p-4">
+<div id="imageModal" class="fixed inset-0 bg-black/75 hidden z-50 flex items-center justify-center p-4">
     <div class="relative max-w-4xl max-h-full">
         <img id="modalImage" src="" alt="" class="max-w-full max-h-full object-contain">
         <button onclick="closeImageModal()" 

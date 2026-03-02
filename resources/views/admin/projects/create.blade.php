@@ -30,18 +30,6 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Success/Error Messages -->
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline">{{ session('success') }}</span>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline">{{ session('error') }}</span>
-        </div>
-    @endif
     <!-- Page Header -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <div class="flex items-center justify-between">
@@ -242,12 +230,28 @@
                             @enderror
                         </div>
 
+                        <!-- Category -->
+                        <div>
+                            <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Category *
+                            </label>
+                            <select id="category"
+                                    name="category"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                                <option value="cdsp" {{ old('category', 'cdsp') === 'cdsp' ? 'selected' : '' }}>CDSP</option>
+                                <option value="wdp" {{ old('category') === 'wdp' ? 'selected' : '' }}>WDP</option>
+                            </select>
+                            @error('category')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Featured -->
                         <div class="flex items-center">
                             <input type="hidden" name="is_featured" value="0">
-                            <input type="checkbox" 
-                                   id="is_featured" 
-                                   name="is_featured" 
+                            <input type="checkbox"
+                                   id="is_featured"
+                                   name="is_featured"
                                    value="1"
                                    {{ old('is_featured') ? 'checked' : '' }}
                                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
@@ -261,16 +265,60 @@
                 <!-- Featured Image -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Featured Image</h3>
-                    
-                    <div>
-                        <input type="file" 
-                               id="featured_image" 
-                               name="featured_image" 
-                               accept="image/*"
-                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
-                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Upload a featured image for the project</p>
+
+                    <div x-data="{
+                        previewUrl: null,
+                        isDragging: false,
+                        handleFiles(files) {
+                            const file = files[0];
+                            if (!file || !file.type.startsWith('image/')) return;
+                            const dt = new DataTransfer();
+                            dt.items.add(file);
+                            document.getElementById('featured_image').files = dt.files;
+                            const reader = new FileReader();
+                            reader.onload = e => { this.previewUrl = e.target.result; };
+                            reader.readAsDataURL(file);
+                        },
+                        removeImage() {
+                            this.previewUrl = null;
+                            document.getElementById('featured_image').value = '';
+                        }
+                    }">
+                        <input type="file" id="featured_image" name="featured_image" accept="image/*" class="hidden"
+                               @change="handleFiles($event.target.files)">
+
+                        <template x-if="!previewUrl">
+                            <div
+                                class="flex flex-col items-center justify-center px-6 py-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors"
+                                :class="isDragging ? 'border-blue-500 bg-blue-50/40 dark:bg-gray-700/40' : 'border-gray-300 dark:border-gray-600 hover:border-blue-500 hover:bg-blue-50/40 dark:hover:bg-gray-700/40'"
+                                @click="document.getElementById('featured_image').click()"
+                                @dragover.prevent="isDragging = true"
+                                @dragleave.prevent="isDragging = false"
+                                @drop.prevent="isDragging = false; handleFiles($event.dataTransfer.files)"
+                            >
+                                <svg class="w-10 h-10 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-5-9h2a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h2m4-2v8" />
+                                </svg>
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Drag & drop an image here</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">or click to browse</p>
+                            </div>
+                        </template>
+
+                        <template x-if="previewUrl">
+                            <div class="relative aspect-video rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                <img :src="previewUrl" class="w-full h-full object-cover" alt="Featured image preview">
+                                <button type="button"
+                                        @click="removeImage()"
+                                        class="absolute top-2 right-2 inline-flex items-center justify-center rounded-full bg-white/90 text-gray-700 hover:bg-red-500 hover:text-white p-1.5 shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </template>
+
                         @error('featured_image')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>

@@ -10,7 +10,7 @@
         <img src="{{ asset('images/_DSC8103.jpg') }}"
              alt="About us"
              class="absolute inset-0 w-full h-full object-cover">
-        <div class="absolute inset-0  bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
+        <div class="absolute inset-0  bg-linear-to-r from-black/80 via-black/60 to-transparent"></div>
 
         <div class="container mx-auto max-w-7xl px-4 relative z-10">
             <div class="max-w-3xl">
@@ -23,50 +23,13 @@
                 <p class="text-xl text-gray-200 mb-8 leading-relaxed">
                     For over a decade, we've been partnering with communities across Rwanda to create sustainable change through education, healthcare, and empowerment.
                 </p>
-
             </div>
         </div>
-
     </section>
 
-    <!-- Projects Grid -->
-    <section class="py-24 bg-white">
-        <div class="container mx-auto max-w-7xl px-4">
-            @if($projects->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($projects as $project)
-                    <article class="flex flex-col items-start justify-between">
-                        <div class="relative w-full">
-                            <img src="{{ $project->featured_image_url }}"
-                                alt="Blog post image"
-                                class="aspect-video w-full rounded-2xl bg-gray-800 object-cover sm:aspect-[2/1] lg:aspect-[3/2]" />
-                            <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10"></div>
-                        </div>
-                        <div class="flex max-w-xl grow flex-col justify-between">
-                            
-<div class="group relative grow">
-                                                <h3 class="mt-3 text-lg font-semibold text-gray-800 group-hover:text-gray-900">
-                                                    <a href="{{ route('projects.show', $project->slug) }}">
-                                                        <span class="absolute inset-0"></span>
-                                                        {{ $project->title }}
-                                                    </a>
-                                                </h3>
-                                                @if($project->location)
-                                                    <p class="mt-2 text-sm text-gray-500">{{ $project->location }}</p>
-                                                @endif
-                                                <p class="mt-5 line-clamp-3 text-sm text-gray-400">{{$project->description}}</p>
-                                            </div>
-                            
-                        </div>
-                    </article>
-                    @endforeach
-                </div>
-
-                <!-- Pagination -->
-                <div class="mt-12">
-                    {{ $projects->links() }}
-                </div>
-            @else
+    @if($cdspProjects->isEmpty() && $wdpProjects->isEmpty())
+        <section class="py-24 bg-white">
+            <div class="container mx-auto max-w-7xl px-4">
                 <div class="text-center py-16">
                     <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                         <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +43,101 @@
                         View all projects
                     </a>
                 </div>
-            @endif
-        </div>
-    </section>
+            </div>
+        </section>
+    @else
+
+        {{-- CDSP Section --}}
+        @if($cdspProjects->isNotEmpty())
+        <section class="py-24 bg-white">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 mb-3">
+                        <span class="inline-block w-3 h-3 rounded-full bg-blue-600"></span>
+                        <span class="text-blue-600 font-semibold text-sm uppercase tracking-wider">Programme</span>
+                    </div>
+                    <h2 class="text-4xl font-bold text-gray-900">CDSP</h2>
+                    <p class="mt-3 text-lg text-gray-500 max-w-2xl">Community Development Support Programme — initiatives focused on community empowerment and sustainable development.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($cdspProjects as $project)
+                    <article class="flex flex-col items-start justify-between">
+                        <div class="relative w-full">
+                            <img src="{{ $project->featured_image_url }}"
+                                alt="{{ $project->title }}"
+                                class="aspect-video w-full rounded-2xl bg-gray-800 object-cover sm:aspect-[2/1] lg:aspect-[3/2]" />
+                            <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10"></div>
+                            @if($project->is_featured)
+                                <span class="absolute top-3 left-3 inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-yellow-400 text-yellow-900">Featured</span>
+                            @endif
+                        </div>
+                        <div class="flex max-w-xl grow flex-col justify-between">
+                            <div class="group relative grow">
+                                <h3 class="mt-3 text-lg font-semibold text-gray-800 group-hover:text-gray-900">
+                                    <a href="{{ route('projects.show', $project->slug) }}">
+                                        <span class="absolute inset-0"></span>
+                                        {{ $project->title }}
+                                    </a>
+                                </h3>
+                                @if($project->location)
+                                    <p class="mt-2 text-sm text-gray-500">{{ $project->location }}</p>
+                                @endif
+                                <p class="mt-5 line-clamp-3 text-sm text-gray-400">{{ $project->description }}</p>
+                            </div>
+                        </div>
+                    </article>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+
+        {{-- WDP Section --}}
+        @if($wdpProjects->isNotEmpty())
+        <section class="py-24 {{ $cdspProjects->isNotEmpty() ? 'bg-gray-50' : 'bg-white' }}">
+            <div class="container mx-auto max-w-7xl px-4">
+                <div class="mb-12">
+                    <div class="inline-flex items-center gap-2 mb-3">
+                        <span class="inline-block w-3 h-3 rounded-full bg-green-600"></span>
+                        <span class="text-green-600 font-semibold text-sm uppercase tracking-wider">Programme</span>
+                    </div>
+                    <h2 class="text-4xl font-bold text-gray-900">WDP</h2>
+                    <p class="mt-3 text-lg text-gray-500 max-w-2xl">Women Development Programme — projects dedicated to the empowerment, education, and economic independence of women.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($wdpProjects as $project)
+                    <article class="flex flex-col items-start justify-between">
+                        <div class="relative w-full">
+                            <img src="{{ $project->featured_image_url }}"
+                                alt="{{ $project->title }}"
+                                class="aspect-video w-full rounded-2xl bg-gray-800 object-cover sm:aspect-[2/1] lg:aspect-[3/2]" />
+                            <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10"></div>
+                            @if($project->is_featured)
+                                <span class="absolute top-3 left-3 inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-yellow-400 text-yellow-900">Featured</span>
+                            @endif
+                        </div>
+                        <div class="flex max-w-xl grow flex-col justify-between">
+                            <div class="group relative grow">
+                                <h3 class="mt-3 text-lg font-semibold text-gray-800 group-hover:text-gray-900">
+                                    <a href="{{ route('projects.show', $project->slug) }}">
+                                        <span class="absolute inset-0"></span>
+                                        {{ $project->title }}
+                                    </a>
+                                </h3>
+                                @if($project->location)
+                                    <p class="mt-2 text-sm text-gray-500">{{ $project->location }}</p>
+                                @endif
+                                <p class="mt-5 line-clamp-3 text-sm text-gray-400">{{ $project->description }}</p>
+                            </div>
+                        </div>
+                    </article>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+
+    @endif
 </x-app-layout>

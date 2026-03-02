@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
+use App\Enum\Projects\Category;
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Project>
@@ -40,6 +41,7 @@ final class ProjectFactory extends Factory
                 fake()->imageUrl(800, 600, 'projects'),
             ], fake()->numberBetween(1, 3)),
             'is_featured' => fake()->boolean(20), // 20% chance of being featured
+            'category' => fake()->randomElement(Category::cases())->value,
         ];
     }
 
@@ -81,6 +83,26 @@ final class ProjectFactory extends Factory
         return $this->state(fn (array $attributes): array => [
             'is_featured' => true,
             'status' => 'published', // Featured projects should be published
+        ]);
+    }
+
+    /**
+     * Indicate that the project belongs to CDSP category.
+     */
+    public function cdsp(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'category' => Category::Cdsp->value,
+        ]);
+    }
+
+    /**
+     * Indicate that the project belongs to WDP category.
+     */
+    public function wdp(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'category' => Category::Wdp->value,
         ]);
     }
 

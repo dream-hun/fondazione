@@ -11,7 +11,7 @@
         <img src="{{ asset('images/mvtc/Marcegaglia Vocational Training center.avif') }}" alt="TVET Training Center"
             class="absolute inset-0 w-full h-full object-cover" fetchpriority="high" loading="eager" decoding="async"
             sizes="100vw">
-        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent"></div>
+        <div class="absolute inset-0 bg-linear-t-to-r from-black/80 via-black/60 to-transparent"></div>
 
         <div class="container mx-auto max-w-7xl px-4 relative z-10">
 
@@ -38,7 +38,7 @@
                 <!-- Image Side -->
                 <div class="order-2 md:order-1">
                     <div class="relative">
-                        <div class="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+                        <div class="aspect-4/3 rounded-2xl overflow-hidden shadow-2xl">
                             <img src="{{ asset('images/mvtc/MVTC.avif') }}" alt="MVTC Students"
                                 class="w-full h-full object-cover" loading="lazy" decoding="async"
                                 sizes="(min-width: 1024px) 50vw, 100vw">
@@ -96,7 +96,7 @@
         <div class="container mx-auto max-w-7xl px-4">
             <div class="text-center mb-16">
                 <h2 class="text-4xl font-bold text-gray-900 mb-4">
-                    Six <span class="text-red-primary">Essential Trades</span>
+                    Six <span class="text-red-primary">Trades</span>
                 </h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                     MVTC offers training in six specialized trades, providing youth with practical skills for
