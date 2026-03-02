@@ -57,8 +57,7 @@
                         <span class="text-blue-600 font-semibold text-sm uppercase tracking-wider">Programme</span>
                     </div>
                     <h2 class="text-4xl font-bold text-gray-900">CDSP</h2>
-                    <p class="mt-3 text-lg text-gray-500 max-w-2xl">Community Development Support Programme — initiatives focused on community empowerment and sustainable development.</p>
-                </div>
+                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($cdspProjects as $project)
@@ -103,7 +102,6 @@
                         <span class="text-green-600 font-semibold text-sm uppercase tracking-wider">Programme</span>
                     </div>
                     <h2 class="text-4xl font-bold text-gray-900">WDP</h2>
-                    <p class="mt-3 text-lg text-gray-500 max-w-2xl">Women Development Programme — projects dedicated to the empowerment, education, and economic independence of women.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
