@@ -9,8 +9,8 @@
     <!-- Hero Section -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <img src="{{ asset('images/mvtc/Marcegaglia Vocational Training center.avif') }}" alt="TVET Training Center"
-            class="absolute inset-0 w-full h-full object-cover" fetchpriority="high" loading="eager" decoding="async"
-            sizes="100vw">
+             class="absolute inset-0 w-full h-full object-cover" fetchpriority="high" loading="eager" decoding="async"
+             sizes="100vw">
         <div class="absolute inset-0 bg-linear-t-to-r from-black/80 via-black/60 to-transparent"></div>
 
         <div class="container mx-auto max-w-7xl px-4 relative z-10">
@@ -40,8 +40,8 @@
                     <div class="relative">
                         <div class="aspect-4/3 rounded-2xl overflow-hidden shadow-2xl">
                             <img src="{{ asset('images/mvtc/MVTC.avif') }}" alt="MVTC Students"
-                                class="w-full h-full object-cover" loading="lazy" decoding="async"
-                                sizes="(min-width: 1024px) 50vw, 100vw">
+                                 class="w-full h-full object-cover" loading="lazy" decoding="async"
+                                 sizes="(min-width: 1024px) 50vw, 100vw">
                         </div>
                         <div class="absolute -bottom-6 -right-6 w-48 h-48 bg-red-primary/10 rounded-2xl -z-10"></div>
                     </div>
@@ -55,7 +55,8 @@
                     </h2>
                     <div class="space-y-4 text-gray-700 leading-relaxed">
                         <p>
-                            The Marcegaglia Vocational Training Center (MVTC) is a technical training center by Fondazione
+                            The Marcegaglia Vocational Training Center (MVTC) is a technical training center by
+                            Fondazione
                             Marcegaglia Onlus (FMO) aimed at empowering young individuals and reducing school dropout
                             rates in Rwanda.
                         </p>
@@ -75,9 +76,9 @@
                     <div class="mt-8 inline-flex items-center gap-3 bg-white px-6 py-4 rounded-xl shadow-md">
                         <div class="w-12 h-12 bg-red-primary/10 rounded-full flex items-center justify-center">
                             <svg class="w-6 h-6 text-red-primary" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
+                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z">
+                                      d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z">
                                 </path>
                             </svg>
                         </div>
@@ -110,7 +111,8 @@
                         class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
                         <!-- Department Header Image -->
                         <div class="h-48 relative overflow-hidden">
-                            <img src="{{ isset($department['image']) ? asset($department['image']) : asset('images/mvtc/MVTC.avif') }}"
+                            <img
+                                src="{{ isset($department['image']) ? asset($department['image']) : asset('images/mvtc/MVTC.avif') }}"
                                 alt="{{ $department['name'] }}" class="absolute inset-0 w-full h-full object-cover"
                                 loading="lazy" decoding="async"
                                 sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw">
@@ -128,7 +130,7 @@
                                     class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
                                     {{ $department['duration'] }}
                                 </span>
@@ -136,7 +138,7 @@
                                     class="inline-flex items-center px-3 py-1 bg-red-primary/10 text-red-primary text-sm rounded-full font-medium">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z">
+                                              d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z">
                                         </path>
                                     </svg>
                                     {{ $department['certification'] }}
@@ -192,39 +194,39 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div class="aspect-square rounded-xl overflow-hidden group">
                     <img src="{{ asset('images/mvtc/Masonry at field work.avif') }}"
-                        alt="Masonry students in practical training facility"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
+                         alt="Masonry students in practical training facility"
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                         loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
                 </div>
                 <div class="aspect-square rounded-xl overflow-hidden group">
                     <img src="{{ asset('images/mvtc/Welding class.avif') }}"
-                        alt="Welding students in practical training facility"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
+                         alt="Welding students in practical training facility"
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                         loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
                 </div>
 
                 <div class="aspect-square rounded-xl overflow-hidden group">
                     <img src="{{ asset('images/mvtc/Hair dressing class.avif') }}" alt="Classroom setting"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                         loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
                 </div>
                 <div class="aspect-square rounded-xl overflow-hidden group">
                     <img src="{{ asset('images/mvtc/Tailoring.avif') }}"
-                        alt="Fashion design students in practical training facility"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
+                         alt="Fashion design students in practical training facility"
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                         loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
                 </div>
                 <div class="aspect-square rounded-xl overflow-hidden group">
                     <img src="{{ asset('images/mvtc/Multimedia.avif') }}"
-                        alt="Multimedia students in practical training facility"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
+                         alt="Multimedia students in practical training facility"
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                         loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
                 </div>
                 <div class="aspect-square rounded-xl overflow-hidden group">
                     <img src="{{ asset('images/mvtc/Autoengine.avif') }}"
-                        alt="Autoengine repair students in practical training facility"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
+                         alt="Autoengine repair students in practical training facility"
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                         loading="lazy" decoding="async" sizes="(min-width: 1024px) 33vw, 50vw">
                 </div>
             </div>
         </div>
@@ -245,15 +247,15 @@
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                     <a href="https://mvtc.fmorwanda.org/student-application" target="_blank"
-                        class="inline-flex items-center justify-center px-8 py-4 bg-white text-red-primary hover:bg-gray-100 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
+                       class="inline-flex items-center justify-center px-8 py-4 bg-white text-red-primary hover:bg-gray-100 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl">
                         Apply Now
                         <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                  d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
                     </a>
                     <a href="tel:+250791314155"
-                        class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white border-2 border-white/30 hover:bg-white/10 rounded-xl font-semibold transition-all duration-300">
+                       class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white border-2 border-white/30 hover:bg-white/10 rounded-xl font-semibold transition-all duration-300">
                         Call Us
                     </a>
                 </div>
@@ -261,35 +263,39 @@
                 <!-- Contact Information -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     <div>
-                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3 class="font-semibold mb-1">Email Us</h3>
-                        <p class="text-red-100">registration@fmorwanda.org</p>
+                        <a href="mailto:registration@fmorwanda.org">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h3 class="font-semibold mb-1">Email Us</h3>
+                            <p class="text-red-100">registration@fmorwanda.org</p>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="tel:+250 791 314 155">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h3 class="font-semibold mb-1">Call Us</h3>
+                            <p class="text-red-100">+250 791 314 155</p>
+                        </a>
                     </div>
                     <div>
                         <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3 class="font-semibold mb-1">Call Us</h3>
-                        <p class="text-red-100">+250 791 314 155</p>
-                    </div>
-                    <div>
-                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
                                 </path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                         </div>
                         <h3 class="font-semibold mb-1">Visit Us</h3>

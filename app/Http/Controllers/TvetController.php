@@ -115,15 +115,15 @@ final class TvetController extends Controller
 
         $stats = [
             [
-                'value' => '2,500+',
+                'value' => '800+',
                 'label' => 'Graduates',
             ],
             [
-                'value' => '85%',
+                'value' => '64%',
                 'label' => 'Employment Rate',
             ],
             [
-                'value' => '450+',
+                'value' => '160+',
                 'label' => 'Active Students',
             ],
             [

@@ -3,7 +3,8 @@
         Home
     @endsection
     @section('description')
-        Fondazione Marcegaglia Onlus Rwanda(FMO) is a non-profit organization that empowers women and communities in Rwanda.
+        Fondazione Marcegaglia Onlus Rwanda(FMO) is a non-profit organization that empowers women and communities in
+        Rwanda.
     @endsection
     <!-- Hero Section -->
     <section
@@ -11,7 +12,7 @@
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-10">
             <div class="absolute inset-0"
-                style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 20px 20px;">
+                 style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 20px 20px;">
             </div>
         </div>
 
@@ -37,15 +38,15 @@
 
                     <div class="flex flex-col sm:flex-row gap-4">
                         <a href="{{ route('donate') }}"
-                            class="inline-flex items-center justify-center px-8 py-4 bg-gray-500 text-white hover:bg-gray-600 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                           class="inline-flex items-center justify-center px-8 py-4 bg-gray-500 text-white hover:bg-gray-600 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                             Support our cause
                             <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                      d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                             </svg>
                         </a>
                         <a href="{{ route('projects.index') }}"
-                            class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white border-2 border-white/30 hover:bg-white/10 rounded-xl font-semibold transition-all duration-300">
+                           class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white border-2 border-white/30 hover:bg-white/10 rounded-xl font-semibold transition-all duration-300">
                             Our Projects
                         </a>
                     </div>
@@ -53,15 +54,15 @@
                     <!-- Stats -->
                     <div class="grid grid-cols-3 gap-8 pt-8 border-t border-white/20">
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-gray-400">50K+</div>
+                            <div class="text-3xl font-bold text-gray-400">15K+</div>
                             <div class="text-sm text-red-100">Lives Impacted</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-gray-400">120+</div>
+                            <div class="text-3xl font-bold text-gray-400">5+</div>
                             <div class="text-sm text-red-100">Projects Completed</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-gray-400">25+</div>
+                            <div class="text-3xl font-bold text-gray-400">15+</div>
                             <div class="text-sm text-red-100">Communities Served</div>
                         </div>
                     </div>
@@ -79,7 +80,7 @@
                         </div>
 
                         <img src="{{ asset('images/herosection.avif') }}" alt="Community volunteers working together"
-                            class="w-full h-full object-cover rounded-3xl shadow-2xl">
+                             class="w-full h-full object-cover rounded-3xl shadow-2xl">
 
                         <!-- Overlay Card -->
                         <div
@@ -87,9 +88,9 @@
                             <div class="flex items-center gap-3">
                                 <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
                                     <svg class="w-6 h-6 text-red-primary" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
+                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
                                         </path>
                                     </svg>
                                 </div>
@@ -109,7 +110,7 @@
     <section class="bg-white py-12 overflow-hidden">
         <div class="container mx-auto max-w-7xl px-4">
             <div class="text-center mb-8">
-            
+
                 <h3 class="text-2xl font-bold text-gray-900 mt-2">Our Partners</h3>
             </div>
 
@@ -119,93 +120,93 @@
                     <!-- First set of partners -->
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/IBTC.jpeg') }}" alt="IBTC"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/LAPALISSE-NYAMATA-HOTEL.png') }}"
-                            alt="Lapalisse Nyamata Hotel" class="max-h-full max-w-full object-contain">
+                             alt="Lapalisse Nyamata Hotel" class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/maison-shalom.png') }}" alt="Maison Shalom"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/minaloc.png') }}" alt="MINALOC"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/Miracle Corners Rwanda.jpeg') }}"
-                            alt="Miracle Corners Rwanda" class="max-h-full max-w-full object-contain">
+                             alt="Miracle Corners Rwanda" class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/NCDA.png') }}" alt="NCDA"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/NUDOR.jpg') }}" alt="NUDOR"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/psf-logo.png') }}" alt="PSF"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/RHIH.png') }}" alt="RHIH"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/RNIT.png') }}" alt="RNIT"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/RTB.webp') }}" alt="RTB"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/utb.png') }}" alt="UTB"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <!-- Duplicate set for seamless loop -->
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/IBTC.jpeg') }}" alt="IBTC"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/LAPALISSE-NYAMATA-HOTEL.png') }}"
-                            alt="Lapalisse Nyamata Hotel" class="max-h-full max-w-full object-contain">
+                             alt="Lapalisse Nyamata Hotel" class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/maison-shalom.png') }}" alt="Maison Shalom"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/minaloc.png') }}" alt="MINALOC"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/Miracle Corners Rwanda.jpeg') }}"
-                            alt="Miracle Corners Rwanda" class="max-h-full max-w-full object-contain">
+                             alt="Miracle Corners Rwanda" class="max-h-full max-w-full object-contain">
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
                         <img src="{{ asset('images/partners/NCDA.png') }}" alt="NCDA"
-                            class="max-h-full max-w-full object-contain">
+                             class="max-h-full max-w-full object-contain">
                     </div>
                 </div>
             </div>
@@ -260,9 +261,9 @@
                     <div class="flex items-center mb-6">
                         <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mr-4">
                             <svg class="w-8 h-8 text-red-primary" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
+                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                      d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
                         </div>
                         <h3 class="text-2xl font-bold text-gray-900">Our Mission</h3>
@@ -277,11 +278,11 @@
                     <div class="flex items-center mb-6">
                         <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mr-4">
                             <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
+                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                                 </path>
                             </svg>
                         </div>
@@ -297,11 +298,11 @@
                     <div class="flex items-center mb-6">
                         <div class="w-16 h-16 bg-gray-300 rounded-2xl flex items-center justify-center mr-4">
                             <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
+                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
                                 </path>
                             </svg>
                         </div>
@@ -335,8 +336,8 @@
                     <article class="flex flex-col items-start justify-between">
                         <div class="relative w-full">
                             <img src="{{ $project->featured_image_url }}"
-                                alt="Blog post image"
-                                class="aspect-video w-full rounded-2xl bg-gray-800 object-cover sm:aspect-[2/1] lg:aspect-[3/2]" />
+                                 alt="Blog post image"
+                                 class="aspect-video w-full rounded-2xl bg-gray-800 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"/>
                             <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10"></div>
                         </div>
                         <div class="flex max-w-xl grow flex-col justify-between">
@@ -372,15 +373,15 @@
                     <article
                         class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-800 px-8 pt-80 pb-8 sm:pt-48 lg:pt-80">
                         <img src="{{ $post->featured_image_url }}" alt=""
-                            class="absolute inset-0 -z-10 size-full object-cover" />
+                             class="absolute inset-0 -z-10 size-full object-cover"/>
                         <div class="absolute inset-0 -z-10 bg-linear-to-t from-black/80 via-black/40"></div>
                         <div class="absolute inset-0 -z-10 rounded-2xl inset-ring inset-ring-white/10"></div>
                         <div class="flex flex-wrap items-center gap-y-1 overflow-hidden text-sm/6 text-gray-300">
                             <time datetime="{{ $post->created_at }}"
-                                class="mr-8">{{ $post->created_at->format('M j, Y') }}</time>
+                                  class="mr-8">{{ $post->created_at->format('M j, Y') }}</time>
                             <div class="-ml-4 flex items-center gap-x-4">
                                 <svg viewBox="0 0 2 2" class="-ml-0.5 size-0.5 flex-none fill-gray-300/50">
-                                    <circle cx="1" cy="1" r="1" />
+                                    <circle cx="1" cy="1" r="1"/>
                                 </svg>
                                 <div class="flex items-center gap-x-2.5">
                                     <div
@@ -421,7 +422,7 @@
                     <article class="flex max-w-xl flex-col items-start justify-between">
                         <div class="flex items-center gap-x-4 text-xs">
                             <time datetime="{{ $notice->formatted_date }}"
-                                class="text-gray-500">{{ $notice->formatted_date }}</time>
+                                  class="text-gray-500">{{ $notice->formatted_date }}</time>
                         </div>
                         <div class="group relative grow">
                             <h3 class="mt-3 text-lg/6 font-semibold text-gray-900 group-hover:text-gray-600">
@@ -456,16 +457,16 @@
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                     <a href="{{ route('donate') }}"
-                        class="inline-flex items-center justify-center px-8 py-4 bg-white text-black hover:bg-gray-600 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                       class="inline-flex items-center justify-center px-8 py-4 bg-white text-black hover:bg-gray-600 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                         Donate Now
                         <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
                             </path>
                         </svg>
                     </a>
                     <a href="{{ route('about-us') }}"
-                        class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white border-2 border-white/30 hover:bg-white/10 rounded-xl font-semibold transition-all duration-300">
+                       class="inline-flex items-center justify-center px-8 py-4 bg-transparent text-white border-2 border-white/30 hover:bg-white/10 rounded-xl font-semibold transition-all duration-300">
                         Become a Volunteer
                     </a>
                 </div>
@@ -473,36 +474,40 @@
                 <!-- Contact Info -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     <div>
-                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                </path>
-                            </svg>
+                        <a href="mailto:info@fmorwanda.org">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                    </path>
+                                </svg>
 
-                        </div>
-                        <h3 class="font-semibold mb-1">Email Us</h3>
-                        <p class="text-red-100">info@fmorwanda.org</p>
+                            </div>
+                            <h3 class="font-semibold mb-1">Email Us</h3>
+                            <p class="text-red-100"> info@fmorwanda.org</p>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="tel:+250 791 314 155">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h3 class="font-semibold mb-1">Call Us</h3>
+                            <p class="text-red-100">+250 791 314 155</p>
+                        </a>
                     </div>
                     <div>
                         <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                                </path>
-                            </svg>
-                        </div>
-                        <h3 class="font-semibold mb-1">Call Us</h3>
-                        <p class="text-red-100">+250 791 314 155</p>
-                    </div>
-                    <div>
-                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
                                 </path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                         </div>
                         <h3 class="font-semibold mb-1">Location</h3>
