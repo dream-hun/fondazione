@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title="About us">
     <!-- Hero Section with Overlay -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <img src="{{ asset('images/_DSC8103.jpg') }}"
@@ -35,20 +35,20 @@
         <div class="container mx-auto max-w-7xl px-4">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div class="text-center">
-                    <div class="text-5xl font-bold mb-2">15+</div>
+                    <div class="text-5xl font-bold mb-2">10+</div>
                     <div class="text-red-100 uppercase text-sm tracking-wide">Years of Impact</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-5xl font-bold mb-2">50K+</div>
+                    <div class="text-5xl font-bold mb-2">15K+</div>
                     <div class="text-red-100 uppercase text-sm tracking-wide">Lives Changed</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-5xl font-bold mb-2">25+</div>
+                    <div class="text-5xl font-bold mb-2">5</div>
                     <div class="text-red-100 uppercase text-sm tracking-wide">Active Projects</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-5xl font-bold mb-2">15+</div>
-                    <div class="text-red-100 uppercase text-sm tracking-wide">Partner Orgs</div>
+                    <div class="text-5xl font-bold mb-2">30+</div>
+                    <div class="text-red-100 uppercase text-sm tracking-wide">Partner Organisations</div>
                 </div>
             </div>
         </div>
@@ -239,7 +239,7 @@
                 </div>
 
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach ($teams as $team)  
+                    @foreach ($teams as $team)
                     <div class="group">
                         <div class="aspect-square rounded-xl overflow-hidden mb-4 relative">
                             <img src="{{ $team->image_url }}" alt="{{ $team->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -251,7 +251,7 @@
                     </div>
                     @endforeach
 
-                    
+
                 </div>
             </div>
         </div>
