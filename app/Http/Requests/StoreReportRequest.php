@@ -23,7 +23,7 @@ final class StoreReportRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'file' => ['required', 'file', 'mimes:pdf', 'max:10240'],
+            'file' => ['required', 'file', 'mimes:pdf', 'max:400000'],
             'status' => ['required', Rule::enum(Status::class)],
         ];
     }
@@ -34,7 +34,7 @@ final class StoreReportRequest extends FormRequest
             'title.required' => 'The report title is required.',
             'file.required' => 'Please upload a PDF file.',
             'file.mimes' => 'The file must be a PDF.',
-            'file.max' => 'The file may not be larger than 10MB.',
+            'file.max' => 'The file may not be larger than 400MB.',
             'status.required' => 'Please select a status for the report.',
         ];
     }
