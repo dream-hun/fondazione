@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\AboutUsController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\DonateController;
 use App\Http\Controllers\HomeController;
@@ -33,6 +33,9 @@ Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('pro
 // Notice routes
 Route::get('/announcements', [NoticeController::class, 'index'])->name('notices.index');
 Route::get('/announcements/{notice:slug}', [NoticeController::class, 'show'])->name('notices.show');
+
+// Reports routes
+Route::get('/reports', App\Http\Controllers\ReportController::class)->name('reports.index');
 // Admin routes
 Route::prefix('admin')->name('admin.')->middleware(['web', 'auth', 'admin'])->group(function (): void {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -60,6 +63,10 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'auth', 'admin'])->gr
     // Department management
     Route::resource('departments', DepartmentController::class);
     Route::post('departments/bulk-action', [DepartmentController::class, 'bulkAction'])->name('departments.bulk-action');
+
+    // Reports management
+    Route::resource('reports', App\Http\Controllers\Admin\ReportController::class);
+    Route::post('reports/bulk-action', [App\Http\Controllers\Admin\ReportController::class, 'bulkAction'])->name('reports.bulk-action');
 
     // API endpoints for dashboard
     Route::get('api/stats', [DashboardController::class, 'getStats'])->name('api.stats');

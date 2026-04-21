@@ -46,6 +46,10 @@
                    class="px-4 py-2 text-sm font-medium transition-all duration-200 {{ request()->routeIs('notices*') ? 'text-primary' : 'text-gray-700 hover:text-primary' }}">
                     Announcements
                 </a>
+                <a href="{{ route('reports.index') }}"
+                   class="px-4 py-2 text-sm font-medium transition-all duration-200 {{ request()->routeIs('reports*') ? 'text-primary' : 'text-gray-700 hover:text-primary' }}">
+                    Reports
+                </a>
 
             </div>
 
@@ -98,6 +102,10 @@
                 <a href="{{ route('notices.index') }}"
                    class="block px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('notices*') ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100' }}">
                     Announcements
+                </a>
+                <a href="{{ route('reports.index') }}"
+                   class="block px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('reports*') ? 'bg-primary/10 text-primary' : 'text-gray-700 hover:bg-gray-100' }}">
+                    Reports
                 </a>
                 <a href="{{ route('donate') }}"
                    class="flex items-center justify-center px-6 py-3 bg-primary text-white hover:bg-secondary rounded-lg font-semibold text-sm transition-all duration-300 shadow-md">
