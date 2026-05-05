@@ -512,7 +512,7 @@
                         </div>
                         <h3 class="font-semibold mb-1">Location</h3>
                         <p class="text-red-100">Kimaranzara Cell, Rilima Sector, Bugesera District, Eastern Rwanda as
-                            FMO Rwanda country office via Giovanni della Casa, 12 – 20151 Milano, Italy</p>
+                            FM ETS country office via Giovanni della Casa, 12 – 20151 Milano, Italy</p>
                     </div>
                 </div>
             </div>
