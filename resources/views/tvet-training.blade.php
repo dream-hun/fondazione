@@ -57,7 +57,7 @@
                         <p>
                             The Marcegaglia Vocational Training Center (MVTC) is a technical training center by
                             Fondazione
-                            Marcegaglia Onlus (FMO) aimed at empowering young individuals and reducing school dropout
+                            Marcegaglia ETS aimed at empowering young individuals and reducing school dropout
                             rates in Rwanda.
                         </p>
                         <p>
@@ -66,7 +66,7 @@
                             Rwanda's Vision 2020 and 2050 goals.
                         </p>
                         <p>
-                            The MVTC program is part of FMO's Technical and Vocational Educational Training (TVET)
+                            The MVTC program is part of FM ETS's Technical and Vocational Educational Training (TVET)
                             initiative, which equips youth from various parts of Bugesera with essential skills. The
                             school is accredited by Rwanda TVET Board (RTB) to provide short courses and certification.
                         </p>
