@@ -5,7 +5,7 @@
             <!-- About Section with Logo -->
             <div class="lg:col-span-1">
                 <a href="{{ route('home') }}" class="inline-block mb-6 group">
-                    <img src="{{ asset('images/logo.png') }}" alt="Fondazione Marcegaglia Onlus Rwanda"
+                    <img src="{{ asset('images/FMO ETS.png') }}" alt="Fondazione Marcegaglia ITS"
                          class="h-16 w-auto transition-transform duration-300 group-hover:scale-105 brightness-0 invert">
                 </a>
                 <p class="text-sm text-gray-300 leading-relaxed mb-6">
@@ -109,7 +109,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        <span>Kimaranzara Cell, Rilima Sector, Bugesera District, Eastern Rwanda as FMO Rwanda country
+                        <span>Kimaranzara Cell, Rilima Sector, Bugesera District, Eastern Rwanda as FM ETS Rwanda country
                             office via Giovanni della Casa, 12 – 20151 Milano, Italy</span>
                     </li>
                     <li class="flex items-center space-x-3 text-gray-300">

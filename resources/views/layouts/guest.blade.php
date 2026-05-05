@@ -14,7 +14,7 @@
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}"/>
     <link rel="shortcut icon" href="{{asset('favicon.ico')}}"/>
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}"/>
-    <meta name="apple-mobile-web-app-title" content="Fondazione Marcegaglia Onlus Rwanda"/>
+    <meta name="apple-mobile-web-app-title" content="Fondazione Marcegaglia ETS Rwanda"/>
     <link rel="manifest" href="{{ asset('site.webmanifest') }}"/>
     @vite('resources/css/app.css')
 </head>
