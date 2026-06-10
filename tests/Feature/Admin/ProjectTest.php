@@ -186,8 +186,6 @@ test('admin can append gallery images when updating a project', function (): voi
 
     $project->refresh();
 
-    dump($project->gallery_images);
-
     expect($project->gallery_images)->toHaveCount(3);
     collect($project->gallery_images)->each(fn ($path) => Storage::disk('public')->assertExists($path));
 });
