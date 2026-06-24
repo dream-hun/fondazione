@@ -12,19 +12,14 @@ use App\Models\Notice;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 final class NoticeController extends Controller
 {
-    /**
-     * Display a listing of notices with search and pagination
-     */
     public function index(Request $request): View
     {
         $query = Notice::query();
 
-        // Search functionality
         if ($search = $request->get('search')) {
             $query->where(function ($q) use ($search): void {
                 $q->where('title', 'like', sprintf('%%%s%%', $search))
@@ -32,12 +27,10 @@ final class NoticeController extends Controller
             });
         }
 
-        // Status filter
         if ($status = $request->get('status')) {
             $query->where('status', Status::from($status));
         }
 
-        // Sort by
         $sortBy = $request->get('sort', 'created_at');
         $sortDirection = $request->get('direction', 'desc');
         $query->orderBy($sortBy, $sortDirection);
@@ -47,43 +40,18 @@ final class NoticeController extends Controller
         return view('admin.notices.index', ['notices' => $notices]);
     }
 
-    /**
-     * Show the form for creating a new notice
-     */
     public function create(): View
     {
         return view('admin.notices.create');
     }
 
-    /**
-     * Store a newly created notice
-     */
     public function store(StoreNoticeRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
-        // Handle attachment upload
         if ($request->hasFile('attachment')) {
             $validated['attachment'] = $request->file('attachment')
                 ->store('notices/attachments', 'public');
-        }
-
-        // Generate slug if not provided
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title']);
-        }
-
-        // Ensure unique slug
-        $originalSlug = $validated['slug'];
-        $counter = 1;
-        while (Notice::query()->where('slug', $validated['slug'])->exists()) {
-            $validated['slug'] = $originalSlug.'-'.$counter;
-            $counter++;
-        }
-
-        // Generate UUID if not provided
-        if (empty($validated['uuid'])) {
-            $validated['uuid'] = (string) Str::uuid();
         }
 
         $notice = Notice::query()->create($validated);
@@ -92,32 +60,21 @@ final class NoticeController extends Controller
             ->with('success', 'Notice "'.$notice->title.'" created successfully.');
     }
 
-    /**
-     * Display the specified notice
-     */
     public function show(Notice $notice): View
     {
         return view('admin.notices.show', ['notice' => $notice]);
     }
 
-    /**
-     * Show the form for editing the specified notice
-     */
     public function edit(Notice $notice): View
     {
         return view('admin.notices.edit', ['notice' => $notice]);
     }
 
-    /**
-     * Update the specified notice
-     */
     public function update(UpdateNoticeRequest $request, Notice $notice): RedirectResponse
     {
         $validated = $request->validated();
 
-        // Handle attachment upload
         if ($request->hasFile('attachment')) {
-            // Delete old attachment if exists
             if ($notice->attachment && Storage::disk('public')->exists($notice->attachment)) {
                 Storage::disk('public')->delete($notice->attachment);
             }
@@ -126,33 +83,16 @@ final class NoticeController extends Controller
                 ->store('notices/attachments', 'public');
         }
 
-        // Generate slug if not provided
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title']);
-        }
-
-        // Ensure unique slug (excluding current notice)
-        $originalSlug = $validated['slug'];
-        $counter = 1;
-        while (Notice::query()->where('slug', $validated['slug'])->where('id', '!=', $notice->id)->exists()) {
-            $validated['slug'] = $originalSlug.'-'.$counter;
-            $counter++;
-        }
-
         $notice->update($validated);
 
         return to_route('admin.notices.index')
             ->with('success', 'Notice "'.$notice->title.'" updated successfully.');
     }
 
-    /**
-     * Remove the specified notice
-     */
     public function destroy(Notice $notice): RedirectResponse
     {
         $title = $notice->title;
 
-        // Delete attachment if exists
         if ($notice->attachment && Storage::disk('public')->exists($notice->attachment)) {
             Storage::disk('public')->delete($notice->attachment);
         }
@@ -163,9 +103,6 @@ final class NoticeController extends Controller
             ->with('success', 'Notice "'.$title.'" deleted successfully.');
     }
 
-    /**
-     * Handle bulk actions on selected notices
-     */
     public function bulkAction(Request $request): RedirectResponse
     {
         $request->validate([
@@ -174,40 +111,39 @@ final class NoticeController extends Controller
             'selected_notices.*' => ['exists:notices,id'],
         ]);
 
-        $noticeIds = $request->selected_notices;
-        $action = $request->action;
+        $noticeIds = $request->input('selected_notices');
+        $action = $request->input('action');
         $count = count($noticeIds);
 
-        switch ($action) {
-            case 'delete':
-                $notices = Notice::query()->whereIn('id', $noticeIds)->get();
-                foreach ($notices as $notice) {
-                    // Delete attachments
-                    if ($notice->attachment && Storage::disk('public')->exists($notice->attachment)) {
-                        Storage::disk('public')->delete($notice->attachment);
-                    }
-                }
-
-                Notice::query()->whereIn('id', $noticeIds)->delete();
-                $message = $count . ' notice(s) deleted successfully.';
-                break;
-
-            case 'publish':
-                Notice::query()->whereIn('id', $noticeIds)->update(['status' => Status::Published]);
-                $message = $count . ' notice(s) published successfully.';
-                break;
-
-            case 'unpublish':
-                Notice::query()->whereIn('id', $noticeIds)->update(['status' => Status::Unpublished]);
-                $message = $count . ' notice(s) unpublished successfully.';
-                break;
-
-            case 'draft':
-                Notice::query()->whereIn('id', $noticeIds)->update(['status' => Status::Draft]);
-                $message = $count . ' notice(s) moved to draft.';
-                break;
-        }
+        $message = match ($action) {
+            'delete' => $this->bulkDelete($noticeIds, $count),
+            'publish' => $this->bulkUpdateStatus($noticeIds, Status::Published, $count, 'published'),
+            'unpublish' => $this->bulkUpdateStatus($noticeIds, Status::Unpublished, $count, 'unpublished'),
+            'draft' => $this->bulkUpdateStatus($noticeIds, Status::Draft, $count, 'moved to draft'),
+        };
 
         return to_route('admin.notices.index')->with('success', $message);
+    }
+
+    /** @param list<int|string> $noticeIds */
+    private function bulkDelete(array $noticeIds, int $count): string
+    {
+        Notice::query()->whereIn('id', $noticeIds)->each(function (Notice $notice): void {
+            if ($notice->attachment && Storage::disk('public')->exists($notice->attachment)) {
+                Storage::disk('public')->delete($notice->attachment);
+            }
+
+            $notice->delete();
+        });
+
+        return $count.' notice(s) deleted successfully.';
+    }
+
+    /** @param list<int|string> $noticeIds */
+    private function bulkUpdateStatus(array $noticeIds, Status $status, int $count, string $verb): string
+    {
+        Notice::query()->whereIn('id', $noticeIds)->update(['status' => $status]);
+
+        return $count.' notice(s) '.$verb.' successfully.';
     }
 }

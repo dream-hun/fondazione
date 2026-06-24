@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enum\Blogs\Status;
+use App\Models\Concerns\GeneratesUniqueSlug;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 final class Blog extends Model
 {
+    use GeneratesUniqueSlug;
     use HasFactory;
 
     protected $fillable = [
@@ -29,18 +31,43 @@ final class Blog extends Model
         'reading_time',
     ];
 
+    // Accessors
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    // Helper methods
+    public function publish(): bool
+    {
+        return $this->update([
+            'status' => Status::Published->value,
+            'published_at' => now(),
+        ]);
+    }
+
+    public function makeFeatured(): bool
+    {
+        return $this->update(['is_featured' => true]);
+    }
+
+    public function removeFeatured(): bool
+    {
+        return $this->update(['is_featured' => false]);
+    }
+
     // Scopes
     #[Scope]
     protected function published(Builder $query): Builder
     {
-        return $query->where('status', 'published')
+        return $query->where('status', Status::Published->value)
             ->where('published_at', '<=', now());
     }
 
     #[Scope]
     protected function draft(Builder $query): Builder
     {
-        return $query->where('status', 'draft');
+        return $query->where('status', Status::Draft->value);
     }
 
     #[Scope]
@@ -64,12 +91,6 @@ final class Blog extends Model
     protected function byTag(Builder $query, string $tag): Builder
     {
         return $query->where('tags', 'like', sprintf('%%%s%%', $tag));
-    }
-
-    // Accessors
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
     }
 
     protected function getStatusLabelAttribute(): string
@@ -114,46 +135,9 @@ final class Blog extends Model
             return $this->attributes['reading_time'];
         }
 
-        // Calculate reading time based on content (average 200 words per minute)
         $wordCount = str_word_count(strip_tags($this->content ?? ''));
 
         return max(1, (int) ceil($wordCount / 200));
-    }
-
-    // Helper methods
-    public function publish(): bool
-    {
-        return $this->update([
-            'status' => 'published',
-            'published_at' => now(),
-        ]);
-    }
-
-    public function makeFeatured(): bool
-    {
-        return $this->update(['is_featured' => true]);
-    }
-
-    public function removeFeatured(): bool
-    {
-        return $this->update(['is_featured' => false]);
-    }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        self::creating(function (Blog $blog): void {
-            if (empty($blog->slug)) {
-                $blog->slug = Str::slug($blog->title);
-            }
-        });
-
-        self::updating(function (Blog $blog): void {
-            if ($blog->isDirty('title') && empty($blog->slug)) {
-                $blog->slug = Str::slug($blog->title);
-            }
-        });
     }
 
     protected function casts(): array

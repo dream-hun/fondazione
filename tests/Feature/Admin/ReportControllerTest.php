@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enum\Reports\Status;
+use App\Enum\Notices\Status;
 use App\Models\Report;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

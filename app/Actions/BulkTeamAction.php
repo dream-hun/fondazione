@@ -5,46 +5,36 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Models\Team;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 final class BulkTeamAction
 {
     /**
-     * Execute bulk actions on team members
+     * @param  list<int|string>  $teamIds
      */
-    public function execute(Request $request): RedirectResponse
+    public function execute(string $action, array $teamIds): string
     {
-        $request->validate([
-            'action' => ['required', 'in:delete'],
-            'selected_teams' => ['required', 'array', 'min:1'],
-            'selected_teams.*' => ['exists:teams,id'],
-        ]);
-
-        $teamIds = $request->input('selected_teams');
-        $action = $request->input('action');
         $count = count($teamIds);
 
-        switch ($action) {
-            case 'delete':
-                $teams = Team::query()->whereIn('id', $teamIds)->get();
+        return match ($action) {
+            'delete' => $this->deleteTeams($teamIds, $count),
+            default => 'Invalid action selected.',
+        };
+    }
 
-                foreach ($teams as $team) {
-                    // Delete associated images
-                    if ($team->image && Storage::disk('public')->exists($team->image)) {
-                        Storage::disk('public')->delete($team->image);
-                    }
-                }
+    /**
+     * @param  list<int|string>  $teamIds
+     */
+    private function deleteTeams(array $teamIds, int $count): string
+    {
+        Team::query()->whereIn('id', $teamIds)->each(function (Team $team): void {
+            if ($team->image && Storage::disk('public')->exists($team->image)) {
+                Storage::disk('public')->delete($team->image);
+            }
 
-                Team::query()->whereIn('id', $teamIds)->delete();
-                $message = $count . ' team member(s) deleted successfully.';
-                break;
+            $team->delete();
+        });
 
-            default:
-                $message = 'Invalid action selected.';
-        }
-
-        return to_route('admin.teams.index')->with('success', $message);
+        return $count.' team member(s) deleted successfully.';
     }
 }

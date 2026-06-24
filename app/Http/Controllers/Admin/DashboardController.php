@@ -17,29 +17,16 @@ use Illuminate\View\View;
 
 final class DashboardController extends Controller
 {
-    /**
-     * Display the admin dashboard
-     */
     public function index(): View
     {
-        $stats = $this->getDashboardStats();
-
-        return view('admin.dashboard.index', ['stats' => $stats]);
+        return view('admin.dashboard.index', ['stats' => $this->getDashboardStats()]);
     }
 
-    /**
-     * Get dashboard statistics (API endpoint)
-     */
     public function getStats(): JsonResponse
     {
-        $stats = $this->getDashboardStats();
-
-        return response()->json($stats);
+        return response()->json($this->getDashboardStats());
     }
 
-    /**
-     * Compile dashboard statistics
-     */
     private function getDashboardStats(): array
     {
         return [
@@ -65,38 +52,37 @@ final class DashboardController extends Controller
                 'departments' => Department::query()->where('is_active', true)->count(),
             ],
             'recent_activity' => [
-                'blogs' => Blog::query()->latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
-                'projects' => Project::query()->latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
-                'notices' => Notice::query()->latest()->take(5)->get(['id', 'title', 'status', 'created_at']),
-                'users' => User::query()->latest()->take(5)->get(['id', 'name', 'email', 'is_admin', 'created_at']),
+                'blogs' => Blog::query()->latest()->limit(5)->get(['id', 'title', 'status', 'created_at']),
+                'projects' => Project::query()->latest()->limit(5)->get(['id', 'title', 'status', 'created_at']),
+                'notices' => Notice::query()->latest()->limit(5)->get(['id', 'title', 'status', 'created_at']),
+                'users' => User::query()->latest()->limit(5)->get(['id', 'name', 'email', 'is_admin', 'created_at']),
             ],
             'monthly_trends' => $this->getMonthlyTrends(),
         ];
     }
 
-    /**
-     * Get monthly content creation trends for current year
-     */
     private function getMonthlyTrends(): array
     {
-        $currentYear = now()->year;
-        $months = [];
+        $year = now()->year;
 
-        for ($month = 1; $month <= 12; $month++) {
-            $months[] = [
+        $aggregate = fn (string $model): \Illuminate\Support\Collection => $model::query()
+            ->whereYear('created_at', $year)
+            ->selectRaw('MONTH(created_at) as month, COUNT(*) as total')
+            ->groupBy('month')
+            ->pluck('total', 'month');
+
+        $blogCounts = $aggregate(Blog::class);
+        $projectCounts = $aggregate(Project::class);
+        $noticeCounts = $aggregate(Notice::class);
+
+        return collect(range(1, 12))
+            ->map(fn (int $month): array => [
                 'month' => date('M', mktime(0, 0, 0, $month, 1)),
-                'blogs' => Blog::query()->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $month)
-                    ->count(),
-                'projects' => Project::query()->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $month)
-                    ->count(),
-                'notices' => Notice::query()->whereYear('created_at', $currentYear)
-                    ->whereMonth('created_at', $month)
-                    ->count(),
-            ];
-        }
-
-        return $months;
+                'blogs' => $blogCounts->get($month, 0),
+                'projects' => $projectCounts->get($month, 0),
+                'notices' => $noticeCounts->get($month, 0),
+            ])
+            ->values()
+            ->all();
     }
 }

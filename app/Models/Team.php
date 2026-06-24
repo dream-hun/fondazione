@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 final class Team extends Model
 {
     use HasFactory;
-    use HasFactory;
+
     protected $fillable = [
         'uuid',
         'name',
@@ -24,7 +24,7 @@ final class Team extends Model
     {
         parent::boot();
 
-        self::creating(function ($model): void {
+        self::creating(function (self $model): void {
             $model->uuid ??= (string) Str::uuid();
         });
     }
@@ -35,12 +35,10 @@ final class Team extends Model
             return null;
         }
 
-        // If it's already a full URL, return as is
         if (str_starts_with($this->image, 'http')) {
             return $this->image;
         }
 
-        // Otherwise, return the storage URL
         return asset('storage/'.$this->image);
     }
 

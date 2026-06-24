@@ -4,32 +4,40 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Enum\Notices\Status;
+use App\Models\Concerns\GeneratesUniqueSlug;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 final class Notice extends Model
 {
+    use GeneratesUniqueSlug;
     use HasFactory;
-    use HasFactory;
+
     protected $table = 'notices';
 
-    protected $guarded = [];
-
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'status' => Status::class,
+    protected $fillable = [
+        'uuid',
+        'title',
+        'slug',
+        'excerpt',
+        'body',
+        'attachment',
+        'status',
     ];
+
+    public function hasAttachment(): bool
+    {
+        return ! empty($this->attachment);
+    }
 
     protected static function boot(): void
     {
         parent::boot();
 
-        self::creating(function ($model): void {
+        self::creating(function (self $model): void {
             $model->uuid ??= (string) Str::uuid();
-            $model->slug ??= Str::slug($model->title);
         });
     }
 
@@ -38,8 +46,12 @@ final class Notice extends Model
         return $this->created_at->format('M j, Y');
     }
 
-    public function hasAttachment(): bool
+    protected function casts(): array
     {
-        return ! empty($this->attachment);
+        return [
+            'status' => Status::class,
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
     }
 }

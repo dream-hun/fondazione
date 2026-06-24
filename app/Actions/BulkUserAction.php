@@ -5,54 +5,61 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 final class BulkUserAction
 {
     /**
-     * Execute bulk actions on users
+     * @param  list<int|string>  $userIds
      */
-    public function execute(Request $request): RedirectResponse
+    public function execute(string $action, array $userIds, int $actingUserId): string
     {
-        $request->validate([
-            'action' => ['required', 'in:delete,make_admin,remove_admin'],
-            'selected_users' => ['required', 'array', 'min:1'],
-            'selected_users.*' => ['exists:users,id'],
-        ]);
+        return match ($action) {
+            'delete' => $this->deleteUsers($userIds, $actingUserId),
+            'make_admin' => $this->setAdminStatus($userIds, true, count($userIds)),
+            'remove_admin' => $this->removeAdmin($userIds, $actingUserId),
+            default => 'Invalid action selected.',
+        };
+    }
 
-        $userIds = $request->input('selected_users');
-        $action = $request->input('action');
-        $count = count($userIds);
+    /**
+     * @param  list<int|string>  $userIds
+     */
+    private function deleteUsers(array $userIds, int $actingUserId): string
+    {
+        $ids = array_values(array_filter($userIds, fn ($id): bool => (int) $id !== $actingUserId));
 
-        switch ($action) {
-            case 'delete':
-                // Prevent deleting yourself
-                $userIds = array_filter($userIds, fn ($id): bool => (int) $id !== auth()->id());
-                User::query()->whereIn('id', $userIds)->delete();
-                $message = $userIds !== []
-                    ? count($userIds).' user(s) deleted successfully.'
-                    : 'You cannot delete yourself.';
-                break;
-
-            case 'make_admin':
-                User::query()->whereIn('id', $userIds)->update(['is_admin' => true]);
-                $message = $count . ' user(s) granted admin privileges.';
-                break;
-
-            case 'remove_admin':
-                // Prevent removing admin from yourself
-                $userIds = array_filter($userIds, fn ($id): bool => (int) $id !== auth()->id());
-                User::query()->whereIn('id', $userIds)->update(['is_admin' => false]);
-                $message = $userIds !== []
-                    ? count($userIds).' user(s) removed from admin privileges.'
-                    : 'You cannot remove admin privileges from yourself.';
-                break;
-
-            default:
-                $message = 'Invalid action selected.';
+        if ($ids === []) {
+            return 'You cannot delete yourself.';
         }
 
-        return to_route('admin.users.index')->with('success', $message);
+        User::query()->whereIn('id', $ids)->delete();
+
+        return count($ids).' user(s) deleted successfully.';
+    }
+
+    /**
+     * @param  list<int|string>  $userIds
+     */
+    private function setAdminStatus(array $userIds, bool $isAdmin, int $count): string
+    {
+        User::query()->whereIn('id', $userIds)->update(['is_admin' => $isAdmin]);
+
+        return $isAdmin
+            ? $count.' user(s) granted admin privileges.'
+            : $count.' user(s) removed from admin privileges.';
+    }
+
+    /**
+     * @param  list<int|string>  $userIds
+     */
+    private function removeAdmin(array $userIds, int $actingUserId): string
+    {
+        $ids = array_values(array_filter($userIds, fn ($id): bool => (int) $id !== $actingUserId));
+
+        if ($ids === []) {
+            return 'You cannot remove admin privileges from yourself.';
+        }
+
+        return $this->setAdminStatus($ids, false, count($ids));
     }
 }

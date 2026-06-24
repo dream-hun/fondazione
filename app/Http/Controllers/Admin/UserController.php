@@ -121,6 +121,18 @@ final class UserController extends Controller
      */
     public function bulkAction(Request $request, BulkUserAction $action): RedirectResponse
     {
-        return $action->execute($request);
+        $request->validate([
+            'action' => ['required', 'in:delete,make_admin,remove_admin'],
+            'selected_users' => ['required', 'array', 'min:1'],
+            'selected_users.*' => ['exists:users,id'],
+        ]);
+
+        $message = $action->execute(
+            $request->input('action'),
+            $request->input('selected_users'),
+            auth()->id()
+        );
+
+        return to_route('admin.users.index')->with('success', $message);
     }
 }

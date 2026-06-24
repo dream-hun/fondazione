@@ -10,17 +10,8 @@ use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
 final class AdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     */
     public function handle(Request $request, Closure $next): BaseResponse
     {
-        // Check if user is authenticated
-        if (! auth()->check()) {
-            return to_route('login')->with('error', 'Please login to access the admin panel.');
-        }
-
-        // Check if user has admin role
         abort_unless(auth()->user()->is_admin, 403, 'Access denied. Admin privileges required.');
 
         return $next($request);

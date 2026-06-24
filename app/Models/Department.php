@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\GeneratesUniqueSlug;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 final class Department extends Model
 {
+    use GeneratesUniqueSlug;
     use HasFactory;
 
     protected $fillable = [
@@ -28,15 +29,14 @@ final class Department extends Model
         'display_order',
     ];
 
-    protected static function boot(): void
+    public function slugSourceColumn(): string
     {
-        parent::boot();
+        return 'name';
+    }
 
-        self::creating(function (Department $department): void {
-            if (empty($department->slug)) {
-                $department->slug = Str::slug($department->name);
-            }
-        });
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 
     #[Scope]
@@ -66,11 +66,6 @@ final class Department extends Model
     protected function ordered(Builder $query): Builder
     {
         return $query->orderBy('display_order')->orderBy('name');
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
     }
 
     protected function getStatusLabelAttribute(): string

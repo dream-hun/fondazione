@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -45,34 +46,28 @@ final class ProjectController extends Controller
         return view('admin.projects.create');
     }
 
-    public function store(StoreProjectRequest $request)
+    public function store(StoreProjectRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
-        // Handle featured image upload
         if ($request->hasFile('featured_image')) {
             $validated['featured_image'] = $request->file('featured_image')->store('projects/featured', 'public');
         }
 
-        // Handle gallery images upload
         if ($request->hasFile('gallery_images')) {
-            $galleryImages = [];
-            foreach ($request->file('gallery_images') as $image) {
-                $galleryImages[] = $image->store('projects/gallery', 'public');
-            }
-
-            $validated['gallery_images'] = $galleryImages;
+            $validated['gallery_images'] = collect($request->file('gallery_images'))
+                ->map(fn ($image) => $image->store('projects/gallery', 'public'))
+                ->values()
+                ->all();
         }
 
         $project = Project::query()->create($validated);
 
-        $message = 'Project created successfully.';
-
         if ($request->has('save_and_continue')) {
-            return to_route('admin.projects.edit', $project)->with('success', $message);
+            return to_route('admin.projects.edit', $project)->with('success', 'Project created successfully.');
         }
 
-        return to_route('admin.projects.index')->with('success', $message);
+        return to_route('admin.projects.index')->with('success', 'Project created successfully.');
     }
 
     public function show(Project $project): Factory|View
@@ -85,21 +80,18 @@ final class ProjectController extends Controller
         return view('admin.projects.edit', ['project' => $project]);
     }
 
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project): RedirectResponse
     {
         $validated = $request->validated();
         $currentGallery = $project->gallery_images ?? [];
         $galleryUpdated = false;
 
-        // Handle featured image removal
         if ($request->boolean('remove_featured_image') && $project->featured_image) {
             Storage::disk('public')->delete($project->featured_image);
             $validated['featured_image'] = null;
         }
 
-        // Handle new featured image upload
         if ($request->hasFile('featured_image')) {
-            // Delete old featured image if exists
             if ($project->featured_image) {
                 Storage::disk('public')->delete($project->featured_image);
             }
@@ -107,11 +99,8 @@ final class ProjectController extends Controller
             $validated['featured_image'] = $request->file('featured_image')->store('projects/featured', 'public');
         }
 
-        // Handle gallery images removal
         if ($request->filled('remove_gallery_images') && $currentGallery) {
-            $indicesToRemove = $request->input('remove_gallery_images', []);
-
-            foreach ($indicesToRemove as $index) {
+            foreach ($request->input('remove_gallery_images', []) as $index) {
                 if (isset($currentGallery[$index])) {
                     Storage::disk('public')->delete($currentGallery[$index]);
                     unset($currentGallery[$index]);
@@ -122,7 +111,6 @@ final class ProjectController extends Controller
             $currentGallery = array_values($currentGallery);
         }
 
-        // Handle new gallery images upload
         if ($request->hasFile('gallery_images')) {
             foreach ($request->file('gallery_images') as $image) {
                 $currentGallery[] = $image->store('projects/gallery', 'public');
@@ -136,31 +124,25 @@ final class ProjectController extends Controller
             $validated['gallery_images'] = $currentGallery;
         }
 
-        // Remove fields that are not in the database
         unset($validated['remove_featured_image'], $validated['remove_gallery_images']);
 
         $project->update($validated);
 
-        $message = 'Project updated successfully.';
-
         if ($request->has('save_and_continue')) {
-            return to_route('admin.projects.edit', $project)->with('success', $message);
+            return to_route('admin.projects.edit', $project)->with('success', 'Project updated successfully.');
         }
 
-        return to_route('admin.projects.index')->with('success', $message);
+        return to_route('admin.projects.index')->with('success', 'Project updated successfully.');
     }
 
-    public function destroy(Project $project)
+    public function destroy(Project $project): RedirectResponse
     {
-        // Delete associated images
         if ($project->featured_image) {
             Storage::disk('public')->delete($project->featured_image);
         }
 
-        if ($project->gallery_images) {
-            foreach ($project->gallery_images as $image) {
-                Storage::disk('public')->delete($image);
-            }
+        foreach ($project->gallery_images ?? [] as $image) {
+            Storage::disk('public')->delete($image);
         }
 
         $project->delete();
@@ -168,7 +150,7 @@ final class ProjectController extends Controller
         return to_route('admin.projects.index')->with('success', 'Project deleted successfully.');
     }
 
-    public function bulkAction(Request $request)
+    public function bulkAction(Request $request): RedirectResponse
     {
         $request->validate([
             'action' => ['required', 'in:publish,unpublish,archive,feature,unfeature,delete'],
@@ -178,48 +160,15 @@ final class ProjectController extends Controller
 
         $projectIds = $request->input('selected_projects');
         $action = $request->input('action');
-        $count = 0;
 
-        switch ($action) {
-            case 'publish':
-                $count = Project::query()->whereIn('id', $projectIds)->update(['status' => 'published']);
-                break;
-
-            case 'unpublish':
-                $count = Project::query()->whereIn('id', $projectIds)->update(['status' => 'draft']);
-                break;
-
-            case 'archive':
-                $count = Project::query()->whereIn('id', $projectIds)->update(['status' => 'archived']);
-                break;
-
-            case 'feature':
-                $count = Project::query()->whereIn('id', $projectIds)->update(['is_featured' => true]);
-                break;
-
-            case 'unfeature':
-                $count = Project::query()->whereIn('id', $projectIds)->update(['is_featured' => false]);
-                break;
-
-            case 'delete':
-                $projects = Project::query()->whereIn('id', $projectIds)->get();
-
-                foreach ($projects as $project) {
-                    // Delete associated images
-                    if ($project->featured_image) {
-                        Storage::disk('public')->delete($project->featured_image);
-                    }
-
-                    if ($project->gallery_images) {
-                        foreach ($project->gallery_images as $image) {
-                            Storage::disk('public')->delete($image);
-                        }
-                    }
-                }
-
-                $count = Project::query()->whereIn('id', $projectIds)->delete();
-                break;
-        }
+        $count = match ($action) {
+            'publish' => Project::query()->whereIn('id', $projectIds)->update(['status' => 'published']),
+            'unpublish' => Project::query()->whereIn('id', $projectIds)->update(['status' => 'draft']),
+            'archive' => Project::query()->whereIn('id', $projectIds)->update(['status' => 'archived']),
+            'feature' => Project::query()->whereIn('id', $projectIds)->update(['is_featured' => true]),
+            'unfeature' => Project::query()->whereIn('id', $projectIds)->update(['is_featured' => false]),
+            'delete' => $this->bulkDelete($projectIds),
+        };
 
         $actionText = match ($action) {
             'publish' => 'published',
@@ -232,5 +181,26 @@ final class ProjectController extends Controller
 
         return to_route('admin.projects.index')
             ->with('success', sprintf('%s project(s) %s successfully.', $count, $actionText));
+    }
+
+    /** @param list<int|string> $projectIds */
+    private function bulkDelete(array $projectIds): int
+    {
+        $count = 0;
+
+        Project::query()->whereIn('id', $projectIds)->each(function (Project $project) use (&$count): void {
+            if ($project->featured_image) {
+                Storage::disk('public')->delete($project->featured_image);
+            }
+
+            foreach ($project->gallery_images ?? [] as $image) {
+                Storage::disk('public')->delete($image);
+            }
+
+            $project->delete();
+            $count++;
+        });
+
+        return $count;
     }
 }

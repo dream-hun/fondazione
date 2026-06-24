@@ -6,30 +6,24 @@ namespace App\Providers;
 
 use App\Models\Project;
 use Exception;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
+    public function register(): void {}
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        Model::unguard();
-        try {
-            View::share('projects', Project::query()->published()->limit(5)->get());
-        } catch (Exception) {
-            View::share('projects', collect([]));
-        }
+        View::composer('components.layouts.app', function (\Illuminate\View\View $view): void {
+            $view->with('sharedProjects', Cache::remember('nav_projects', 300, function (): \Illuminate\Database\Eloquent\Collection {
+                try {
+                    return Project::query()->published()->limit(5)->get();
+                } catch (Exception) {
+                    return collect();
+                }
+            }));
+        });
     }
 }

@@ -63,13 +63,11 @@ final class TeamController extends Controller
             $validated['image'] = $request->file('image')->store('teams', 'public');
         }
 
-        Team::query()->create($validated);
+        $team = Team::query()->create($validated);
 
         $message = 'Team member created successfully.';
 
         if ($request->has('save_and_continue')) {
-            $team = Team::query()->latest()->first();
-
             return to_route('admin.teams.edit', $team)->with('success', $message);
         }
 
@@ -132,9 +130,8 @@ final class TeamController extends Controller
     /**
      * Remove the specified team member
      */
-    public function destroy(Team $team): RedirectResponse
+    public function destroy(Team $team, DeleteTeamAction $action): RedirectResponse
     {
-        $action = new DeleteTeamAction();
         $action->execute($team);
 
         return to_route('admin.teams.index')->with('success', 'Team member deleted successfully.');
@@ -143,10 +140,19 @@ final class TeamController extends Controller
     /**
      * Handle bulk actions on team members
      */
-    public function bulkAction(Request $request): RedirectResponse
+    public function bulkAction(Request $request, BulkTeamAction $bulkAction): RedirectResponse
     {
-        $action = new BulkTeamAction();
+        $request->validate([
+            'action' => ['required', 'in:delete'],
+            'selected_teams' => ['required', 'array', 'min:1'],
+            'selected_teams.*' => ['exists:teams,id'],
+        ]);
 
-        return $action->execute($request);
+        $message = $bulkAction->execute(
+            $request->input('action'),
+            $request->input('selected_teams')
+        );
+
+        return to_route('admin.teams.index')->with('success', $message);
     }
 }

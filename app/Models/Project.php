@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enum\Projects\Category;
+use App\Enum\Projects\Status;
+use App\Models\Concerns\GeneratesUniqueSlug;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 final class Project extends Model
 {
+    use GeneratesUniqueSlug;
     use HasFactory;
 
     protected $fillable = [
@@ -40,12 +42,12 @@ final class Project extends Model
     // Helper methods
     public function publish(): bool
     {
-        return $this->update(['status' => 'published']);
+        return $this->update(['status' => Status::Published->value]);
     }
 
     public function archive(): bool
     {
-        return $this->update(['status' => 'archived']);
+        return $this->update(['status' => Status::Archived->value]);
     }
 
     public function makeFeatured(): bool
@@ -58,60 +60,23 @@ final class Project extends Model
         return $this->update(['is_featured' => false]);
     }
 
-    /**
-     * Generate a unique slug for the project
-     */
-    public function generateUniqueSlug(string $baseSlug, ?int $excludeId = null): string
-    {
-        $slug = $baseSlug;
-        $counter = 1;
-
-        while (self::query()->where('slug', $slug)
-            ->when($excludeId, fn ($query) => $query->where('id', '!=', $excludeId))
-            ->exists()) {
-            $slug = $baseSlug.'-'.$counter;
-            $counter++;
-        }
-
-        return $slug;
-    }
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        self::creating(function (Project $project): void {
-            if (empty($project->slug)) {
-                $baseSlug = Str::slug($project->title) ?: 'project-'.time();
-                $project->slug = $project->generateUniqueSlug($baseSlug);
-            }
-        });
-
-        self::updating(function (Project $project): void {
-            if ($project->isDirty('title') && empty($project->slug)) {
-                $baseSlug = Str::slug($project->title) ?: 'project-'.$project->id;
-                $project->slug = $project->generateUniqueSlug($baseSlug, $project->id);
-            }
-        });
-    }
-
     // Scopes
     #[Scope]
     protected function published(Builder $query): Builder
     {
-        return $query->where('status', 'published');
+        return $query->where('status', Status::Published->value);
     }
 
     #[Scope]
     protected function draft(Builder $query): Builder
     {
-        return $query->where('status', 'draft');
+        return $query->where('status', Status::Draft->value);
     }
 
     #[Scope]
     protected function archived(Builder $query): Builder
     {
-        return $query->where('status', 'archived');
+        return $query->where('status', Status::Archived->value);
     }
 
     #[Scope]
@@ -158,7 +123,6 @@ final class Project extends Model
             return null;
         }
 
-        // Handle string or common array shapes from uploaders
         $featured = $this->featured_image;
         if (is_array($featured)) {
             $featured = $featured['url']
@@ -176,7 +140,6 @@ final class Project extends Model
             return $featured;
         }
 
-        // Otherwise, return the storage URL
         return asset('storage/'.$featured);
     }
 
@@ -187,7 +150,6 @@ final class Project extends Model
         }
 
         $normalized = array_map(function ($image): ?string {
-            // Normalize possible array shapes into a path/url string
             if (is_array($image)) {
                 $image = $image['url']
                     ?? $image['path']
@@ -200,16 +162,13 @@ final class Project extends Model
                 return null;
             }
 
-            // If it's already a full URL (from factory), return as is
             if (str_starts_with($image, 'http')) {
                 return $image;
             }
 
-            // Otherwise, return the storage URL
             return asset('storage/'.$image);
         }, $this->gallery_images);
 
-        // Remove any nulls produced by unrecognized shapes
         return array_values(array_filter($normalized, fn ($v): bool => is_string($v) && $v !== ''));
     }
 
