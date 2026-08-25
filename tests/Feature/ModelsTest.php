@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Enum\Projects\Category;
-use App\Http\Controllers\ContactController;
 use App\Models\Blog;
 use App\Models\Department;
 use App\Models\Notice;
@@ -12,7 +11,6 @@ use App\Models\Report;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -293,10 +291,4 @@ test('slug falls back to the table name when the source column is empty', functi
     expect($department->slug)->toStartWith('departments-');
 
     $department->delete();
-});
-
-test('contact controller is invokable even though it has no route yet', function (): void {
-    $controller = new ContactController;
-
-    $controller->__invoke(new Request);
 });

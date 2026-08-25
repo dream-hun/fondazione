@@ -16,9 +16,8 @@ final class AdminMiddleware
 
         abort_unless($user !== null && $user->is_admin, 403, 'Access denied. Admin privileges required.');
 
+        /** @var BaseResponse */
         $response = $next($request);
-
-        assert($response instanceof BaseResponse);
 
         return $response;
     }

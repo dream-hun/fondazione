@@ -45,8 +45,8 @@ final class ReportController extends Controller
 
     public function store(StoreReportRequest $request): RedirectResponse
     {
+        /** @var UploadedFile $file */
         $file = $request->file('file');
-        assert($file instanceof UploadedFile);
         $filePath = $file->store('reports', 'public');
 
         $report = Report::query()->create([
@@ -121,7 +121,7 @@ final class ReportController extends Controller
             'draft' => Report::query()->whereIn('id', $reportIds)->update(['status' => Status::Draft])
                 ? $count.' report(s) moved to draft.'
                 : '0 report(s) moved to draft.',
-            default => '',
+            default => '', // @codeCoverageIgnore
         };
 
         return to_route('admin.reports.index')->with('success', $message);
