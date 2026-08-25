@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enum\Projects\Category;
 use App\Http\Controllers\ContactController;
 use App\Models\Blog;
 use App\Models\Department;
@@ -13,6 +14,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
@@ -28,6 +30,7 @@ test('blog can be marked and unmarked as featured', function (): void {
     $blog = Blog::factory()->create(['is_featured' => false]);
 
     $blog->makeFeatured();
+
     expect($blog->refresh()->is_featured)->toBeTrue();
 
     $blog->removeFeatured();
@@ -99,7 +102,7 @@ test('notice generates a uuid automatically', function (): void {
     $notice = Notice::factory()->create();
 
     expect($notice->uuid)->not->toBeNull()
-        ->and(Illuminate\Support\Str::isUuid((string) $notice->uuid))->toBeTrue();
+        ->and(Str::isUuid((string) $notice->uuid))->toBeTrue();
 });
 
 test('notice knows whether it has an attachment', function (): void {
@@ -119,7 +122,7 @@ test('notice formatted date renders created at', function (): void {
 test('team generates a uuid automatically', function (): void {
     $team = Team::factory()->create();
 
-    expect(Illuminate\Support\Str::isUuid((string) $team->uuid))->toBeTrue();
+    expect(Str::isUuid((string) $team->uuid))->toBeTrue();
 });
 
 test('team image url handles missing, remote and local images', function (): void {
@@ -145,6 +148,7 @@ test('project featured toggles work', function (): void {
     $project = Project::factory()->create(['is_featured' => false]);
 
     $project->makeFeatured();
+
     expect($project->refresh()->is_featured)->toBeTrue();
 
     $project->removeFeatured();
@@ -157,7 +161,7 @@ test('project archived and category scopes filter correctly', function (): void 
     Project::factory()->wdp()->published()->create();
 
     expect(Project::query()->archived()->pluck('id')->all())->toBe([$archived->id])
-        ->and(Project::query()->category(App\Enum\Projects\Category::Cdsp)->pluck('id')->all())->toBe([$cdsp->id]);
+        ->and(Project::query()->category(Category::Cdsp)->pluck('id')->all())->toBe([$cdsp->id]);
 });
 
 test('project status label reflects the stored status', function (): void {

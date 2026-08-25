@@ -102,9 +102,9 @@ test('password update rejects a wrong current password into the updatePassword b
         ]);
 
         $this->fail('ValidationException was not thrown.');
-    } catch (ValidationException $exception) {
-        expect($exception->errorBag)->toBe('updatePassword')
-            ->and($exception->errors())->toHaveKey('current_password');
+    } catch (ValidationException $validationException) {
+        expect($validationException->errorBag)->toBe('updatePassword')
+            ->and($validationException->errors())->toHaveKey('current_password');
     }
 });
 
@@ -138,8 +138,8 @@ test('profile update rejects an email used by another account', function (): voi
         ]);
 
         $this->fail('ValidationException was not thrown.');
-    } catch (ValidationException $exception) {
-        expect($exception->errorBag)->toBe('updateProfileInformation')
-            ->and($exception->errors())->toHaveKey('email');
+    } catch (ValidationException $validationException) {
+        expect($validationException->errorBag)->toBe('updateProfileInformation')
+            ->and($validationException->errors())->toHaveKey('email');
     }
 });

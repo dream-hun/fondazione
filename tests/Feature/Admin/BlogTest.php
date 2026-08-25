@@ -287,7 +287,7 @@ test('admin can sort blogs ascending', function (): void {
 
     $response->assertSuccessful();
 
-    $titles = Blog::query()->orderBy('created_at')->pluck('title');
+    $titles = Blog::query()->oldest()->pluck('title');
     expect($titles->first())->toBe('First Blog');
 });
 

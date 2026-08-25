@@ -21,7 +21,6 @@ test('resolveNavProjects returns empty collection when query fails', function ()
     $provider = new AppServiceProvider($this->app);
 
     $reflection = new ReflectionMethod($provider, 'resolveNavProjects');
-    $reflection->setAccessible(true);
 
     Cache::shouldReceive('remember')
         ->once()

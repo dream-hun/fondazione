@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Date;
 
 uses(RefreshDatabase::class);
 
@@ -94,7 +95,7 @@ test('monthly trends cover all twelve months of the year', function (): void {
         ->and($trends[$currentMonth - 1]['blogs'])->toBe(3);
 
     collect(range(0, 11))->each(function (int $index) use ($trends): void {
-        expect($trends[$index]['month'])->toBe(Illuminate\Support\Carbon::create(now()->year, $index + 1, 1)->format('M'));
+        expect($trends[$index]['month'])->toBe(Date::create(now()->year, $index + 1, 1)->format('M'));
     });
 });
 

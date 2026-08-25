@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Pest\Mixins\Expectation;
 
 uses(RefreshDatabase::class);
 
@@ -65,7 +66,7 @@ test('bulk user action grants admin privileges', function (): void {
 
     expect($message)->toBe('2 user(s) granted admin privileges.');
 
-    $users->each(fn (User $user) => expect($user->fresh()->is_admin)->toBeTrue());
+    $users->each(fn (User $user): Expectation => expect($user->fresh()->is_admin)->toBeTrue());
 });
 
 test('bulk user action removes admin privileges from others', function (): void {

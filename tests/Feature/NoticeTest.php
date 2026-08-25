@@ -26,7 +26,7 @@ test('announcements index can search by title', function (): void {
     ]);
     Notice::factory()->published()->create([
         'title' => 'Annual Meeting',
-        'body' => 'Schedule for this year\'s gathering.',
+        'body' => "Schedule for this year's gathering.",
     ]);
 
     $this->get(route('notices.index', ['search' => 'Water']))

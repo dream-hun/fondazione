@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 
 uses(RefreshDatabase::class);
 
 test('a failed login attempt runs the login rate limiter', function (): void {
     $user = User::factory()->create([
         'email' => 'throttled@example.com',
-        'password' => Illuminate\Support\Facades\Hash::make('correct-password'),
+        'password' => Hash::make('correct-password'),
     ]);
 
     $this->from(route('login'))
@@ -23,6 +25,6 @@ test('a failed login attempt runs the login rate limiter', function (): void {
 });
 
 test('the two factor rate limiter is registered', function (): void {
-    expect(Illuminate\Support\Facades\RateLimiter::limiter('two-factor'))->not->toBeNull()
-        ->and(Illuminate\Support\Facades\RateLimiter::limiter('login'))->not->toBeNull();
+    expect(RateLimiter::limiter('two-factor'))->not->toBeNull()
+        ->and(RateLimiter::limiter('login'))->not->toBeNull();
 });
