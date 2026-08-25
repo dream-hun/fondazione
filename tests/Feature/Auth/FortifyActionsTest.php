@@ -68,8 +68,11 @@ test('a forgotten password can be reset', function (): void {
         'password_confirmation' => 'brand-new-password',
     ]);
 
-    expect($this->user->fresh()->password)->not->toBe($oldHash)
-        ->and(Hash::check('brand-new-password', $this->user->fresh()->password))->toBeTrue();
+    $fresh = $this->user->fresh();
+    assert($fresh !== null);
+
+    expect($fresh->password)->not->toBe($oldHash)
+        ->and(Hash::check('brand-new-password', $fresh->password))->toBeTrue();
 });
 
 test('password reset rejects an unconfirmed password', function (): void {
@@ -88,7 +91,10 @@ test('the password can be updated with the correct current password', function (
         'password_confirmation' => 'updated-password-1',
     ]);
 
-    expect(Hash::check('updated-password-1', $this->user->fresh()->password))->toBeTrue();
+    $fresh = $this->user->fresh();
+    assert($fresh !== null);
+
+    expect(Hash::check('updated-password-1', $fresh->password))->toBeTrue();
 });
 
 test('password update rejects a wrong current password into the updatePassword bag', function (): void {
@@ -114,8 +120,11 @@ test('profile information can be updated', function (): void {
         'email' => 'jane.updated@example.com',
     ]);
 
-    expect($this->user->fresh()->name)->toBe('Jane Updated')
-        ->and($this->user->fresh()->email)->toBe('jane.updated@example.com');
+    $fresh = $this->user->fresh();
+    assert($fresh !== null);
+
+    expect($fresh->name)->toBe('Jane Updated')
+        ->and($fresh->email)->toBe('jane.updated@example.com');
 });
 
 test('profile update ignores the current email uniqueness for the same user', function (): void {
@@ -124,8 +133,11 @@ test('profile update ignores the current email uniqueness for the same user', fu
         'email' => 'jane@example.com',
     ]);
 
-    expect($this->user->fresh()->email)->toBe('jane@example.com')
-        ->and($this->user->fresh()->name)->toBe('Jane Same Email');
+    $fresh = $this->user->fresh();
+    assert($fresh !== null);
+
+    expect($fresh->email)->toBe('jane@example.com')
+        ->and($fresh->name)->toBe('Jane Same Email');
 });
 
 test('profile update rejects an email used by another account', function (): void {

@@ -163,6 +163,7 @@ test('updating a notice with a new attachment deletes the old one', function ():
             'title' => $notice->title,
             'slug' => $notice->slug,
             'body' => $notice->body,
+            /** @phpstan-ignore property.nonObject */
             'status' => $notice->status->value,
             'attachment' => UploadedFile::fake()->create('new.pdf', 100, 'application/pdf'),
         ])
@@ -232,8 +233,11 @@ test('admin can bulk publish notices', function (): void {
         ->assertRedirect(route('admin.notices.index'))
         ->assertSessionHas('success', '2 notice(s) published successfully.');
 
+    $first = $notices->first();
+    assert($first !== null);
+
     $this->assertDatabaseHas('notices', [
-        'id' => $notices[0]->id,
+        'id' => $first->id,
         'status' => 'Published',
     ]);
 });
@@ -249,8 +253,11 @@ test('admin can bulk unpublish notices', function (): void {
         ->assertRedirect(route('admin.notices.index'))
         ->assertSessionHas('success', '2 notice(s) unpublished successfully.');
 
+    $first = $notices->first();
+    assert($first !== null);
+
     $this->assertDatabaseHas('notices', [
-        'id' => $notices[0]->id,
+        'id' => $first->id,
         'status' => 'Unpublished',
     ]);
 });
@@ -266,8 +273,11 @@ test('admin can bulk move notices to draft', function (): void {
         ->assertRedirect(route('admin.notices.index'))
         ->assertSessionHas('success', '2 notice(s) moved to draft successfully.');
 
+    $first = $notices->first();
+    assert($first !== null);
+
     $this->assertDatabaseHas('notices', [
-        'id' => $notices[0]->id,
+        'id' => $first->id,
         'status' => 'Draft',
     ]);
 });

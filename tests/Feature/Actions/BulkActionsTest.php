@@ -8,7 +8,6 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
-use Pest\Mixins\Expectation;
 
 uses(RefreshDatabase::class);
 
@@ -47,7 +46,7 @@ test('bulk user action deletes users other than the actor', function (): void {
 
     expect($message)->toBe('2 user(s) deleted successfully.')
         ->and(User::query()->whereKey($actor->id)->exists())->toBeTrue()
-        ->and(User::query()->whereKey($targets[0]->id)->exists())->toBeFalse();
+        ->and(User::query()->whereKey($targets->firstOrFail()->id)->exists())->toBeFalse();
 });
 
 test('bulk user action refuses to delete the acting user', function (): void {
@@ -66,7 +65,9 @@ test('bulk user action grants admin privileges', function (): void {
 
     expect($message)->toBe('2 user(s) granted admin privileges.');
 
-    $users->each(fn (User $user): Expectation => expect($user->fresh()->is_admin)->toBeTrue());
+    $users->each(function (User $user): void {
+        expect($user->fresh()?->is_admin)->toBeTrue();
+    });
 });
 
 test('bulk user action removes admin privileges from others', function (): void {
@@ -76,8 +77,8 @@ test('bulk user action removes admin privileges from others', function (): void 
     $message = (new BulkUserAction)->execute('remove_admin', [$other->id], $actor->id);
 
     expect($message)->toBe('1 user(s) removed from admin privileges.')
-        ->and($other->fresh()->is_admin)->toBeFalse()
-        ->and($actor->fresh()->is_admin)->toBeTrue();
+        ->and($other->fresh()?->is_admin)->toBeFalse()
+        ->and($actor->fresh()?->is_admin)->toBeTrue();
 });
 
 test('bulk user action refuses to remove own admin privileges', function (): void {
@@ -86,7 +87,7 @@ test('bulk user action refuses to remove own admin privileges', function (): voi
     $message = (new BulkUserAction)->execute('remove_admin', [$actor->id], $actor->id);
 
     expect($message)->toBe('You cannot remove admin privileges from yourself.')
-        ->and($actor->fresh()->is_admin)->toBeTrue();
+        ->and($actor->fresh()?->is_admin)->toBeTrue();
 });
 
 test('bulk user action rejects unknown actions', function (): void {

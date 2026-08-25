@@ -212,7 +212,10 @@ test('user reports admin status and updates last login', function (): void {
 
     $member->updateLastLogin();
 
-    expect($member->fresh()->last_login_at)->not->toBeNull();
+    $fresh = $member->fresh();
+    assert($fresh !== null);
+
+    expect($fresh->last_login_at)->not->toBeNull();
 });
 
 test('user password remains hashed through the cast', function (): void {
@@ -267,7 +270,10 @@ test('slug stays untouched when only the title changes', function (): void {
 
     $blog->update(['title' => 'Rewritten Heading']);
 
-    expect($blog->fresh()->slug)->toBe('original-heading');
+    $fresh = $blog->fresh();
+    assert($fresh !== null);
+
+    expect($fresh->slug)->toBe('original-heading');
 });
 
 test('slug regenerates when cleared during an update without colliding with itself', function (): void {
@@ -275,7 +281,10 @@ test('slug regenerates when cleared during an update without colliding with itse
 
     $blog->update(['title' => 'Fresh Heading', 'slug' => null]);
 
-    expect($blog->fresh()->slug)->toBe('fresh-heading');
+    $fresh = $blog->fresh();
+    assert($fresh !== null);
+
+    expect($fresh->slug)->toBe('fresh-heading');
 });
 
 test('slug falls back to the table name when the source column is empty', function (): void {
@@ -290,6 +299,4 @@ test('contact controller is invokable even though it has no route yet', function
     $controller = new ContactController;
 
     $controller->__invoke(new Request);
-
-    expect($controller)->toBeInstanceOf(ContactController::class);
 });

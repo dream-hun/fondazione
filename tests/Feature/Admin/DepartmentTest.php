@@ -114,7 +114,9 @@ test('updating a department keeps its slug when only the name changes', function
             'is_active' => true,
         ]);
 
-    expect($department->fresh()->slug)->toBe($department->slug);
+    $fresh = $department->fresh();
+    assert($fresh !== null);
+    expect($fresh->slug)->toBe($department->slug);
 });
 
 test('admin can delete a department', function (): void {
@@ -196,8 +198,11 @@ test('admin can bulk activate departments', function (): void {
         ->assertRedirect(route('admin.departments.index'))
         ->assertSessionHas('success', '2 department(s) activated successfully.');
 
+    $first = $departments->first();
+    assert($first !== null);
+
     $this->assertDatabaseHas('departments', [
-        'id' => $departments[0]->id,
+        'id' => $first->id,
         'is_active' => true,
     ]);
 });
@@ -213,8 +218,11 @@ test('admin can bulk deactivate departments', function (): void {
         ->assertRedirect(route('admin.departments.index'))
         ->assertSessionHas('success', '2 department(s) deactivated successfully.');
 
+    $first = $departments->first();
+    assert($first !== null);
+
     $this->assertDatabaseHas('departments', [
-        'id' => $departments[0]->id,
+        'id' => $first->id,
         'is_active' => false,
     ]);
 });

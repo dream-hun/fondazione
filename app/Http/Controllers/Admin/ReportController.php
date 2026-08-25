@@ -121,6 +121,7 @@ final class ReportController extends Controller
             'draft' => Report::query()->whereIn('id', $reportIds)->update(['status' => Status::Draft])
                 ? $count.' report(s) moved to draft.'
                 : '0 report(s) moved to draft.',
+            default => '',
         };
 
         return to_route('admin.reports.index')->with('success', $message);

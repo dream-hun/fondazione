@@ -107,6 +107,7 @@ final class DashboardController extends Controller
             ->all();
     }
 
+    /** @return literal-string */
     private function monthExpression(): string
     {
         return match (DB::connection()->getDriverName()) {

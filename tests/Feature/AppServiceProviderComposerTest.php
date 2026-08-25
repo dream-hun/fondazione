@@ -19,11 +19,13 @@ test('the layout composer shares cached published projects', function (): void {
 
     file_put_contents($layoutDirectory.'/app.blade.php', '<nav data-count="{{ $sharedProjects->count() }}"></nav>');
 
+    /** @phpstan-ignore method.notFound */
     View::getFinder()->prependLocation($viewRoot);
 
     Project::factory()->count(3)->published()->create();
     Project::factory()->draft()->create();
 
+    /** @phpstan-ignore argument.type */
     $html = view('components.layouts.app')->render();
 
     expect($html)->toContain('data-count="3"')

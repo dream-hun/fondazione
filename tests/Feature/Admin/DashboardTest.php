@@ -69,6 +69,7 @@ test('stats endpoint returns dashboard statistics', function (): void {
             'monthly_trends',
         ]);
 
+    /** @var array{totals: array<string, int>, published: array<string, int>, drafts: array<string, int>, active: array<string, int>, recent_activity: mixed, monthly_trends: mixed} $stats */
     $stats = $response->json();
 
     expect($stats['totals']['blogs'])->toBe(2)
@@ -91,12 +92,15 @@ test('monthly trends cover all twelve months of the year', function (): void {
 
     assert(is_array($trends));
 
-    expect($trends)->toHaveCount(12)
-        ->and($trends[$currentMonth - 1]['blogs'])->toBe(3);
+    expect($trends)->toHaveCount(12);
 
-    collect(range(0, 11))->each(function (int $index) use ($trends): void {
+    assert(is_array($trends[$currentMonth - 1]));
+    expect($trends[$currentMonth - 1]['blogs'])->toBe(3);
+
+    foreach (range(0, 11) as $index) {
+        assert(is_array($trends[$index]));
         expect($trends[$index]['month'])->toBe(Date::create(now()->year, $index + 1, 1)->format('M'));
-    });
+    }
 });
 
 test('non-admin cannot access stats endpoint', function (): void {

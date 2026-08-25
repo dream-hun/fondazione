@@ -320,7 +320,7 @@ test('admin can bulk unpublish blogs', function (): void {
         ->assertSessionHas('success', '2 blog(s) unpublished successfully.');
 
     $this->assertDatabaseHas('blogs', [
-        'id' => $blogs[0]->id,
+        'id' => $blogs->firstOrFail()->id,
         'status' => 'draft',
     ]);
 });
@@ -337,7 +337,7 @@ test('admin can bulk feature blogs', function (): void {
         ->assertSessionHas('success', '2 blog(s) marked as featured.');
 
     $this->assertDatabaseHas('blogs', [
-        'id' => $blogs[0]->id,
+        'id' => $blogs->firstOrFail()->id,
         'is_featured' => true,
     ]);
 });
@@ -354,7 +354,7 @@ test('admin can bulk unfeature blogs', function (): void {
         ->assertSessionHas('success', '2 blog(s) removed from featured.');
 
     $this->assertDatabaseHas('blogs', [
-        'id' => $blogs[0]->id,
+        'id' => $blogs->firstOrFail()->id,
         'is_featured' => false,
     ]);
 });

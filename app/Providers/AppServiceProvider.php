@@ -22,6 +22,7 @@ final class AppServiceProvider extends ServiceProvider
         });
     }
 
+    /** @return EloquentCollection<int, Project> */
     private function resolveNavProjects(): EloquentCollection
     {
         try {

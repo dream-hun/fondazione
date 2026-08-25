@@ -126,6 +126,7 @@ final class BlogController extends Controller
             'unpublish' => $this->bulkUnpublish($blogIds, $count),
             'feature' => $this->bulkFeature($blogIds, $count),
             'unfeature' => $this->bulkUnfeature($blogIds, $count),
+            default => '',
         };
 
         return to_route('admin.blogs.index')->with('success', $message);
