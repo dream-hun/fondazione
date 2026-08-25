@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\TeamFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+#[Fillable([
+    'uuid',
+    'name',
+    'position',
+    'image',
+    'email',
+])]
 final class Team extends Model
 {
+    /** @use HasFactory<TeamFactory> */
     use HasFactory;
-
-    protected $fillable = [
-        'uuid',
-        'name',
-        'position',
-        'image',
-        'email',
-    ];
 
     protected static function boot(): void
     {

@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 final class BlogController extends Controller
@@ -14,14 +15,14 @@ final class BlogController extends Controller
     {
         $query = Blog::query()->published()->latest('published_at');
 
-        $search = $request->get('search');
-        $tag = $request->get('tag');
+        $search = $request->string('search')->toString() ?: null;
+        $tag = $request->string('tag')->toString() ?: null;
 
-        if ($search) {
+        if ($search !== null) {
             $query->search($search);
         }
 
-        if ($tag) {
+        if ($tag !== null) {
             $query->byTag($tag);
         }
 
@@ -30,7 +31,7 @@ final class BlogController extends Controller
         $blogs = $query->paginate(15);
         $featuredBlogs = $isFiltering
             ? collect()
-            : Blog::query()->published()->featured()->latest('published_at')->take(3)->get();
+            : Cache::remember('blog_featured', 300, fn () => Blog::query()->published()->featured()->latest('published_at')->take(3)->get());
 
         return view('blog.index', [
             'blogs' => $blogs,
@@ -43,11 +44,15 @@ final class BlogController extends Controller
     {
         abort_unless($blog->is_active, 404);
 
-        $relatedBlogs = Blog::query()->published()
-            ->where('id', '!=', $blog->id)
-            ->latest('published_at')
-            ->take(3)
-            ->get();
+        $relatedBlogs = Cache::remember(
+            sprintf('blog_related_%s', $blog->id),
+            300,
+            fn () => Blog::query()->published()
+                ->where('id', '!=', $blog->id)
+                ->latest('published_at')
+                ->take(3)
+                ->get()
+        );
 
         return view('blog.show', ['blog' => $blog, 'relatedBlogs' => $relatedBlogs]);
     }

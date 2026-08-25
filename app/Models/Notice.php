@@ -6,26 +6,29 @@ namespace App\Models;
 
 use App\Enum\Notices\Status;
 use App\Models\Concerns\GeneratesUniqueSlug;
+use Database\Factories\NoticeFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+#[Fillable([
+    'uuid',
+    'title',
+    'slug',
+    'excerpt',
+    'body',
+    'attachment',
+    'status',
+])]
+#[Table(name: 'notices')]
 final class Notice extends Model
 {
     use GeneratesUniqueSlug;
+
+    /** @use HasFactory<NoticeFactory> */
     use HasFactory;
-
-    protected $table = 'notices';
-
-    protected $fillable = [
-        'uuid',
-        'title',
-        'slug',
-        'excerpt',
-        'body',
-        'attachment',
-        'status',
-    ];
 
     public function hasAttachment(): bool
     {
@@ -43,7 +46,7 @@ final class Notice extends Model
 
     protected function getFormattedDateAttribute(): string
     {
-        return $this->created_at->format('M j, Y');
+        return $this->created_at?->format('M j, Y') ?? '';
     }
 
     protected function casts(): array

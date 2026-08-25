@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateReportRequest;
 use App\Models\Report;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -20,16 +21,16 @@ final class ReportController extends Controller
     {
         $query = Report::query();
 
-        if ($search = $request->get('search')) {
+        if ($search = $request->string('search')->toString()) {
             $query->search($search);
         }
 
-        if ($status = $request->get('status')) {
+        if ($status = $request->string('status')->toString()) {
             $query->where('status', Status::from($status));
         }
 
-        $sortBy = $request->get('sort', 'created_at');
-        $sortDirection = $request->get('direction', 'desc');
+        $sortBy = $request->string('sort', 'created_at')->toString();
+        $sortDirection = $request->string('direction', 'desc')->toString() === 'asc' ? 'asc' : 'desc';
         $query->orderBy($sortBy, $sortDirection);
 
         $reports = $query->paginate(15)->withQueryString();
@@ -44,7 +45,9 @@ final class ReportController extends Controller
 
     public function store(StoreReportRequest $request): RedirectResponse
     {
-        $filePath = $request->file('file')->store('reports', 'public');
+        /** @var UploadedFile $file */
+        $file = $request->file('file');
+        $filePath = $file->store('reports', 'public');
 
         $report = Report::query()->create([
             'title' => $request->validated()['title'],
@@ -102,38 +105,36 @@ final class ReportController extends Controller
             'selected_reports.*' => ['exists:reports,id'],
         ]);
 
-        $reportIds = $request->selected_reports;
-        $action = $request->action;
+        /** @var list<int|string> $reportIds */
+        $reportIds = (array) $request->input('selected_reports');
+        $action = $request->string('action')->value();
         $count = count($reportIds);
 
-        switch ($action) {
-            case 'delete':
-                Report::query()->whereIn('id', $reportIds)->each(function (Report $report): void {
-                    Storage::disk('public')->delete($report->file_path);
-                    $report->delete();
-                });
-                $message = $count.' report(s) deleted successfully.';
-                break;
-
-            case 'publish':
-                Report::query()->whereIn('id', $reportIds)->update(['status' => Status::Published]);
-                $message = $count.' report(s) published successfully.';
-                break;
-
-            case 'unpublish':
-                Report::query()->whereIn('id', $reportIds)->update(['status' => Status::Unpublished]);
-                $message = $count.' report(s) unpublished successfully.';
-                break;
-
-            case 'draft':
-                Report::query()->whereIn('id', $reportIds)->update(['status' => Status::Draft]);
-                $message = $count.' report(s) moved to draft.';
-                break;
-
-            default:
-                $message = 'Unknown action.';
-        }
+        $message = match ($action) {
+            'delete' => $this->bulkDelete($reportIds, $count),
+            'publish' => Report::query()->whereIn('id', $reportIds)->update(['status' => Status::Published])
+                ? $count.' report(s) published successfully.'
+                : '0 report(s) published successfully.',
+            'unpublish' => Report::query()->whereIn('id', $reportIds)->update(['status' => Status::Unpublished])
+                ? $count.' report(s) unpublished successfully.'
+                : '0 report(s) unpublished successfully.',
+            'draft' => Report::query()->whereIn('id', $reportIds)->update(['status' => Status::Draft])
+                ? $count.' report(s) moved to draft.'
+                : '0 report(s) moved to draft.',
+            default => '', // @codeCoverageIgnore
+        };
 
         return to_route('admin.reports.index')->with('success', $message);
+    }
+
+    /** @param list<int|string> $reportIds */
+    private function bulkDelete(array $reportIds, int $count): string
+    {
+        Report::query()->whereIn('id', $reportIds)->each(function (Report $report): void {
+            Storage::disk('public')->delete($report->file_path);
+            $report->delete();
+        });
+
+        return $count.' report(s) deleted successfully.';
     }
 }

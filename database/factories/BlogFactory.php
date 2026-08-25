@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
 use App\Models\Blog;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Blog>
@@ -33,7 +33,10 @@ final class BlogFactory extends Factory
             'featured_image' => fake()->imageUrl(800, 600, 'nature', true),
             'author_name' => fake()->name(),
             'author_email' => fake()->safeEmail(),
-            'tags' => implode(', ', fake()->words(fake()->numberBetween(2, 5))),
+            'tags' => implode(
+                ', ',
+                array_map(fn (): string => fake()->word(), range(1, fake()->numberBetween(2, 5))),
+            ),
             'is_featured' => false,
             'reading_time' => fake()->numberBetween(2, 15),
         ];

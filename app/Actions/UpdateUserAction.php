@@ -10,23 +10,26 @@ use Illuminate\Support\Facades\Hash;
 final class UpdateUserAction
 {
     /**
-     * Execute the action to update a user
+     * Execute the action to update a user.
+     *
+     * @param  array<string, mixed>  $data
      */
     public function execute(User $user, array $data): User
     {
         $userData = [
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'is_admin' => $data['is_admin'] ?? false,
+            'name' => is_scalar($data['name'] ?? null) ? (string) $data['name'] : '',
+            'email' => is_scalar($data['email'] ?? null) ? (string) $data['email'] : '',
+            'is_admin' => (bool) ($data['is_admin'] ?? false),
         ];
 
-        // Only update password if provided
-        if (! empty($data['password'])) {
-            $userData['password'] = Hash::make($data['password']);
+        $password = $data['password'] ?? null;
+        if (! empty($password) && is_scalar($password)) {
+            $userData['password'] = Hash::make((string) $password);
         }
 
         $user->update($userData);
+        $user->refresh();
 
-        return $user->fresh();
+        return $user;
     }
 }

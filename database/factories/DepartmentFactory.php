@@ -33,4 +33,11 @@ final class DepartmentFactory extends Factory
             'display_order' => fake()->numberBetween(0, 100),
         ];
     }
+
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'is_active' => false,
+        ]);
+    }
 }

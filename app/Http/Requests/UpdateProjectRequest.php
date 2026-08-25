@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Enum\Projects\Category;
+use App\Models\Project;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -16,7 +17,9 @@ final class UpdateProjectRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->is_admin;
+        $user = auth()->user();
+
+        return $user !== null && $user->is_admin;
     }
 
     /**
@@ -26,7 +29,8 @@ final class UpdateProjectRequest extends FormRequest
      */
     public function rules(): array
     {
-        $projectId = $this->route('project')->id;
+        $project = $this->route('project');
+        $projectId = $project instanceof Project ? $project->id : null;
 
         return [
             'title' => ['required', 'string', 'max:255'],

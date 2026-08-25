@@ -92,10 +92,10 @@ test('admin can upload multiple gallery images when creating a project', functio
 
     $project = Project::query()->first();
 
-    expect($project)->not->toBeNull();
-    expect($project->gallery_images)->toHaveCount(3);
+    assert($project !== null);
+    expect($project->gallery_images ?? [])->toHaveCount(3);
 
-    collect($project->gallery_images)->each(fn ($path) => Storage::disk('public')->assertExists($path));
+    collect($project->gallery_images)->each(fn (string $path) => Storage::disk('public')->assertExists($path));
 });
 
 test('admin can create a project with save and continue', function (): void {
@@ -186,8 +186,8 @@ test('admin can append gallery images when updating a project', function (): voi
 
     $project->refresh();
 
-    expect($project->gallery_images)->toHaveCount(3);
-    collect($project->gallery_images)->each(fn ($path) => Storage::disk('public')->assertExists($path));
+    expect($project->gallery_images ?? [])->toHaveCount(3);
+    collect($project->gallery_images ?? [])->each(fn (string $path) => Storage::disk('public')->assertExists($path));
 });
 
 test('admin can update project with save and continue', function (): void {
@@ -217,6 +217,22 @@ test('admin can delete a project', function (): void {
     $this->assertDatabaseMissing('projects', ['id' => $project->id]);
 });
 
+test('admin can delete a project with gallery images', function (): void {
+    Storage::fake('public');
+
+    $project = Project::factory()->create([
+        'gallery_images' => ['projects/gallery/img1.jpg', 'projects/gallery/img2.jpg'],
+        'featured_image' => 'projects/featured/cover.jpg',
+    ]);
+
+    $this->actingAs($this->admin)
+        ->delete(route('admin.projects.destroy', $project))
+        ->assertRedirect(route('admin.projects.index'))
+        ->assertSessionHas('success');
+
+    $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+});
+
 test('admin can view a project', function (): void {
     $project = Project::factory()->create();
 
@@ -227,8 +243,18 @@ test('admin can view a project', function (): void {
 });
 
 test('admin can search projects', function (): void {
-    Project::factory()->create(['title' => 'Water Project']);
-    Project::factory()->create(['title' => 'Education Project']);
+    Project::factory()->create([
+        'title' => 'Water Project',
+        'description' => 'Clean water access for communities.',
+        'content' => 'Project details about water supply.',
+        'location' => 'Kigali, Rwanda',
+    ]);
+    Project::factory()->create([
+        'title' => 'Education Project',
+        'description' => 'School construction initiative.',
+        'content' => 'Project details about education.',
+        'location' => 'Nairobi, Kenya',
+    ]);
 
     $response = $this->actingAs($this->admin)
         ->get(route('admin.projects.index', ['search' => 'Water']));
@@ -374,6 +400,147 @@ test('admin can perform bulk delete action', function (): void {
         ->assertSessionHas('success');
 
     $this->assertDatabaseMissing('projects', ['id' => $ids[0]]);
+});
+
+test('admin can bulk delete projects with gallery images', function (): void {
+    Storage::fake('public');
+
+    $project = Project::factory()->create([
+        'gallery_images' => ['projects/gallery/bulk1.jpg', 'projects/gallery/bulk2.jpg'],
+        'featured_image' => 'projects/featured/bulk-cover.jpg',
+    ]);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.projects.bulk-action'), [
+            'action' => 'delete',
+            'selected_projects' => [$project->id],
+        ])
+        ->assertRedirect(route('admin.projects.index'))
+        ->assertSessionHas('success');
+
+    $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+});
+
+test('admin can create a project with a featured image', function (): void {
+    Storage::fake('public');
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.projects.store'), [
+            'title' => 'Cover Project',
+            'description' => 'Project with a cover image',
+            'content' => 'Content about the cover project',
+            'status' => 'published',
+            'category' => 'cdsp',
+            'featured_image' => UploadedFile::fake()->image('cover.jpg'),
+        ])
+        ->assertRedirect(route('admin.projects.index'))
+        ->assertSessionHas('success');
+
+    $project = Project::query()->where('title', 'Cover Project')->first();
+    assert($project !== null);
+
+    expect($project->featured_image)->toStartWith('projects/featured/');
+    Storage::disk('public')->assertExists((string) $project->featured_image);
+});
+
+test('admin can remove a featured image when updating a project', function (): void {
+    Storage::fake('public');
+
+    $imagePath = 'projects/featured/remove-me.jpg';
+    Storage::disk('public')->put($imagePath, 'dummy');
+
+    $project = Project::factory()->create(['featured_image' => $imagePath]);
+
+    $this->actingAs($this->admin)
+        ->patch(route('admin.projects.update', $project), [
+            'title' => $project->title,
+            'description' => $project->description,
+            'content' => $project->content,
+            'status' => $project->status,
+            'category' => $project->category->value,
+            'remove_featured_image' => true,
+        ])
+        ->assertRedirect(route('admin.projects.index'))
+        ->assertSessionHas('success');
+
+    $project->refresh();
+
+    Storage::disk('public')->assertMissing($imagePath);
+    expect($project->featured_image)->toBeNull();
+});
+
+test('updating a project with a new featured image deletes the old one', function (): void {
+    Storage::fake('public');
+
+    $oldPath = 'projects/featured/old.jpg';
+    Storage::disk('public')->put($oldPath, 'dummy');
+
+    $project = Project::factory()->create(['featured_image' => $oldPath]);
+
+    $this->actingAs($this->admin)
+        ->patch(route('admin.projects.update', $project), [
+            'title' => $project->title,
+            'description' => $project->description,
+            'content' => $project->content,
+            'status' => $project->status,
+            'category' => $project->category->value,
+            'featured_image' => UploadedFile::fake()->image('replacement.jpg'),
+        ])
+        ->assertRedirect(route('admin.projects.index'))
+        ->assertSessionHas('success');
+
+    $project->refresh();
+
+    Storage::disk('public')->assertMissing($oldPath);
+    expect($project->featured_image)->not->toBe($oldPath);
+    Storage::disk('public')->assertExists((string) $project->featured_image);
+});
+
+test('admin can remove specific gallery images when updating a project', function (): void {
+    Storage::fake('public');
+
+    $keep = 'projects/gallery/keep.jpg';
+    $remove = 'projects/gallery/remove.jpg';
+    Storage::disk('public')->put($keep, 'dummy');
+    Storage::disk('public')->put($remove, 'dummy');
+
+    $project = Project::factory()->create(['gallery_images' => [$remove, $keep]]);
+
+    $this->actingAs($this->admin)
+        ->patch(route('admin.projects.update', $project), [
+            'title' => $project->title,
+            'description' => $project->description,
+            'content' => $project->content,
+            'status' => $project->status,
+            'category' => $project->category->value,
+            'remove_gallery_images' => [0],
+        ])
+        ->assertRedirect(route('admin.projects.index'))
+        ->assertSessionHas('success');
+
+    $project->refresh();
+
+    expect($project->gallery_images ?? [])->toBe([$keep]);
+    Storage::disk('public')->assertMissing($remove);
+    Storage::disk('public')->assertExists($keep);
+});
+
+test('update with save and continue redirects back to the edit page', function (): void {
+    Storage::fake('public');
+    $project = Project::factory()->create();
+
+    $response = $this->actingAs($this->admin)
+        ->patch(route('admin.projects.update', $project), [
+            'title' => $project->title,
+            'description' => $project->description,
+            'content' => $project->content,
+            'status' => 'published',
+            'category' => $project->category->value,
+            'save_and_continue' => true,
+        ]);
+
+    $response->assertRedirect(route('admin.projects.edit', $project))
+        ->assertSessionHas('success');
 });
 
 test('project slug is auto-generated from title if not provided', function (): void {

@@ -12,37 +12,32 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 final class UserController extends Controller
 {
-    /**
-     * Display a listing of users with search and pagination
-     */
     public function index(Request $request): View
     {
         $query = User::query();
 
-        // Search functionality
-        if ($search = $request->get('search')) {
-            $query->where(function ($q) use ($search): void {
+        if ($search = $request->string('search')->toString()) {
+            $query->where(function (Builder $q) use ($search): void {
                 $q->where('name', 'like', sprintf('%%%s%%', $search))
                     ->orWhere('email', 'like', sprintf('%%%s%%', $search));
             });
         }
 
-        // Admin filter
         if ($request->get('admin') === '1') {
             $query->where('is_admin', true);
         } elseif ($request->get('admin') === '0') {
             $query->where('is_admin', false);
         }
 
-        // Sort by
-        $sortBy = $request->get('sort', 'created_at');
-        $sortDirection = $request->get('direction', 'desc');
+        $sortBy = $request->string('sort', 'created_at')->toString();
+        $sortDirection = $request->string('direction', 'desc')->toString() === 'asc' ? 'asc' : 'desc';
         $query->orderBy($sortBy, $sortDirection);
 
         $users = $query->paginate(15)->withQueryString();
@@ -50,17 +45,11 @@ final class UserController extends Controller
         return view('admin.users.index', ['users' => $users]);
     }
 
-    /**
-     * Show the form for creating a new user
-     */
     public function create(): View
     {
         return view('admin.users.create');
     }
 
-    /**
-     * Store a newly created user
-     */
     public function store(StoreUserRequest $request, CreateUserAction $action): RedirectResponse
     {
         $validated = $request->validated();
@@ -70,25 +59,16 @@ final class UserController extends Controller
             ->with('success', 'User "'.$user->name.'" created successfully.');
     }
 
-    /**
-     * Display the specified user
-     */
     public function show(User $user): View
     {
         return view('admin.users.show', ['user' => $user]);
     }
 
-    /**
-     * Show the form for editing the specified user
-     */
     public function edit(User $user): View
     {
         return view('admin.users.edit', ['user' => $user]);
     }
 
-    /**
-     * Update the specified user
-     */
     public function update(UpdateUserRequest $request, User $user, UpdateUserAction $action): RedirectResponse
     {
         $validated = $request->validated();
@@ -98,12 +78,8 @@ final class UserController extends Controller
             ->with('success', 'User "'.$user->name.'" updated successfully.');
     }
 
-    /**
-     * Remove the specified user
-     */
     public function destroy(User $user, DeleteUserAction $action): RedirectResponse
     {
-        // Prevent deleting yourself
         if ($user->id === auth()->id()) {
             return to_route('admin.users.index')
                 ->with('error', 'You cannot delete your own account.');
@@ -116,9 +92,6 @@ final class UserController extends Controller
             ->with('success', 'User "'.$name.'" deleted successfully.');
     }
 
-    /**
-     * Handle bulk actions on selected users
-     */
     public function bulkAction(Request $request, BulkUserAction $action): RedirectResponse
     {
         $request->validate([
@@ -127,10 +100,12 @@ final class UserController extends Controller
             'selected_users.*' => ['exists:users,id'],
         ]);
 
+        $actingUserId = (int) auth()->id();
+
         $message = $action->execute(
-            $request->input('action'),
-            $request->input('selected_users'),
-            auth()->id()
+            $request->string('action')->value(),
+            array_values((array) $request->input('selected_users')),
+            $actingUserId
         );
 
         return to_route('admin.users.index')->with('success', $message);

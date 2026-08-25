@@ -49,8 +49,18 @@ test('project show page returns 404 for draft projects', function (): void {
 });
 
 test('projects can be filtered by search term', function (): void {
-    Project::factory()->published()->create(['title' => 'Water Project']);
-    Project::factory()->published()->create(['title' => 'Education Initiative']);
+    Project::factory()->published()->create([
+        'title' => 'Water Project',
+        'description' => 'Clean water access for communities.',
+        'content' => 'Project details about water supply.',
+        'location' => 'Kigali, Rwanda',
+    ]);
+    Project::factory()->published()->create([
+        'title' => 'Education Initiative',
+        'description' => 'School construction program.',
+        'content' => 'Project details about education.',
+        'location' => 'Nairobi, Kenya',
+    ]);
 
     $response = $this->get(route('projects.index', ['search' => 'Water']));
 
@@ -112,7 +122,9 @@ test('project search scope works correctly', function (): void {
 
     $results = Project::query()->search('water')->get();
     expect($results)->toHaveCount(1);
-    expect($results->first()->title)->toBe('Water Project');
+    $firstResult = $results->first();
+    assert($firstResult !== null);
+    expect($firstResult->title)->toBe('Water Project');
 });
 
 test('project image URL helpers work correctly', function (): void {

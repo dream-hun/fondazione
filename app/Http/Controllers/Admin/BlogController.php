@@ -19,11 +19,11 @@ final class BlogController extends Controller
     {
         $query = Blog::query();
 
-        if ($search = $request->get('search')) {
+        if ($search = $request->string('search')->toString()) {
             $query->search($search);
         }
 
-        if ($status = $request->get('status')) {
+        if ($status = $request->string('status')->toString()) {
             if ($status === 'published') {
                 $query->published();
             } elseif ($status === 'draft') {
@@ -35,8 +35,8 @@ final class BlogController extends Controller
             $query->featured();
         }
 
-        $sortBy = $request->get('sort', 'created_at');
-        $sortDirection = $request->get('direction', 'desc');
+        $sortBy = $request->string('sort', 'created_at')->toString();
+        $sortDirection = $request->string('direction', 'desc')->toString() === 'asc' ? 'asc' : 'desc';
         $query->orderBy($sortBy, $sortDirection);
 
         $blogs = $query->paginate(15)->withQueryString();
@@ -115,8 +115,9 @@ final class BlogController extends Controller
             'selected_blogs.*' => ['exists:blogs,id'],
         ]);
 
-        $blogIds = $request->input('selected_blogs');
-        $action = $request->input('action');
+        /** @var list<int|string> $blogIds */
+        $blogIds = (array) $request->input('selected_blogs');
+        $action = $request->string('action')->value();
         $count = count($blogIds);
 
         $message = match ($action) {
@@ -125,6 +126,7 @@ final class BlogController extends Controller
             'unpublish' => $this->bulkUnpublish($blogIds, $count),
             'feature' => $this->bulkFeature($blogIds, $count),
             'unfeature' => $this->bulkUnfeature($blogIds, $count),
+            default => '', // @codeCoverageIgnore
         };
 
         return to_route('admin.blogs.index')->with('success', $message);

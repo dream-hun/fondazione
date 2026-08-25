@@ -51,9 +51,24 @@ test('blog show page returns 404 for draft blog', function (): void {
 });
 
 test('blog search functionality works', function (): void {
-    $blog1 = Blog::factory()->published()->create(['title' => 'Laravel Development Tips']);
-    $blog2 = Blog::factory()->published()->create(['title' => 'Vue.js Best Practices']);
-    $blog3 = Blog::factory()->published()->create(['title' => 'PHP Performance Optimization']);
+    $blog1 = Blog::factory()->published()->create([
+        'title' => 'Laravel Development Tips',
+        'excerpt' => 'Guide to building apps.',
+        'content' => 'Advanced Laravel techniques.',
+        'tags' => 'php, framework',
+    ]);
+    $blog2 = Blog::factory()->published()->create([
+        'title' => 'Vue.js Best Practices',
+        'excerpt' => 'Frontend development guide.',
+        'content' => 'Modern JavaScript patterns.',
+        'tags' => 'javascript, frontend',
+    ]);
+    $blog3 = Blog::factory()->published()->create([
+        'title' => 'PHP Performance Optimization',
+        'excerpt' => 'Speed up your code.',
+        'content' => 'Profiling and tuning tips.',
+        'tags' => 'php, backend',
+    ]);
 
     $response = $this->get(route('blog.index', ['search' => 'Laravel']));
 

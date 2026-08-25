@@ -63,6 +63,7 @@ test('admin can create a report', function (): void {
     ]);
 
     $report = Report::query()->where('title', 'Annual Report 2025')->first();
+    assert($report !== null);
     Storage::disk('public')->assertExists($report->file_path);
 });
 
@@ -205,11 +206,28 @@ test('admin can bulk unpublish reports', function (): void {
             'selected_reports' => $reports->pluck('id')->toArray(),
         ])
         ->assertRedirect(route('admin.reports.index'))
-        ->assertSessionHas('success');
+        ->assertSessionHas('success', '2 report(s) unpublished successfully.');
 
     $reports->each(fn ($r) => $this->assertDatabaseHas('reports', [
         'id' => $r->id,
         'status' => Status::Unpublished->value,
+    ]));
+});
+
+test('admin can bulk move reports back to draft', function (): void {
+    $reports = Report::factory()->published()->count(2)->create();
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.reports.bulk-action'), [
+            'action' => 'draft',
+            'selected_reports' => $reports->pluck('id')->toArray(),
+        ])
+        ->assertRedirect(route('admin.reports.index'))
+        ->assertSessionHas('success', '2 report(s) moved to draft.');
+
+    $reports->each(fn ($r) => $this->assertDatabaseHas('reports', [
+        'id' => $r->id,
+        'status' => Status::Draft->value,
     ]));
 });
 
