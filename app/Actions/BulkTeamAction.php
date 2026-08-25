@@ -10,20 +10,21 @@ use Illuminate\Support\Facades\Storage;
 final class BulkTeamAction
 {
     /**
-     * @param  list<int|string>  $teamIds
+     * @param  array<mixed>  $teamIds
      */
     public function execute(string $action, array $teamIds): string
     {
         $count = count($teamIds);
 
-        return match ($action) {
-            'delete' => $this->deleteTeams($teamIds, $count),
-            default => 'Invalid action selected.',
-        };
+        if ($action === 'delete') {
+            return $this->deleteTeams($teamIds, $count);
+        }
+
+        return 'Invalid action selected.';
     }
 
     /**
-     * @param  list<int|string>  $teamIds
+     * @param  array<mixed>  $teamIds
      */
     private function deleteTeams(array $teamIds, int $count): string
     {

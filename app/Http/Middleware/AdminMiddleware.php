@@ -12,8 +12,14 @@ final class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): BaseResponse
     {
-        abort_unless(auth()->user()->is_admin, 403, 'Access denied. Admin privileges required.');
+        $user = auth()->user();
 
-        return $next($request);
+        abort_unless($user !== null && $user->is_admin, 403, 'Access denied. Admin privileges required.');
+
+        $response = $next($request);
+
+        assert($response instanceof BaseResponse);
+
+        return $response;
     }
 }

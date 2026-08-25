@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/usr/local/bin/php",
+            "args": [
+                "/home/dreamchaser/Codes/fondazione/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}

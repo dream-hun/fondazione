@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\Notices\Status;
 use App\Models\Notice;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -15,8 +16,8 @@ final class NoticeController extends Controller
     {
         $notices = Notice::query()
             ->where('status', Status::Published)
-            ->when($request->search, function ($query, $search): void {
-                $query->where(function ($q) use ($search): void {
+            ->when($request->string('search')->toString(), function (Builder $query, string $search): void {
+                $query->where(function (Builder $q) use ($search): void {
                     $q->where('title', 'like', sprintf('%%%s%%', $search))
                         ->orWhere('body', 'like', sprintf('%%%s%%', $search))
                         ->orWhere('excerpt', 'like', sprintf('%%%s%%', $search));

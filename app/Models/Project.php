@@ -7,39 +7,45 @@ namespace App\Models;
 use App\Enum\Projects\Category;
 use App\Enum\Projects\Status;
 use App\Models\Concerns\GeneratesUniqueSlug;
+use Database\Factories\ProjectFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property Category $category
+ * @property list<string>|null $gallery_images
+ */
+#[Fillable([
+    'title',
+    'slug',
+    'description',
+    'content',
+    'status',
+    'start_date',
+    'end_date',
+    'budget',
+    'location',
+    'beneficiaries_count',
+    'featured_image',
+    'gallery_images',
+    'is_featured',
+    'category',
+])]
 final class Project extends Model
 {
     use GeneratesUniqueSlug;
-    use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'slug',
-        'description',
-        'content',
-        'status',
-        'start_date',
-        'end_date',
-        'budget',
-        'location',
-        'beneficiaries_count',
-        'featured_image',
-        'gallery_images',
-        'is_featured',
-        'category',
-    ];
+    /** @use HasFactory<ProjectFactory> */
+    use HasFactory;
 
     public function getRouteKeyName(): string
     {
         return 'slug';
     }
 
-    // Helper methods
     public function publish(): bool
     {
         return $this->update(['status' => Status::Published->value]);
@@ -60,37 +66,60 @@ final class Project extends Model
         return $this->update(['is_featured' => false]);
     }
 
-    // Scopes
+    /**
+     * @param  Builder<Project>  $query
+     * @return Builder<Project>
+     */
     #[Scope]
     protected function published(Builder $query): Builder
     {
         return $query->where('status', Status::Published->value);
     }
 
+    /**
+     * @param  Builder<Project>  $query
+     * @return Builder<Project>
+     */
     #[Scope]
     protected function draft(Builder $query): Builder
     {
         return $query->where('status', Status::Draft->value);
     }
 
+    /**
+     * @param  Builder<Project>  $query
+     * @return Builder<Project>
+     */
     #[Scope]
     protected function archived(Builder $query): Builder
     {
         return $query->where('status', Status::Archived->value);
     }
 
+    /**
+     * @param  Builder<Project>  $query
+     * @return Builder<Project>
+     */
     #[Scope]
     protected function featured(Builder $query): Builder
     {
         return $query->where('is_featured', true);
     }
 
+    /**
+     * @param  Builder<Project>  $query
+     * @return Builder<Project>
+     */
     #[Scope]
     protected function category(Builder $query, Category $category): Builder
     {
         return $query->where('category', $category->value);
     }
 
+    /**
+     * @param  Builder<Project>  $query
+     * @return Builder<Project>
+     */
     #[Scope]
     protected function search(Builder $query, string $search): Builder
     {
@@ -107,8 +136,7 @@ final class Project extends Model
         return match ($this->status) {
             'draft' => 'Draft',
             'published' => 'Published',
-            'archived' => 'Archived',
-            default => 'Unknown',
+            default => 'Archived',
         };
     }
 
@@ -119,18 +147,7 @@ final class Project extends Model
 
     protected function getFeaturedImageUrlAttribute(): ?string
     {
-        if (! $this->featured_image) {
-            return null;
-        }
-
         $featured = $this->featured_image;
-        if (is_array($featured)) {
-            $featured = $featured['url']
-                ?? $featured['path']
-                ?? $featured['name']
-                ?? $featured['filename']
-                ?? null;
-        }
 
         if (! is_string($featured) || $featured === '') {
             return null;
@@ -143,21 +160,22 @@ final class Project extends Model
         return asset('storage/'.$featured);
     }
 
+    /**
+     * @return list<string>
+     */
     protected function getGalleryImageUrlsAttribute(): array
     {
-        if (! $this->gallery_images || ! is_array($this->gallery_images)) {
+        // gallery_images is cast to array; raw attribute may be null
+        $galleryImages = $this->attributes['gallery_images'] ?? null;
+
+        if ($galleryImages === null) {
             return [];
         }
 
-        $normalized = array_map(function ($image): ?string {
-            if (is_array($image)) {
-                $image = $image['url']
-                    ?? $image['path']
-                    ?? $image['name']
-                    ?? $image['filename']
-                    ?? null;
-            }
+        /** @var array<mixed> $decoded */
+        $decoded = is_string($galleryImages) ? (json_decode($galleryImages, true) ?? []) : (array) $galleryImages;
 
+        $normalized = array_map(function (mixed $image): ?string {
             if (! is_string($image) || $image === '') {
                 return null;
             }
@@ -167,9 +185,10 @@ final class Project extends Model
             }
 
             return asset('storage/'.$image);
-        }, $this->gallery_images);
+        }, $decoded);
 
-        return array_values(array_filter($normalized, fn ($v): bool => is_string($v) && $v !== ''));
+        /** @var list<string> */
+        return array_values(array_filter($normalized, fn (?string $v): bool => $v !== null && $v !== ''));
     }
 
     protected function casts(): array

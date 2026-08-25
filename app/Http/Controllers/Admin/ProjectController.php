@@ -11,31 +11,32 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 final class ProjectController extends Controller
 {
-    public function index(): Factory|View
+    public function index(Request $request): Factory|View
     {
+        $search = $request->string('search')->value();
+        $status = $request->string('status')->value();
+        $categoryValue = $request->string('category')->value();
+        $sort = $request->string('sort', 'created_at')->value() ?: 'created_at';
+
         $projects = Project::query()
-            ->when(request('search'), function ($query, $search): void {
-                $query->search($search);
-            })
-            ->when(request('status'), function ($query, $status): void {
-                $query->where('status', $status);
-            })
-            ->when(request('featured') === '1', function ($query): void {
-                $query->featured();
-            })
-            ->when(request('category'), function ($query, $categoryValue): void {
+            ->when($search !== '', fn (Builder $q) => $q->search($search))
+            ->when($status !== '', fn (Builder $q) => $q->where('status', $status))
+            ->when(request('featured') === '1', fn (Builder $q) => $q->featured())
+            ->when($categoryValue !== '', function (Builder $q) use ($categoryValue): void {
                 $category = Category::tryFrom($categoryValue);
                 if ($category !== null) {
-                    $query->category($category);
+                    $q->category($category);
                 }
             })
-            ->orderBy(request('sort', 'created_at'), 'desc')
+            ->orderBy($sort, 'desc')
             ->paginate(15);
 
         return view('admin.projects.index', ['projects' => $projects]);
@@ -55,8 +56,12 @@ final class ProjectController extends Controller
         }
 
         if ($request->hasFile('gallery_images')) {
-            $validated['gallery_images'] = collect($request->file('gallery_images'))
-                ->map(fn ($image) => $image->store('projects/gallery', 'public'))
+            $galleryFiles = $request->file('gallery_images');
+            $galleryFiles = is_array($galleryFiles) ? $galleryFiles : [$galleryFiles];
+            $validated['gallery_images'] = collect($galleryFiles)
+                ->filter(fn (mixed $f): bool => $f instanceof UploadedFile)
+                ->map(fn (UploadedFile $image) => $image->store('projects/gallery', 'public'))
+                ->filter(fn (mixed $v): bool => is_string($v))
                 ->values()
                 ->all();
         }
@@ -83,6 +88,7 @@ final class ProjectController extends Controller
     public function update(UpdateProjectRequest $request, Project $project): RedirectResponse
     {
         $validated = $request->validated();
+        /** @var list<string> $currentGallery */
         $currentGallery = $project->gallery_images ?? [];
         $galleryUpdated = false;
 
@@ -99,8 +105,10 @@ final class ProjectController extends Controller
             $validated['featured_image'] = $request->file('featured_image')->store('projects/featured', 'public');
         }
 
-        if ($request->filled('remove_gallery_images') && $currentGallery) {
-            foreach ($request->input('remove_gallery_images', []) as $index) {
+        if ($request->filled('remove_gallery_images') && $currentGallery !== []) {
+            /** @var list<int> $removeIndexes */
+            $removeIndexes = (array) $request->input('remove_gallery_images', []);
+            foreach ($removeIndexes as $index) {
                 if (isset($currentGallery[$index])) {
                     Storage::disk('public')->delete($currentGallery[$index]);
                     unset($currentGallery[$index]);
@@ -112,11 +120,17 @@ final class ProjectController extends Controller
         }
 
         if ($request->hasFile('gallery_images')) {
-            foreach ($request->file('gallery_images') as $image) {
-                $currentGallery[] = $image->store('projects/gallery', 'public');
+            $galleryFiles = $request->file('gallery_images');
+            $galleryFiles = is_array($galleryFiles) ? $galleryFiles : [$galleryFiles];
+            foreach ($galleryFiles as $image) {
+                if ($image instanceof UploadedFile) {
+                    $stored = $image->store('projects/gallery', 'public');
+                    if (is_string($stored)) {
+                        $currentGallery[] = $stored;
+                    }
+                }
             }
 
-            $currentGallery = array_values($currentGallery);
             $galleryUpdated = true;
         }
 
@@ -158,8 +172,9 @@ final class ProjectController extends Controller
             'selected_projects.*' => ['exists:projects,id'],
         ]);
 
-        $projectIds = $request->input('selected_projects');
-        $action = $request->input('action');
+        /** @var list<int|string> $projectIds */
+        $projectIds = array_values((array) $request->input('selected_projects'));
+        $action = $request->string('action')->value();
 
         $count = match ($action) {
             'publish' => Project::query()->whereIn('id', $projectIds)->update(['status' => 'published']),
@@ -167,7 +182,7 @@ final class ProjectController extends Controller
             'archive' => Project::query()->whereIn('id', $projectIds)->update(['status' => 'archived']),
             'feature' => Project::query()->whereIn('id', $projectIds)->update(['is_featured' => true]),
             'unfeature' => Project::query()->whereIn('id', $projectIds)->update(['is_featured' => false]),
-            'delete' => $this->bulkDelete($projectIds),
+            default => $this->bulkDelete($projectIds),
         };
 
         $actionText = match ($action) {
@@ -176,7 +191,7 @@ final class ProjectController extends Controller
             'archive' => 'archived',
             'feature' => 'marked as featured',
             'unfeature' => 'removed from featured',
-            'delete' => 'deleted',
+            default => 'deleted',
         };
 
         return to_route('admin.projects.index')
@@ -193,7 +208,9 @@ final class ProjectController extends Controller
                 Storage::disk('public')->delete($project->featured_image);
             }
 
-            foreach ($project->gallery_images ?? [] as $image) {
+            $galleryImages = $project->gallery_images ?? [];
+
+            foreach ($galleryImages as $image) {
                 Storage::disk('public')->delete($image);
             }
 

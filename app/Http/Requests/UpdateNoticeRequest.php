@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Enum\Notices\Status;
+use App\Models\Notice;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,7 +17,9 @@ final class UpdateNoticeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->is_admin;
+        $user = auth()->user();
+
+        return $user !== null && $user->is_admin;
     }
 
     /**
@@ -26,7 +29,8 @@ final class UpdateNoticeRequest extends FormRequest
      */
     public function rules(): array
     {
-        $noticeId = $this->route('notice')->id;
+        $notice = $this->route('notice');
+        $noticeId = $notice instanceof Notice ? $notice->id : null;
 
         return [
             'title' => ['required', 'string', 'max:255'],

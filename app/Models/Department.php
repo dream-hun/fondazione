@@ -5,29 +5,32 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Concerns\GeneratesUniqueSlug;
+use Database\Factories\DepartmentFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Fillable([
+    'name',
+    'slug',
+    'description',
+    'email',
+    'phone',
+    'location',
+    'head_of_department',
+    'mission',
+    'key_responsibilities',
+    'is_active',
+    'display_order',
+])]
 final class Department extends Model
 {
     use GeneratesUniqueSlug;
-    use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'email',
-        'phone',
-        'location',
-        'head_of_department',
-        'mission',
-        'key_responsibilities',
-        'is_active',
-        'display_order',
-    ];
+    /** @use HasFactory<DepartmentFactory> */
+    use HasFactory;
 
     public function slugSourceColumn(): string
     {
@@ -39,18 +42,30 @@ final class Department extends Model
         return 'slug';
     }
 
+    /**
+     * @param  Builder<Department>  $query
+     * @return Builder<Department>
+     */
     #[Scope]
     protected function active(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
 
+    /**
+     * @param  Builder<Department>  $query
+     * @return Builder<Department>
+     */
     #[Scope]
     protected function inactive(Builder $query): Builder
     {
         return $query->where('is_active', false);
     }
 
+    /**
+     * @param  Builder<Department>  $query
+     * @return Builder<Department>
+     */
     #[Scope]
     protected function search(Builder $query, string $search): Builder
     {
@@ -62,6 +77,10 @@ final class Department extends Model
         });
     }
 
+    /**
+     * @param  Builder<Department>  $query
+     * @return Builder<Department>
+     */
     #[Scope]
     protected function ordered(Builder $query): Builder
     {

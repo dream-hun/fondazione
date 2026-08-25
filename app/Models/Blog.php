@@ -6,38 +6,39 @@ namespace App\Models;
 
 use App\Enum\Blogs\Status;
 use App\Models\Concerns\GeneratesUniqueSlug;
+use Database\Factories\BlogFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[Fillable([
+    'title',
+    'slug',
+    'excerpt',
+    'content',
+    'status',
+    'published_at',
+    'featured_image',
+    'author_name',
+    'author_email',
+    'tags',
+    'is_featured',
+    'reading_time',
+])]
 final class Blog extends Model
 {
     use GeneratesUniqueSlug;
+
+    /** @use HasFactory<BlogFactory> */
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'slug',
-        'excerpt',
-        'content',
-        'status',
-        'published_at',
-        'featured_image',
-        'author_name',
-        'author_email',
-        'tags',
-        'is_featured',
-        'reading_time',
-    ];
-
-    // Accessors
     public function getRouteKeyName(): string
     {
         return 'slug';
     }
 
-    // Helper methods
     public function publish(): bool
     {
         return $this->update([
@@ -56,7 +57,10 @@ final class Blog extends Model
         return $this->update(['is_featured' => false]);
     }
 
-    // Scopes
+    /**
+     * @param  Builder<Blog>  $query
+     * @return Builder<Blog>
+     */
     #[Scope]
     protected function published(Builder $query): Builder
     {
@@ -64,18 +68,30 @@ final class Blog extends Model
             ->where('published_at', '<=', now());
     }
 
+    /**
+     * @param  Builder<Blog>  $query
+     * @return Builder<Blog>
+     */
     #[Scope]
     protected function draft(Builder $query): Builder
     {
         return $query->where('status', Status::Draft->value);
     }
 
+    /**
+     * @param  Builder<Blog>  $query
+     * @return Builder<Blog>
+     */
     #[Scope]
     protected function featured(Builder $query): Builder
     {
         return $query->where('is_featured', true);
     }
 
+    /**
+     * @param  Builder<Blog>  $query
+     * @return Builder<Blog>
+     */
     #[Scope]
     protected function search(Builder $query, string $search): Builder
     {
@@ -87,6 +103,10 @@ final class Blog extends Model
         });
     }
 
+    /**
+     * @param  Builder<Blog>  $query
+     * @return Builder<Blog>
+     */
     #[Scope]
     protected function byTag(Builder $query, string $tag): Builder
     {
@@ -96,15 +116,23 @@ final class Blog extends Model
     protected function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
-            'draft' => 'Draft',
-            'published' => 'Published',
-            default => 'Unknown',
+            Status::Draft->value => 'Draft',
+            default => 'Published',
         };
     }
 
     protected function getIsActiveAttribute(): bool
     {
-        return $this->status === 'published' && $this->published_at <= now();
+        if ($this->status !== 'published') {
+            return false;
+        }
+
+        $raw = $this->attributes['published_at'] ?? null;
+        if ($raw === null) {
+            return false;
+        }
+
+        return $this->asDateTime($raw)->lte(now());
     }
 
     protected function getFeaturedImageUrlAttribute(): ?string
@@ -120,22 +148,29 @@ final class Blog extends Model
         return asset('storage/'.$this->featured_image);
     }
 
+    /**
+     * @return list<string>
+     */
     protected function getTagsArrayAttribute(): array
     {
         if (! $this->tags) {
             return [];
         }
 
-        return array_map(trim(...), explode(',', $this->tags));
+        /** @var list<string> */
+        return array_map(trim(...), explode(',', (string) $this->tags));
     }
 
     protected function getReadingTimeAttribute(): int
     {
-        if ($this->attributes['reading_time']) {
-            return $this->attributes['reading_time'];
+        $stored = $this->attributes['reading_time'] ?? null;
+        if (! in_array($stored, [null, false, '', 0], true)) {
+            return is_scalar($stored) ? (int) $stored : 1;
         }
 
-        $wordCount = str_word_count(strip_tags($this->content ?? ''));
+        $raw = $this->attributes['content'] ?? null;
+        $content = is_scalar($raw) ? (string) $raw : '';
+        $wordCount = str_word_count(strip_tags($content));
 
         return max(1, (int) ceil($wordCount / 200));
     }

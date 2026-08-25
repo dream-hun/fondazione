@@ -10,12 +10,12 @@ enum Status: string
     case Published = 'Published';
     case Unpublished = 'Unpublished';
 
-    public function getLabel(): ?string
+    public function getLabel(): string
     {
         return $this->name;
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): string
     {
         return match ($this) {
             self::Draft => 'gray',

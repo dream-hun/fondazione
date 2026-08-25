@@ -18,7 +18,7 @@ final class DepartmentController extends Controller
     {
         $query = Department::query();
 
-        if ($search = $request->get('search')) {
+        if ($search = $request->string('search')->toString()) {
             $query->search($search);
         }
 
@@ -28,8 +28,8 @@ final class DepartmentController extends Controller
             $query->inactive();
         }
 
-        $sortBy = $request->get('sort', 'display_order');
-        $sortDirection = $request->get('direction', 'asc');
+        $sortBy = $request->string('sort', 'display_order')->toString();
+        $sortDirection = $request->string('direction', 'asc')->toString() === 'desc' ? 'desc' : 'asc';
         $query->orderBy($sortBy, $sortDirection);
 
         $departments = $query->paginate(15)->withQueryString();
@@ -85,20 +85,21 @@ final class DepartmentController extends Controller
             'selected_departments.*' => ['exists:departments,id'],
         ]);
 
-        $departmentIds = $request->input('selected_departments');
-        $action = $request->input('action');
+        /** @var list<int|string> $departmentIds */
+        $departmentIds = (array) $request->input('selected_departments');
+        $action = $request->string('action')->value();
         $count = count($departmentIds);
 
         match ($action) {
             'delete' => Department::query()->whereIn('id', $departmentIds)->delete(),
             'activate' => Department::query()->whereIn('id', $departmentIds)->update(['is_active' => true]),
-            'deactivate' => Department::query()->whereIn('id', $departmentIds)->update(['is_active' => false]),
+            default => Department::query()->whereIn('id', $departmentIds)->update(['is_active' => false]),
         };
 
         $message = match ($action) {
             'delete' => $count.' department(s) deleted successfully.',
             'activate' => $count.' department(s) activated successfully.',
-            'deactivate' => $count.' department(s) deactivated successfully.',
+            default => $count.' department(s) deactivated successfully.',
         };
 
         return to_route('admin.departments.index')->with('success', $message);

@@ -4,15 +4,18 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "lint": "echo \"No JS linting configured\"",
+        "test:lint": "echo \"No JS lint checks configured\"",
+        "test:types": "echo \"No JS type checks configured\""
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.0.0",
-        "axios": "^1.11.0",
-        "concurrently": "^10.0.3",
-        "laravel-vite-plugin": "^3.1.0",
-        "tailwindcss": "^4.0.0",
-        "vite": "^8.0.16"
+        "@tailwindcss/vite": "^4.3.3",
+        "axios": "^1.19.0",
+        "concurrently": "^10.0.5",
+        "laravel-vite-plugin": "^3.2.0",
+        "tailwindcss": "^4.3.3",
+        "vite": "^8.2.2"
     },
     "dependencies": {
         "tw-prose": "^0.0.10"

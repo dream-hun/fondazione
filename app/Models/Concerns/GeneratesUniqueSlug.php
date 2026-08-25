@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace App\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @mixin Model
+ */
 trait GeneratesUniqueSlug
 {
     public function slugColumn(): string
@@ -26,7 +30,9 @@ trait GeneratesUniqueSlug
             $sourceCol = $model->slugSourceColumn();
 
             if (empty($model->{$slugCol})) {
-                $base = Str::slug($model->{$sourceCol}) ?: (static::getTable().'-'.time());
+                $raw = $model->getAttribute($sourceCol);
+                $sourceValue = is_scalar($raw) ? (string) $raw : '';
+                $base = Str::slug($sourceValue) ?: ($model->getTable().'-'.time());
                 $model->{$slugCol} = static::buildUniqueSlug($base);
             }
         });
@@ -36,20 +42,24 @@ trait GeneratesUniqueSlug
             $sourceCol = $model->slugSourceColumn();
 
             if ($model->isDirty($sourceCol) && empty($model->{$slugCol})) {
-                $base = Str::slug($model->{$sourceCol}) ?: (static::getTable().'-'.$model->id);
-                $model->{$slugCol} = static::buildUniqueSlug($base, $model->id);
+                $raw = $model->getAttribute($sourceCol);
+                $sourceValue = is_scalar($raw) ? (string) $raw : '';
+                $key = $model->getKey();
+                $keyStr = is_scalar($key) ? (string) $key : '';
+                $base = Str::slug($sourceValue) ?: ($model->getTable().'-'.$keyStr);
+                $model->{$slugCol} = static::buildUniqueSlug($base, $model->getKey());
             }
         });
     }
 
-    protected static function buildUniqueSlug(string $base, ?int $excludeId = null): string
+    protected static function buildUniqueSlug(string $base, mixed $excludeId = null): string
     {
         $slug = $base;
         $counter = 1;
 
         while (static::query()
             ->where((new static)->slugColumn(), $slug)
-            ->when($excludeId, fn (Builder $q) => $q->where('id', '!=', $excludeId))
+            ->when($excludeId !== null, fn (Builder $q) => $q->where('id', '!=', $excludeId))
             ->exists()) {
             $slug = $base.'-'.$counter++;
         }

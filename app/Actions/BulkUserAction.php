@@ -9,7 +9,7 @@ use App\Models\User;
 final class BulkUserAction
 {
     /**
-     * @param  list<int|string>  $userIds
+     * @param  array<mixed>  $userIds
      */
     public function execute(string $action, array $userIds, int $actingUserId): string
     {
@@ -22,11 +22,11 @@ final class BulkUserAction
     }
 
     /**
-     * @param  list<int|string>  $userIds
+     * @param  array<mixed>  $userIds
      */
     private function deleteUsers(array $userIds, int $actingUserId): string
     {
-        $ids = array_values(array_filter($userIds, fn ($id): bool => (int) $id !== $actingUserId));
+        $ids = array_values(array_filter($userIds, fn (mixed $id): bool => is_scalar($id) && (int) $id !== $actingUserId));
 
         if ($ids === []) {
             return 'You cannot delete yourself.';
@@ -38,7 +38,7 @@ final class BulkUserAction
     }
 
     /**
-     * @param  list<int|string>  $userIds
+     * @param  array<mixed>  $userIds
      */
     private function setAdminStatus(array $userIds, bool $isAdmin, int $count): string
     {
@@ -50,11 +50,11 @@ final class BulkUserAction
     }
 
     /**
-     * @param  list<int|string>  $userIds
+     * @param  array<mixed>  $userIds
      */
     private function removeAdmin(array $userIds, int $actingUserId): string
     {
-        $ids = array_values(array_filter($userIds, fn ($id): bool => (int) $id !== $actingUserId));
+        $ids = array_values(array_filter($userIds, fn (mixed $id): bool => is_scalar($id) && (int) $id !== $actingUserId));
 
         if ($ids === []) {
             return 'You cannot remove admin privileges from yourself.';

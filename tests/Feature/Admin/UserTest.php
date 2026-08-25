@@ -30,6 +30,17 @@ test('admin can view users index', function (): void {
         ->assertSee('New User');
 });
 
+test('admin can sort users ascending by name', function (): void {
+    User::factory()->create(['name' => 'Aaron First']);
+    User::factory()->create(['name' => 'Zoe Last']);
+
+    $response = $this->actingAs($this->admin)
+        ->get(route('admin.users.index', ['sort' => 'name', 'direction' => 'asc']));
+
+    $response->assertSuccessful()
+        ->assertSeeInOrder(['Aaron First', 'Zoe Last']);
+});
+
 test('non-admin cannot view users index', function (): void {
     $this->actingAs($this->user)
         ->get(route('admin.users.index'))
@@ -317,6 +328,18 @@ test('admin can filter users by admin status', function (): void {
 
     $response->assertSuccessful()
         ->assertSee('Admin User');
+});
+
+test('admin can filter users by non-admin status', function (): void {
+    User::factory()->create(['name' => 'Admin User', 'is_admin' => true]);
+    User::factory()->create(['name' => 'Regular User', 'is_admin' => false]);
+
+    $response = $this->actingAs($this->admin)
+        ->get(route('admin.users.index', ['admin' => '0']));
+
+    $response->assertSuccessful()
+        ->assertSee('Regular User')
+        ->assertDontSee('Admin User');
 });
 
 test('admin can perform bulk delete action', function (): void {

@@ -13,6 +13,7 @@ use App\Models\Project;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 final class DashboardController extends Controller
@@ -27,6 +28,9 @@ final class DashboardController extends Controller
         return response()->json($this->getDashboardStats());
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getDashboardStats(): array
     {
         return [
@@ -61,28 +65,53 @@ final class DashboardController extends Controller
         ];
     }
 
+    /**
+     * @return list<array{month: string, blogs: mixed, projects: mixed, notices: mixed}>
+     */
     private function getMonthlyTrends(): array
     {
         $year = now()->year;
+        $monthExpression = $this->monthExpression();
 
-        $aggregate = fn (string $model): \Illuminate\Support\Collection => $model::query()
+        $blogCounts = Blog::query()
             ->whereYear('created_at', $year)
-            ->selectRaw('MONTH(created_at) as month, COUNT(*) as total')
+            ->selectRaw("{$monthExpression} as month, COUNT(*) as total")
             ->groupBy('month')
             ->pluck('total', 'month');
 
-        $blogCounts = $aggregate(Blog::class);
-        $projectCounts = $aggregate(Project::class);
-        $noticeCounts = $aggregate(Notice::class);
+        $projectCounts = Project::query()
+            ->whereYear('created_at', $year)
+            ->selectRaw("{$monthExpression} as month, COUNT(*) as total")
+            ->groupBy('month')
+            ->pluck('total', 'month');
 
+        $noticeCounts = Notice::query()
+            ->whereYear('created_at', $year)
+            ->selectRaw("{$monthExpression} as month, COUNT(*) as total")
+            ->groupBy('month')
+            ->pluck('total', 'month');
+
+        /** @var list<array{month: string, blogs: mixed, projects: mixed, notices: mixed}> */
         return collect(range(1, 12))
-            ->map(fn (int $month): array => [
-                'month' => date('M', mktime(0, 0, 0, $month, 1)),
-                'blogs' => $blogCounts->get($month, 0),
-                'projects' => $projectCounts->get($month, 0),
-                'notices' => $noticeCounts->get($month, 0),
-            ])
+            ->map(function (int $month) use ($blogCounts, $projectCounts, $noticeCounts): array {
+                $ts = mktime(0, 0, 0, $month, 1);
+
+                return [
+                    'month' => $ts !== false ? date('M', $ts) : '',
+                    'blogs' => $blogCounts->get($month, 0),
+                    'projects' => $projectCounts->get($month, 0),
+                    'notices' => $noticeCounts->get($month, 0),
+                ];
+            })
             ->values()
             ->all();
+    }
+
+    private function monthExpression(): string
+    {
+        return match (DB::connection()->getDriverName()) {
+            'sqlite' => "CAST(strftime('%m', created_at) AS INTEGER)",
+            default => 'MONTH(created_at)',
+        };
     }
 }

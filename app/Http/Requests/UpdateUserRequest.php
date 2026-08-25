@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -16,7 +17,9 @@ final class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->is_admin;
+        $user = auth()->user();
+
+        return $user !== null && $user->is_admin;
     }
 
     /**
@@ -26,7 +29,8 @@ final class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = $this->route('user')->id;
+        $routeUser = $this->route('user');
+        $userId = $routeUser instanceof User ? $routeUser->id : null;
 
         return [
             'name' => ['required', 'string', 'max:255'],

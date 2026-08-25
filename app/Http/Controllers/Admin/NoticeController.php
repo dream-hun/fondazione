@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreNoticeRequest;
 use App\Http\Requests\UpdateNoticeRequest;
 use App\Models\Notice;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -20,19 +21,19 @@ final class NoticeController extends Controller
     {
         $query = Notice::query();
 
-        if ($search = $request->get('search')) {
-            $query->where(function ($q) use ($search): void {
+        if ($search = $request->string('search')->toString()) {
+            $query->where(function (Builder $q) use ($search): void {
                 $q->where('title', 'like', sprintf('%%%s%%', $search))
                     ->orWhere('body', 'like', sprintf('%%%s%%', $search));
             });
         }
 
-        if ($status = $request->get('status')) {
+        if ($status = $request->string('status')->toString()) {
             $query->where('status', Status::from($status));
         }
 
-        $sortBy = $request->get('sort', 'created_at');
-        $sortDirection = $request->get('direction', 'desc');
+        $sortBy = $request->string('sort', 'created_at')->toString();
+        $sortDirection = $request->string('direction', 'desc')->toString() === 'asc' ? 'asc' : 'desc';
         $query->orderBy($sortBy, $sortDirection);
 
         $notices = $query->paginate(15)->withQueryString();
@@ -111,15 +112,16 @@ final class NoticeController extends Controller
             'selected_notices.*' => ['exists:notices,id'],
         ]);
 
-        $noticeIds = $request->input('selected_notices');
-        $action = $request->input('action');
+        /** @var list<int|string> $noticeIds */
+        $noticeIds = (array) $request->input('selected_notices');
+        $action = $request->string('action')->value();
         $count = count($noticeIds);
 
         $message = match ($action) {
             'delete' => $this->bulkDelete($noticeIds, $count),
             'publish' => $this->bulkUpdateStatus($noticeIds, Status::Published, $count, 'published'),
             'unpublish' => $this->bulkUpdateStatus($noticeIds, Status::Unpublished, $count, 'unpublished'),
-            'draft' => $this->bulkUpdateStatus($noticeIds, Status::Draft, $count, 'moved to draft'),
+            default => $this->bulkUpdateStatus($noticeIds, Status::Draft, $count, 'moved to draft'),
         };
 
         return to_route('admin.notices.index')->with('success', $message);

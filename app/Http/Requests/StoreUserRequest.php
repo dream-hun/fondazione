@@ -15,7 +15,9 @@ final class StoreUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->is_admin;
+        $user = auth()->user();
+
+        return $user !== null && $user->is_admin;
     }
 
     /**

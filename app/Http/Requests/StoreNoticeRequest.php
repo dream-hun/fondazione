@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Str;
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Enum\Notices\Status;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 final class StoreNoticeRequest extends FormRequest
@@ -17,7 +17,9 @@ final class StoreNoticeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->is_admin;
+        $user = auth()->user();
+
+        return $user !== null && $user->is_admin;
     }
 
     /**

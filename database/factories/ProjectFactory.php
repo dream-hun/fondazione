@@ -41,7 +41,7 @@ final class ProjectFactory extends Factory
                 fake()->imageUrl(800, 600, 'projects'),
             ], fake()->numberBetween(1, 3)),
             'is_featured' => fake()->boolean(20), // 20% chance of being featured
-            'category' => fake()->randomElement(Category::cases())->value,
+            'category' => Category::cases()[array_rand(Category::cases())]->value,
         ];
     }
 

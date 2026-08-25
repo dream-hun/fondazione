@@ -5,12 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>@yield('title') - Fondazione Marcegaglia Onlus Rwanda(FMO)</title>
-    <meta description="@yield('description')">
-
-    <!-- Inter Font -->
-    <link rel="preconnect" href="https://rsms.me/">
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-
+    <meta name="description" content="@yield('description')">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('favicon-96x96.png') }}" sizes="96x96"/>
@@ -22,8 +17,6 @@
 
     <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 
 <body class="antialiased text-gray-900 font-sans">

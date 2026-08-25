@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Models\Project;
 use Exception;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -17,13 +18,16 @@ final class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('components.layouts.app', function (\Illuminate\View\View $view): void {
-            $view->with('sharedProjects', Cache::remember('nav_projects', 300, function (): \Illuminate\Database\Eloquent\Collection {
-                try {
-                    return Project::query()->published()->limit(5)->get();
-                } catch (Exception) {
-                    return collect();
-                }
-            }));
+            $view->with('sharedProjects', $this->resolveNavProjects());
         });
+    }
+
+    private function resolveNavProjects(): EloquentCollection
+    {
+        try {
+            return Cache::remember('nav_projects', 300, fn (): EloquentCollection => Project::query()->published()->limit(5)->get());
+        } catch (Exception) {
+            return new EloquentCollection;
+        }
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
 use App\Models\Team;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -17,25 +18,20 @@ use Illuminate\View\View;
 
 final class TeamController extends Controller
 {
-    /**
-     * Display a listing of team members with search and pagination
-     */
     public function index(Request $request): View
     {
         $query = Team::query();
 
-        // Search functionality
-        if ($search = $request->get('search')) {
-            $query->where(function ($q) use ($search): void {
+        if ($search = $request->string('search')->toString()) {
+            $query->where(function (Builder $q) use ($search): void {
                 $q->where('name', 'like', sprintf('%%%s%%', $search))
                     ->orWhere('position', 'like', sprintf('%%%s%%', $search))
                     ->orWhere('email', 'like', sprintf('%%%s%%', $search));
             });
         }
 
-        // Sort by
-        $sortBy = $request->get('sort', 'created_at');
-        $sortDirection = $request->get('direction', 'desc');
+        $sortBy = $request->string('sort', 'created_at')->toString();
+        $sortDirection = $request->string('direction', 'desc')->toString() === 'asc' ? 'asc' : 'desc';
         $query->orderBy($sortBy, $sortDirection);
 
         $teams = $query->paginate(15)->withQueryString();
@@ -43,22 +39,15 @@ final class TeamController extends Controller
         return view('admin.teams.index', ['teams' => $teams]);
     }
 
-    /**
-     * Show the form for creating a new team member
-     */
     public function create(): View
     {
         return view('admin.teams.create');
     }
 
-    /**
-     * Store a newly created team member
-     */
     public function store(StoreTeamRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('teams', 'public');
         }
@@ -74,38 +63,26 @@ final class TeamController extends Controller
         return to_route('admin.teams.index')->with('success', $message);
     }
 
-    /**
-     * Display the specified team member
-     */
     public function show(Team $team): View
     {
         return view('admin.teams.show', ['team' => $team]);
     }
 
-    /**
-     * Show the form for editing the specified team member
-     */
     public function edit(Team $team): View
     {
         return view('admin.teams.edit', ['team' => $team]);
     }
 
-    /**
-     * Update the specified team member
-     */
     public function update(UpdateTeamRequest $request, Team $team): RedirectResponse
     {
         $validated = $request->validated();
 
-        // Handle image removal
         if ($request->boolean('remove_image') && $team->image) {
             Storage::disk('public')->delete($team->image);
             $validated['image'] = null;
         }
 
-        // Handle new image upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists
             if ($team->image) {
                 Storage::disk('public')->delete($team->image);
             }
@@ -113,7 +90,6 @@ final class TeamController extends Controller
             $validated['image'] = $request->file('image')->store('teams', 'public');
         }
 
-        // Remove fields that are not in the database
         unset($validated['remove_image']);
 
         $team->update($validated);
@@ -127,9 +103,6 @@ final class TeamController extends Controller
         return to_route('admin.teams.index')->with('success', $message);
     }
 
-    /**
-     * Remove the specified team member
-     */
     public function destroy(Team $team, DeleteTeamAction $action): RedirectResponse
     {
         $action->execute($team);
@@ -137,9 +110,6 @@ final class TeamController extends Controller
         return to_route('admin.teams.index')->with('success', 'Team member deleted successfully.');
     }
 
-    /**
-     * Handle bulk actions on team members
-     */
     public function bulkAction(Request $request, BulkTeamAction $bulkAction): RedirectResponse
     {
         $request->validate([
@@ -149,8 +119,8 @@ final class TeamController extends Controller
         ]);
 
         $message = $bulkAction->execute(
-            $request->input('action'),
-            $request->input('selected_teams')
+            $request->string('action')->value(),
+            array_values((array) $request->input('selected_teams'))
         );
 
         return to_route('admin.teams.index')->with('success', $message);

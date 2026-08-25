@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Models\Department;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -15,7 +16,9 @@ final class UpdateDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->is_admin;
+        $user = auth()->user();
+
+        return $user !== null && $user->is_admin;
     }
 
     /**
@@ -25,7 +28,8 @@ final class UpdateDepartmentRequest extends FormRequest
      */
     public function rules(): array
     {
-        $departmentId = $this->route('department')->id;
+        $department = $this->route('department');
+        $departmentId = $department instanceof Department ? $department->id : null;
 
         return [
             'name' => ['required', 'string', 'max:255'],

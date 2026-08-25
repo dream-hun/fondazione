@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Models\Blog;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -15,7 +16,9 @@ final class UpdateBlogRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->is_admin;
+        $user = auth()->user();
+
+        return $user !== null && $user->is_admin;
     }
 
     /**
@@ -25,7 +28,8 @@ final class UpdateBlogRequest extends FormRequest
      */
     public function rules(): array
     {
-        $blogId = $this->route('blog')->id;
+        $blog = $this->route('blog');
+        $blogId = $blog instanceof Blog ? $blog->id : null;
 
         return [
             'title' => ['required', 'string', 'max:255'],
