@@ -4,9 +4,14 @@
         <div class="flex items-center justify-between h-20">
             <a href="{{ route('home') }}" class="flex items-center space-x-3 group">
                 <div class="relative">
-                    <img src="{{ asset('images/FMO ETS.png') }}"
-                         alt="Fondazione Marcegaglia ETS"
-                         class="h-12 w-auto transition-transform duration-300 group-hover:scale-105">
+                    <picture>
+                        <source srcset="{{ asset('images/FMO ETS.avif') }}" type="image/avif">
+                        <img src="{{ asset('images/FMO ETS.png') }}"
+                             alt="Fondazione Marcegaglia ETS"
+                             width="160" height="72"
+                             class="h-12 w-auto transition-transform duration-300 group-hover:scale-105"
+                             decoding="async">
+                    </picture>
 
                     <div
                         class="hidden h-12 w-12 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl items-center justify-center shadow-lg">

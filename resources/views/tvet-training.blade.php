@@ -3,9 +3,14 @@
         Marcegaglia Vocational Training Center
     @endsection
     @section('description')
-        The Marcegaglia Vocational Training Center (MVTC) is a technical school by Fondazione Marcegaglia Onlus (FMO)
+        The Marcegaglia Vocational Training Center (MVTC) is a technical school by Fondazione Marcegaglia ETS (FM ETS)
         aimed at empowering young individuals and reducing school dropout rates in Rwanda.
     @endsection
+    @section('og:title', 'Marcegaglia Vocational Training Center - MVTC')
+    @section('og:description', 'A technical school empowering young individuals through vocational training in Rwanda.')
+    @section('og:image', asset('images/mvtc/Marcegaglia Vocational Training center.avif'))
+    @section('twitter:title', 'Marcegaglia Vocational Training Center - MVTC')
+    @section('twitter:description', 'A technical school empowering young individuals through vocational training in Rwanda.')
     <!-- Hero Section -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <img src="{{ asset('images/mvtc/Marcegaglia Vocational Training center.avif') }}" alt="TVET Training Center"

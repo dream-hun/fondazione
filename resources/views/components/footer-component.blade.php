@@ -5,8 +5,13 @@
             <!-- About Section with Logo -->
             <div class="lg:col-span-1">
                 <a href="{{ route('home') }}" class="inline-block mb-6 group">
-                    <img src="{{ asset('images/FMO ETS.png') }}" alt="Fondazione Marcegaglia ITS"
-                         class="h-16 w-auto transition-transform duration-300 group-hover:scale-105 brightness-0 invert">
+                    <picture>
+                        <source srcset="{{ asset('images/FMO ETS.avif') }}" type="image/avif">
+                        <img src="{{ asset('images/FMO ETS.png') }}" alt="Fondazione Marcegaglia ETS"
+                             width="160" height="72"
+                             class="h-16 w-auto transition-transform duration-300 group-hover:scale-105 brightness-0 invert"
+                             loading="lazy" decoding="async">
+                    </picture>
                 </a>
                 <p class="text-sm text-gray-300 leading-relaxed mb-6">
                     Empowering communities in Rwanda through education, healthcare, and sustainable development
