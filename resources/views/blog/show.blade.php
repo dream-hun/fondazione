@@ -5,6 +5,15 @@
     @section('description')
         {{ $blog->excerpt }}
     @endsection
+    @section('og:title', $blog->title)
+    @section('og:description', $blog->excerpt)
+    @if($blog->featured_image_url)
+        @section('og:image', $blog->featured_image_url)
+        @section('twitter:image', $blog->featured_image_url)
+    @endif
+    @section('og:url', request()->url())
+    @section('twitter:title', $blog->title)
+    @section('twitter:description', $blog->excerpt)
     <!-- Hero Section with Featured Image -->
     @if($blog->featured_image_url)
         <section class="relative h-[70vh] flex items-end overflow-hidden">

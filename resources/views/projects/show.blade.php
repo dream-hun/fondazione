@@ -7,7 +7,7 @@
     @section('og:url', route('projects.show', $project->slug))
     @section('og:type', 'website')
     @section('og:locale', 'en_US')
-    @section('og:site_name', 'Fondazione Marcegaglia Onlus Rwanda')
+    @section('og:site_name', 'Fondazione Marcegaglia ETS Rwanda')
     @section('og:locale', 'en_US')
     @section('og:locale', 'en_US')
     <!-- Hero Section -->

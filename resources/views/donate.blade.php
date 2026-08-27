@@ -1,4 +1,15 @@
 <x-app-layout>
+    @section('title')
+        Donate
+    @endsection
+    @section('description')
+        Support Fondazione Marcegaglia ETS Rwanda. Your donation empowers women, educates children, and builds stronger communities across Rwanda.
+    @endsection
+    @section('og:title', 'Donate - Fondazione Marcegaglia ETS Rwanda')
+    @section('og:description', 'Your donation empowers women, educates children, and builds stronger communities across Rwanda.')
+    @section('og:image', asset('images/herosection.avif'))
+    @section('twitter:title', 'Donate - Fondazione Marcegaglia ETS Rwanda')
+    @section('twitter:description', 'Your donation empowers women, educates children, and builds stronger communities across Rwanda.')
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-red-primary via-red-600 to-red-800 text-white overflow-hidden">
         <!-- Background Pattern -->
@@ -138,7 +149,7 @@
                         </div>
                         <div class="flex justify-between py-2 border-b border-gray-100">
                             <span class="text-gray-600">Account Name:</span>
-                            <span class="font-semibold text-gray-900">FMO Rwanda</span>
+                            <span class="font-semibold text-gray-900">FM ETS Rwanda</span>
                         </div>
                         <div class="flex justify-between py-2 border-b border-gray-100">
                             <span class="text-gray-600">Account Number:</span>
@@ -168,7 +179,7 @@
                                 <span class="font-semibold text-gray-900">MTN Mobile Money</span>
                             </div>
                             <p class="text-sm text-gray-600 mb-2">Send to: <span class="font-semibold">0788 123 456</span></p>
-                            <p class="text-xs text-gray-500">Name: FMO Rwanda</p>
+                            <p class="text-xs text-gray-500">Name: FM ETS Rwanda</p>
                         </div>
 
                         <div class="p-4 bg-red-50 rounded-lg">
@@ -176,7 +187,7 @@
                                 <span class="font-semibold text-gray-900">Airtel Money</span>
                             </div>
                             <p class="text-sm text-gray-600 mb-2">Send to: <span class="font-semibold">0733 123 456</span></p>
-                            <p class="text-xs text-gray-500">Name: FMO Rwanda</p>
+                            <p class="text-xs text-gray-500">Name: FM ETS Rwanda</p>
                         </div>
                     </div>
                 </div>
@@ -250,9 +261,11 @@
                 <!-- Education Impact -->
                 <div class="group">
                     <div class="relative overflow-hidden rounded-2xl mb-6 aspect-square">
-                        <img src="{{ asset('images/_DSC8049.jpg') }}"
+                        <img src="{{ asset('images/Child-protection-program.avif') }}"
                              alt="Education programs"
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                             width="600" height="600"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             loading="lazy" decoding="async">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                         <div class="absolute bottom-6 left-6 right-6">
                             <div class="inline-flex items-center px-3 py-1 bg-amber-500 text-white text-sm font-semibold rounded-full mb-3">
@@ -269,9 +282,11 @@
                 <!-- Healthcare Impact -->
                 <div class="group">
                     <div class="relative overflow-hidden rounded-2xl mb-6 aspect-square">
-                        <img src="{{ asset('images/_DSC8103.jpg') }}"
+                        <img src="{{ asset('images/herosection.avif') }}"
                              alt="Healthcare programs"
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                             width="600" height="600"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             loading="lazy" decoding="async">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                         <div class="absolute bottom-6 left-6 right-6">
                             <div class="inline-flex items-center px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-full mb-3">
@@ -288,9 +303,11 @@
                 <!-- Women Empowerment Impact -->
                 <div class="group">
                     <div class="relative overflow-hidden rounded-2xl mb-6 aspect-square">
-                        <img src="{{ asset('images/_DSC8049.jpg') }}"
+                        <img src="{{ asset('images/herosection.avif') }}"
                              alt="Women empowerment"
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                             width="600" height="600"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             loading="lazy" decoding="async">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                         <div class="absolute bottom-6 left-6 right-6">
                             <div class="inline-flex items-center px-3 py-1 bg-red-primary text-white text-sm font-semibold rounded-full mb-3">
@@ -400,7 +417,7 @@
                                 <h3 class="text-xl font-bold text-gray-900">Registered NGO</h3>
                             </div>
                             <p class="text-gray-600 text-sm leading-relaxed">
-                                Fondazione Marcegaglia Onlus Rwanda is officially registered with the Rwanda Governance Board (RGB) and operates in full compliance with local regulations.
+                                Fondazione Marcegaglia ETS Rwanda is officially registered with the Rwanda Governance Board (RGB) and operates in full compliance with local regulations.
                             </p>
                         </div>
 
@@ -453,7 +470,7 @@
                 <div class="bg-gray-50 rounded-xl p-6 hover:shadow-md transition-shadow">
                     <h3 class="text-lg font-bold text-gray-900 mb-3">Is my donation tax-deductible?</h3>
                     <p class="text-gray-600 leading-relaxed">
-                        Yes, Fondazione Marcegaglia Onlus Rwanda is a registered NGO. We provide tax receipts for all donations. Please include your email address with your donation so we can send you a receipt.
+                        Yes, Fondazione Marcegaglia ETS Rwanda is a registered NGO. We provide tax receipts for all donations. Please include your email address with your donation so we can send you a receipt.
                     </p>
                 </div>
 

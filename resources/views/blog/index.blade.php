@@ -1,4 +1,15 @@
 <x-app-layout>
+    @section('title')
+        Blog
+    @endsection
+    @section('description')
+        Read stories and updates from Fondazione Marcegaglia ETS Rwanda - our work across communities in Rwanda.
+    @endsection
+    @section('og:title', 'Blog - Fondazione Marcegaglia ETS Rwanda')
+    @section('og:description', 'Read stories and updates from our work across communities in Rwanda.')
+    @section('og:image', asset('images/mvtc/Mvtc students in ICT skills.avif'))
+    @section('twitter:title', 'Blog - Fondazione Marcegaglia ETS Rwanda')
+    @section('twitter:description', 'Read stories and updates from our work across communities in Rwanda.')
     <!-- Hero Section - Minimal -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 bg-cover bg-center z-0"

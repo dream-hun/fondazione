@@ -2,7 +2,7 @@
     <div class="bg-gray-50">
         <div class="min-h-screen flex flex-col items-center justify-center py-6 px-4">
             <div class="max-w-[480px] w-full">
-                <a href="{{ route('home') }}"><img src="{{ asset('images/logo.png') }}" alt="FMO Rwanda"
+                <a href="{{ route('home') }}"><img src="{{ asset('images/logo.png') }}" alt="FM ETS Rwanda"
                         class="w-40 mb-8 mx-auto block" />
                 </a>
 

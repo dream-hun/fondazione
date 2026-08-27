@@ -2,11 +2,21 @@
     @section('title')
         About us
     @endsection
+    @section('description')
+        Learn about Fondazione Marcegaglia ETS Rwanda - our mission, vision, values, and the team dedicated to empowering communities.
+    @endsection
+    @section('og:title', 'About Us - Fondazione Marcegaglia ETS Rwanda')
+    @section('og:description', 'Learn about our mission, vision, values, and the team dedicated to empowering communities in Rwanda.')
+    @section('og:image', asset('images/Child-protection-program.avif'))
+    @section('twitter:title', 'About Us - Fondazione Marcegaglia ETS Rwanda')
+    @section('twitter:description', 'Learn about our mission, vision, values, and the team dedicated to empowering communities in Rwanda.')
     <!-- Hero Section with Overlay -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
-        <img src="{{ asset('images/_DSC8103.jpg') }}"
+        <img src="{{ asset('images/Child-protection-program.avif') }}"
              alt="About us"
-             class="absolute inset-0 w-full h-full object-cover">
+             width="1920" height="1080"
+             class="absolute inset-0 w-full h-full object-cover"
+             fetchpriority="high" decoding="async">
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
 
         <div class="container mx-auto px-4 max-w-7xl relative z-10">
@@ -90,7 +100,9 @@
                         <div class="aspect-square rounded-2xl overflow-hidden shadow-2xl">
                             <img src="{{ asset('images/Child-protection-program.avif')}}"
                                  alt="Our story"
-                                 class="w-full h-full object-cover">
+                                 width="600" height="400"
+                                 class="w-full h-full object-cover"
+                                 loading="lazy" decoding="async">
                         </div>
                         <div class="absolute -bottom-8 -left-8 w-64 h-64 bg-red-primary/10 rounded-2xl -z-10"></div>
                     </div>

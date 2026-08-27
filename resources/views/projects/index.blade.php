@@ -3,13 +3,15 @@
     Our Projects
     @endsection
     @section('description')
-    Fondazione Marcegaglia Onlus Rwanda(FMO) is a non-profit organization that empowers women and communities in Rwanda. We have a range of projects that we are working on to help the community.
+    Fondazione Marcegaglia ETS Rwanda(FM ETS) is a non-profit organization that empowers women and communities in Rwanda. We have a range of projects that we are working on to help the community.
     @endsection
     <!-- Hero Section -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
-        <img src="{{ asset('images/_DSC8103.jpg') }}"
-             alt="About us"
-             class="absolute inset-0 w-full h-full object-cover">
+        <img src="{{ asset('images/herosection.avif') }}"
+             alt="Our projects"
+             width="1920" height="1080"
+             class="absolute inset-0 w-full h-full object-cover"
+             fetchpriority="high" decoding="async">
         <div class="absolute inset-0  bg-linear-to-r from-black/80 via-black/60 to-transparent"></div>
 
         <div class="container mx-auto max-w-7xl px-4 relative z-10">

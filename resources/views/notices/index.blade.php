@@ -3,8 +3,12 @@
         Notices
     @endsection
     @section('description')
-        Important announcements and updates from our organization
+        Important announcements and updates from Fondazione Marcegaglia ETS Rwanda.
     @endsection
+    @section('og:title', 'Notices - Fondazione Marcegaglia ETS Rwanda')
+    @section('og:description', 'Important announcements and updates from our organization.')
+    @section('twitter:title', 'Notices - Fondazione Marcegaglia ETS Rwanda')
+    @section('twitter:description', 'Important announcements and updates from our organization.')
     <!-- Hero Section - Minimal -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 bg-cover bg-center z-0"

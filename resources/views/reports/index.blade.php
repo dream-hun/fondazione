@@ -3,8 +3,12 @@
         Reports
     @endsection
     @section('description')
-        Download our latest reports and publications
+        Download our latest reports and publications from Fondazione Marcegaglia ETS Rwanda.
     @endsection
+    @section('og:title', 'Reports - Fondazione Marcegaglia ETS Rwanda')
+    @section('og:description', 'Download our latest reports and publications.')
+    @section('twitter:title', 'Reports - Fondazione Marcegaglia ETS Rwanda')
+    @section('twitter:description', 'Download our latest reports and publications.')
 
     <!-- Hero Section -->
     <section class="relative h-[60vh] flex items-center justify-center overflow-hidden">

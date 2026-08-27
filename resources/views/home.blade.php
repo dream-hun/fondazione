@@ -3,9 +3,46 @@
         Home
     @endsection
     @section('description')
-        Fondazione Marcegaglia Onlus Rwanda(FMO) is a non-profit organization that empowers women and communities in
+        Fondazione Marcegaglia ETS Rwanda(FM ETS) is a non-profit organization that empowers women and communities in
         Rwanda.
     @endsection
+    @section('og:title', 'Fondazione Marcegaglia ETS Rwanda - Home')
+    @section('og:description', 'Empowering women and communities in Rwanda through education, healthcare, and sustainable development.')
+    @section('og:image', asset('images/herosection.avif'))
+    @section('twitter:title', 'Fondazione Marcegaglia ETS Rwanda - Home')
+    @section('twitter:description', 'Empowering women and communities in Rwanda through education, healthcare, and sustainable development.')
+    @push('head')
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "NGO",
+        "name": "Fondazione Marcegaglia ETS Rwanda",
+        "alternateName": "FM ETS Rwanda",
+        "url": "{{ request()->url() }}",
+        "logo": "{{ asset('images/FMO ETS.avif') }}",
+        "description": "Fondazione Marcegaglia ETS Rwanda empowers women and communities through education, healthcare, and sustainable development.",
+        "foundingDate": "2010",
+        "address": {
+            "@@type": "PostalAddress",
+            "addressLocality": "Bugesera District",
+            "addressRegion": "Eastern Rwanda",
+            "addressCountry": "RW"
+        },
+        "contactPoint": {
+            "@@type": "ContactPoint",
+            "telephone": "+250-791-314-155",
+            "email": "info@fmorwanda.org",
+            "contactType": "customer service"
+        },
+        "sameAs": [
+            "https://www.facebook.com/",
+            "https://twitter.com/",
+            "https://www.instagram.com/",
+            "https://www.linkedin.com/"
+        ]
+    }
+    </script>
+    @endpush
     <!-- Hero Section -->
     <section
         class="relative bg-gradient-to-br from-red-primary via-red-600 to-red-800 text-white overflow-hidden opacity-85">
@@ -80,7 +117,9 @@
                         </div>
 
                         <img src="{{ asset('images/herosection.avif') }}" alt="Community volunteers working together"
-                             class="w-full h-full object-cover rounded-3xl shadow-2xl">
+                             width="512" height="512"
+                             class="w-full h-full object-cover rounded-3xl shadow-2xl"
+                             fetchpriority="high" decoding="async">
 
                         <!-- Overlay Card -->
                         <div
@@ -119,94 +158,196 @@
                 <div class="partners-carousel flex items-center gap-8 animate-scroll">
                     <!-- First set of partners -->
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/IBTC.jpeg') }}" alt="IBTC"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/IBTC.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/IBTC.jpeg') }}" alt="IBTC"
+                                 width="200" height="200" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/LAPALISSE-NYAMATA-HOTEL.png') }}"
-                             alt="Lapalisse Nyamata Hotel" class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/LAPALISSE-NYAMATA-HOTEL.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/LAPALISSE-NYAMATA-HOTEL.png') }}"
+                                 alt="Lapalisse Nyamata Hotel" width="372" height="102" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/maison-shalom.png') }}" alt="Maison Shalom"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/maison-shalom.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/maison-shalom.png') }}" alt="Maison Shalom"
+                                 width="205" height="74" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/minaloc.png') }}" alt="MINALOC"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/minaloc.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/minaloc.png') }}" alt="MINALOC"
+                                 width="300" height="200" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/Miracle Corners Rwanda.jpeg') }}"
-                             alt="Miracle Corners Rwanda" class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/Miracle Corners Rwanda.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/Miracle Corners Rwanda.jpeg') }}"
+                                 alt="Miracle Corners Rwanda" width="225" height="225" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/NCDA.png') }}" alt="NCDA"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/NCDA.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/NCDA.png') }}" alt="NCDA"
+                                 width="259" height="195" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/NUDOR.jpg') }}" alt="NUDOR"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/NUDOR.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/NUDOR.jpg') }}" alt="NUDOR"
+                                 width="626" height="272" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/psf-logo.png') }}" alt="PSF"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/psf-logo.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/psf-logo.png') }}" alt="PSF"
+                                 width="192" height="192" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/RHIH.png') }}" alt="RHIH"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/RHIH.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/RHIH.png') }}" alt="RHIH"
+                                 width="466" height="108" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/RNIT.png') }}" alt="RNIT"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/RNIT.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/RNIT.png') }}" alt="RNIT"
+                                 width="273" height="185" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/RTB.webp') }}" alt="RTB"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/RTB.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/RTB.webp') }}" alt="RTB"
+                                 width="466" height="136" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/utb.png') }}" alt="UTB"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/utb.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/utb.png') }}" alt="UTB"
+                                 width="1366" height="768" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <!-- Duplicate set for seamless loop -->
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/IBTC.jpeg') }}" alt="IBTC"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/IBTC.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/IBTC.jpeg') }}" alt="IBTC"
+                                 width="200" height="200" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/LAPALISSE-NYAMATA-HOTEL.png') }}"
-                             alt="Lapalisse Nyamata Hotel" class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/LAPALISSE-NYAMATA-HOTEL.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/LAPALISSE-NYAMATA-HOTEL.png') }}"
+                                 alt="Lapalisse Nyamata Hotel" width="372" height="102" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/maison-shalom.png') }}" alt="Maison Shalom"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/maison-shalom.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/maison-shalom.png') }}" alt="Maison Shalom"
+                                 width="205" height="74" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/minaloc.png') }}" alt="MINALOC"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/minaloc.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/minaloc.png') }}" alt="MINALOC"
+                                 width="300" height="200" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/Miracle Corners Rwanda.jpeg') }}"
-                             alt="Miracle Corners Rwanda" class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/Miracle Corners Rwanda.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/Miracle Corners Rwanda.jpeg') }}"
+                                 alt="Miracle Corners Rwanda" width="225" height="225" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
 
                     <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
-                        <img src="{{ asset('images/partners/NCDA.png') }}" alt="NCDA"
-                             class="max-h-full max-w-full object-contain">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/NCDA.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/NCDA.png') }}" alt="NCDA"
+                                 width="259" height="195" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
+                    </div>
+
+                    <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/NUDOR.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/NUDOR.jpg') }}" alt="NUDOR"
+                                 width="626" height="272" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
+                    </div>
+
+                    <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/psf-logo.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/psf-logo.png') }}" alt="PSF"
+                                 width="192" height="192" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
+                    </div>
+
+                    <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/RHIH.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/RHIH.png') }}" alt="RHIH"
+                                 width="466" height="108" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
+                    </div>
+
+                    <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/RNIT.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/RNIT.png') }}" alt="RNIT"
+                                 width="273" height="185" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
+                    </div>
+
+                    <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/RTB.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/RTB.webp') }}" alt="RTB"
+                                 width="466" height="136" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
+                    </div>
+
+                    <div class="flex items-center justify-center h-32 w-52 flex-shrink-0 p-4">
+                        <picture>
+                            <source srcset="{{ asset('images/partners/utb.avif') }}" type="image/avif">
+                            <img src="{{ asset('images/partners/utb.png') }}" alt="UTB"
+                                 width="1366" height="768" class="max-h-full max-w-full object-contain" loading="lazy" decoding="async">
+                        </picture>
                     </div>
                 </div>
             </div>
