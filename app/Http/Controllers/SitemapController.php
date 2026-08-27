@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enum\Notices\Status as NoticeStatus;
 use App\Models\Blog;
 use App\Models\Notice;
 use App\Models\Project;
@@ -105,7 +106,7 @@ final class SitemapController extends Controller
         }
 
         // Published notices
-        $notices = Notice::query()->where('status', 'published')->select('slug', 'updated_at')->get();
+        $notices = Notice::query()->where('status', NoticeStatus::Published)->select('slug', 'updated_at')->get();
         foreach ($notices as $notice) {
             $urls[] = [
                 'loc' => $baseUrl.'/announcements/'.$notice->slug,
