@@ -27,7 +27,7 @@ final class SitemapController extends Controller
     private function generateSitemap(): string
     {
         $baseUrl = 'https://fmorwanda.org';
-        $now = now()->toDateString();
+        $now = now()->toIso8601String();
 
         $urls = [
             // Static pages
@@ -98,7 +98,7 @@ final class SitemapController extends Controller
         foreach ($blogs as $blog) {
             $urls[] = [
                 'loc' => $baseUrl.'/blog/'.$blog->slug,
-                'lastmod' => $blog->updated_at?->toDateString() ?? $now,
+                'lastmod' => $blog->updated_at?->toIso8601String() ?? $now,
                 'changefreq' => 'monthly',
                 'priority' => '0.8',
             ];
@@ -109,7 +109,7 @@ final class SitemapController extends Controller
         foreach ($projects as $project) {
             $urls[] = [
                 'loc' => $baseUrl.'/projects/'.$project->slug,
-                'lastmod' => $project->updated_at?->toDateString() ?? $now,
+                'lastmod' => $project->updated_at?->toIso8601String() ?? $now,
                 'changefreq' => 'monthly',
                 'priority' => '0.8',
             ];
@@ -120,7 +120,7 @@ final class SitemapController extends Controller
         foreach ($notices as $notice) {
             $urls[] = [
                 'loc' => $baseUrl.'/announcements/'.$notice->slug,
-                'lastmod' => $notice->updated_at?->toDateString() ?? $now,
+                'lastmod' => $notice->updated_at?->toIso8601String() ?? $now,
                 'changefreq' => 'monthly',
                 'priority' => '0.7',
             ];
@@ -131,7 +131,7 @@ final class SitemapController extends Controller
         foreach ($reports as $report) {
             $urls[] = [
                 'loc' => $baseUrl.'/reports/'.$report->id,
-                'lastmod' => $report->updated_at?->toDateString() ?? $now,
+                'lastmod' => $report->updated_at?->toIso8601String() ?? $now,
                 'changefreq' => 'monthly',
                 'priority' => '0.6',
             ];
