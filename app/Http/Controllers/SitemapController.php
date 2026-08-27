@@ -87,7 +87,7 @@ final class SitemapController extends Controller
         foreach ($blogs as $blog) {
             $urls[] = [
                 'loc' => $baseUrl.'/blog/'.$blog->slug,
-                'lastmod' => $blog->updated_at?->toIso8601String(),
+                'lastmod' => $blog->updated_at?->toDateString(),
                 'changefreq' => 'monthly',
                 'priority' => '0.8',
             ];
@@ -98,7 +98,7 @@ final class SitemapController extends Controller
         foreach ($projects as $project) {
             $urls[] = [
                 'loc' => $baseUrl.'/projects/'.$project->slug,
-                'lastmod' => $project->updated_at?->toIso8601String(),
+                'lastmod' => $project->updated_at?->toDateString(),
                 'changefreq' => 'monthly',
                 'priority' => '0.8',
             ];
@@ -109,7 +109,7 @@ final class SitemapController extends Controller
         foreach ($notices as $notice) {
             $urls[] = [
                 'loc' => $baseUrl.'/announcements/'.$notice->slug,
-                'lastmod' => $notice->updated_at?->toIso8601String(),
+                'lastmod' => $notice->updated_at?->toDateString(),
                 'changefreq' => 'monthly',
                 'priority' => '0.7',
             ];
@@ -120,14 +120,14 @@ final class SitemapController extends Controller
         foreach ($reports as $report) {
             $urls[] = [
                 'loc' => $baseUrl.'/reports/'.$report->id,
-                'lastmod' => $report->updated_at?->toIso8601String(),
+                'lastmod' => $report->updated_at?->toDateString(),
                 'changefreq' => 'monthly',
                 'priority' => '0.6',
             ];
         }
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
+        $xml .= '<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
 
         foreach ($urls as $url) {
             $xml .= '    <url>'."\n";

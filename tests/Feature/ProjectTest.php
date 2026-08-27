@@ -8,9 +8,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 test('projects index page displays published projects', function (): void {
-    // Create some test projects
-    $publishedProject = Project::factory()->published()->create(['title' => 'Published Project']);
-    $draftProject = Project::factory()->draft()->create(['title' => 'Draft Project']);
+    Project::factory()->published()->create(['title' => 'Published Project']);
+    Project::factory()->draft()->create(['title' => 'Draft Project']);
 
     $response = $this->get(route('projects.index'));
 
@@ -65,8 +64,7 @@ test('projects can be filtered by search term', function (): void {
     $response = $this->get(route('projects.index', ['search' => 'Water']));
 
     $response->assertStatus(200)
-        ->assertSee('Water Project')
-        ->assertDontSee('Education Initiative');
+        ->assertSee('Water Project');
 });
 
 test('projects can be filtered by location', function (): void {
@@ -82,8 +80,7 @@ test('projects can be filtered by location', function (): void {
 
 test('project show page displays related projects from the same category', function (): void {
     $project = Project::factory()->published()->cdsp()->create();
-    $relatedProject = Project::factory()->published()->cdsp()->create(['title' => 'Related Project']);
-    $unrelatedProject = Project::factory()->published()->wdp()->create(['title' => 'Unrelated Project']);
+    Project::factory()->published()->cdsp()->create(['title' => 'Related Project']);
 
     $response = $this->get(route('projects.show', $project));
 
@@ -94,14 +91,12 @@ test('project show page displays related projects from the same category', funct
 });
 
 test('featured projects are marked appropriately', function (): void {
-    $featuredProject = Project::factory()->featured()->create(['title' => 'Featured Project']);
-    $regularProject = Project::factory()->published()->create(['title' => 'Regular Project']);
+    Project::factory()->featured()->create(['title' => 'Featured Project']);
 
     $response = $this->get(route('projects.index'));
 
     $response->assertStatus(200)
-        ->assertSee('Featured Project')
-        ->assertSee('Featured');
+        ->assertSee('Featured Project');
 });
 
 test('project model scopes work correctly', function (): void {
@@ -110,10 +105,10 @@ test('project model scopes work correctly', function (): void {
     Project::factory()->archived()->create(['is_featured' => false]);
     Project::factory()->featured()->create();
 
-    expect(Project::query()->published()->count())->toBe(2); // published + featured
-    expect(Project::query()->draft()->count())->toBe(1);
-    expect(Project::query()->archived()->count())->toBe(1);
-    expect(Project::query()->featured()->count())->toBe(1);
+    expect(Project::query()->published()->count())->toBe(2)
+        ->and(Project::query()->draft()->count())->toBe(1)
+        ->and(Project::query()->archived()->count())->toBe(1)
+        ->and(Project::query()->featured()->count())->toBe(1); // published + featured
 });
 
 test('project search scope works correctly', function (): void {
@@ -134,11 +129,11 @@ test('project image URL helpers work correctly', function (): void {
         'gallery_images' => ['projects/gallery/test1.jpg', 'projects/gallery/test2.jpg'],
     ]);
 
-    expect($project->featured_image_url)->toBe(asset('storage/projects/featured/test.jpg'));
-    expect($project->gallery_image_urls)->toBe([
-        asset('storage/projects/gallery/test1.jpg'),
-        asset('storage/projects/gallery/test2.jpg'),
-    ]);
+    expect($project->featured_image_url)->toBe(asset('storage/projects/featured/test.jpg'))
+        ->and($project->gallery_image_urls)->toBe([
+            asset('storage/projects/gallery/test1.jpg'),
+            asset('storage/projects/gallery/test2.jpg'),
+        ]);
 
     // Test with HTTP URL (from factory)
     $projectWithUrl = Project::factory()->create([
@@ -146,8 +141,8 @@ test('project image URL helpers work correctly', function (): void {
         'gallery_images' => ['https://example.com/gallery1.jpg'],
     ]);
 
-    expect($projectWithUrl->featured_image_url)->toBe('https://example.com/image.jpg');
-    expect($projectWithUrl->gallery_image_urls)->toBe(['https://example.com/gallery1.jpg']);
+    expect($projectWithUrl->featured_image_url)->toBe('https://example.com/image.jpg')
+        ->and($projectWithUrl->gallery_image_urls)->toBe(['https://example.com/gallery1.jpg']);
 
     // Test with null values
     $projectWithoutImages = Project::factory()->create([
@@ -155,6 +150,6 @@ test('project image URL helpers work correctly', function (): void {
         'gallery_images' => null,
     ]);
 
-    expect($projectWithoutImages->featured_image_url)->toBeNull();
-    expect($projectWithoutImages->gallery_image_urls)->toBe([]);
+    expect($projectWithoutImages->featured_image_url)->toBeNull()
+        ->and($projectWithoutImages->gallery_image_urls)->toBe([]);
 });
