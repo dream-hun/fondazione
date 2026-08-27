@@ -16,7 +16,7 @@ final class SitemapController extends Controller
     public function __invoke(): Response
     {
         $cacheKey = 'sitemap.xml';
-        $xml = Cache::remember($cacheKey, 3600, fn () => $this->generateSitemap());
+        $xml = Cache::remember($cacheKey, 3600, fn (): string => $this->generateSitemap());
 
         return response($xml, 200, [
             'Content-Type' => 'application/xml',
@@ -116,7 +116,7 @@ final class SitemapController extends Controller
         }
 
         // Published notices
-        $notices = Notice::where('status', 'published')->select('slug', 'updated_at')->get();
+        $notices = Notice::query()->where('status', 'published')->select('slug', 'updated_at')->get();
         foreach ($notices as $notice) {
             $urls[] = [
                 'loc' => $baseUrl.'/announcements/'.$notice->slug,
@@ -149,8 +149,6 @@ final class SitemapController extends Controller
             $xml .= '    </url>'."\n";
         }
 
-        $xml .= '</urlset>';
-
-        return $xml;
+        return $xml.'</urlset>';
     }
 }

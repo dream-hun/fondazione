@@ -14,6 +14,7 @@ return new class extends Migration
             if (! Schema::hasIndex('blogs', 'blogs_status_published_at_index')) {
                 $table->index(['status', 'published_at']);
             }
+
             if (! Schema::hasIndex('blogs', 'blogs_is_featured_published_at_index')) {
                 $table->index(['is_featured', 'published_at']);
             }
@@ -23,6 +24,7 @@ return new class extends Migration
             if (! Schema::hasIndex('projects', 'projects_status_category_created_at_index')) {
                 $table->index(['status', 'category', 'created_at']);
             }
+
             if (! Schema::hasIndex('projects', 'projects_is_featured_status_index')) {
                 $table->index(['is_featured', 'status']);
             }
@@ -47,6 +49,7 @@ return new class extends Migration
             if (Schema::hasIndex('blogs', 'blogs_status_published_at_index')) {
                 $table->dropIndex('blogs_status_published_at_index');
             }
+
             if (Schema::hasIndex('blogs', 'blogs_is_featured_published_at_index')) {
                 $table->dropIndex('blogs_is_featured_published_at_index');
             }
@@ -56,6 +59,7 @@ return new class extends Migration
             if (Schema::hasIndex('projects', 'projects_status_category_created_at_index')) {
                 $table->dropIndex('projects_status_category_created_at_index');
             }
+
             if (Schema::hasIndex('projects', 'projects_is_featured_status_index')) {
                 $table->dropIndex('projects_is_featured_status_index');
             }
