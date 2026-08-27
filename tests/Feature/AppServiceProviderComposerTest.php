@@ -11,13 +11,13 @@ uses(RefreshDatabase::class);
 
 test('the layout composer shares cached published projects', function (): void {
     $viewRoot = storage_path('framework/testing/composer-views');
-    $layoutDirectory = $viewRoot.'/components/layouts';
+    $layoutDirectory = $viewRoot.'/layouts';
 
     if (! is_dir($layoutDirectory)) {
         mkdir($layoutDirectory, 0777, true);
     }
 
-    file_put_contents($layoutDirectory.'/app.blade.php', '<nav data-count="{{ $sharedProjects->count() }}"></nav>');
+    file_put_contents($layoutDirectory.'/app.blade.php', '<nav data-count="{{ $projects->count() }}"></nav>');
 
     /** @phpstan-ignore method.notFound */
     View::getFinder()->prependLocation($viewRoot);
@@ -26,7 +26,7 @@ test('the layout composer shares cached published projects', function (): void {
     Project::factory()->draft()->create();
 
     /** @phpstan-ignore argument.type */
-    $html = view('components.layouts.app')->render();
+    $html = view('layouts.app')->render();
 
     expect($html)->toContain('data-count="3"')
         ->and(Cache::has('nav_projects'))->toBeTrue();

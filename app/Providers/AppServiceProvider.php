@@ -17,8 +17,8 @@ final class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        View::composer('components.layouts.app', function (\Illuminate\View\View $view): void {
-            $view->with('sharedProjects', $this->resolveNavProjects());
+        View::composer('layouts.app', function (\Illuminate\View\View $view): void {
+            $view->with('projects', $this->resolveNavProjects());
         });
     }
 
