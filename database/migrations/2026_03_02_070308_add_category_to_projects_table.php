@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('projects', function (Blueprint $table): void {
-            $table->string('category')->default('cdsp')->after('status');
+            $table->string('category', 20)->default('cdsp')->after('status');
         });
     }
 
