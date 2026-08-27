@@ -14,6 +14,7 @@ return new class extends Migration
             if (Schema::hasIndex('projects', 'projects_status_category_created_at_index')) {
                 $table->dropIndex('projects_status_category_created_at_index');
             }
+
             if (Schema::hasIndex('projects', 'projects_is_featured_status_index')) {
                 $table->dropIndex('projects_is_featured_status_index');
             }
@@ -33,6 +34,7 @@ return new class extends Migration
             if (Schema::hasIndex('projects', 'projects_status_category_created_at_index')) {
                 $table->dropIndex('projects_status_category_created_at_index');
             }
+
             if (Schema::hasIndex('projects', 'projects_is_featured_status_index')) {
                 $table->dropIndex('projects_is_featured_status_index');
             }
