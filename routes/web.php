@@ -18,6 +18,7 @@ use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TvetController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,7 @@ Route::get('/our-team', TeamController::class)->name('team');
 Route::get('/resources', ResourceController::class)->name('resources');
 Route::get('/tvet-training-center', TvetController::class)->name('tvet');
 Route::get('/donate', DonateController::class)->name('donate');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 // Blog routes
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
