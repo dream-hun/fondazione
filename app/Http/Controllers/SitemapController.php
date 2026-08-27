@@ -27,67 +27,56 @@ final class SitemapController extends Controller
     private function generateSitemap(): string
     {
         $baseUrl = 'https://fmorwanda.org';
-        $now = now()->toIso8601String();
 
         $urls = [
             // Static pages
             [
                 'loc' => $baseUrl.'/',
-                'lastmod' => $now,
                 'changefreq' => 'weekly',
                 'priority' => '1.0',
             ],
             [
                 'loc' => $baseUrl.'/about-us',
-                'lastmod' => $now,
                 'changefreq' => 'monthly',
                 'priority' => '0.8',
             ],
             [
                 'loc' => $baseUrl.'/our-team',
-                'lastmod' => $now,
                 'changefreq' => 'monthly',
                 'priority' => '0.7',
             ],
             [
                 'loc' => $baseUrl.'/resources',
-                'lastmod' => $now,
                 'changefreq' => 'monthly',
                 'priority' => '0.6',
             ],
             [
                 'loc' => $baseUrl.'/tvet-training-center',
-                'lastmod' => $now,
                 'changefreq' => 'monthly',
                 'priority' => '0.8',
             ],
             [
                 'loc' => $baseUrl.'/donate',
-                'lastmod' => $now,
                 'changefreq' => 'monthly',
                 'priority' => '0.9',
             ],
             [
                 'loc' => $baseUrl.'/blog',
-                'lastmod' => $now,
                 'changefreq' => 'daily',
                 'priority' => '0.9',
             ],
             [
                 'loc' => $baseUrl.'/projects',
-                'lastmod' => $now,
                 'changefreq' => 'weekly',
                 'priority' => '0.9',
             ],
             [
                 'loc' => $baseUrl.'/announcements',
-                'lastmod' => $now,
                 'changefreq' => 'weekly',
                 'priority' => '0.7',
             ],
             [
                 'loc' => $baseUrl.'/reports',
-                'lastmod' => $now,
                 'changefreq' => 'monthly',
                 'priority' => '0.6',
             ],
@@ -98,7 +87,7 @@ final class SitemapController extends Controller
         foreach ($blogs as $blog) {
             $urls[] = [
                 'loc' => $baseUrl.'/blog/'.$blog->slug,
-                'lastmod' => $blog->updated_at?->toIso8601String() ?? $now,
+                'lastmod' => $blog->updated_at?->toIso8601String(),
                 'changefreq' => 'monthly',
                 'priority' => '0.8',
             ];
@@ -109,7 +98,7 @@ final class SitemapController extends Controller
         foreach ($projects as $project) {
             $urls[] = [
                 'loc' => $baseUrl.'/projects/'.$project->slug,
-                'lastmod' => $project->updated_at?->toIso8601String() ?? $now,
+                'lastmod' => $project->updated_at?->toIso8601String(),
                 'changefreq' => 'monthly',
                 'priority' => '0.8',
             ];
@@ -120,7 +109,7 @@ final class SitemapController extends Controller
         foreach ($notices as $notice) {
             $urls[] = [
                 'loc' => $baseUrl.'/announcements/'.$notice->slug,
-                'lastmod' => $notice->updated_at?->toIso8601String() ?? $now,
+                'lastmod' => $notice->updated_at?->toIso8601String(),
                 'changefreq' => 'monthly',
                 'priority' => '0.7',
             ];
@@ -131,7 +120,7 @@ final class SitemapController extends Controller
         foreach ($reports as $report) {
             $urls[] = [
                 'loc' => $baseUrl.'/reports/'.$report->id,
-                'lastmod' => $report->updated_at?->toIso8601String() ?? $now,
+                'lastmod' => $report->updated_at?->toIso8601String(),
                 'changefreq' => 'monthly',
                 'priority' => '0.6',
             ];
@@ -143,7 +132,11 @@ final class SitemapController extends Controller
         foreach ($urls as $url) {
             $xml .= '    <url>'."\n";
             $xml .= '        <loc>'.htmlspecialchars($url['loc']).'</loc>'."\n";
-            $xml .= '        <lastmod>'.$url['lastmod'].'</lastmod>'."\n";
+
+            if (isset($url['lastmod'])) {
+                $xml .= '        <lastmod>'.$url['lastmod'].'</lastmod>'."\n";
+            }
+
             $xml .= '        <changefreq>'.$url['changefreq'].'</changefreq>'."\n";
             $xml .= '        <priority>'.$url['priority'].'</priority>'."\n";
             $xml .= '    </url>'."\n";

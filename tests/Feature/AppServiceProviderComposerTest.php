@@ -25,7 +25,6 @@ test('the layout composer shares cached published projects', function (): void {
     Project::factory()->count(3)->published()->create();
     Project::factory()->draft()->create();
 
-    /** @phpstan-ignore argument.type */
     $html = view('layouts.app')->render();
 
     expect($html)->toContain('data-count="3"')
