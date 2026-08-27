@@ -1,3 +1,7 @@
+@php
+    $projects = \App\Models\Project::query()->published()->orderBy('title')->get();
+@endphp
+
 <!-- Footer -->
 <footer class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
     <div class="container mx-auto max-w-7xl px-4 pt-8 pb-8">
