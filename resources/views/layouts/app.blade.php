@@ -33,6 +33,16 @@
     <meta name="apple-mobile-web-app-title" content="Fondazione Marcegaglia ETS Rwanda"/>
     <link rel="manifest" href="{{ asset('site.webmanifest') }}"/>
 
+    <!-- Google Tag Manager -->
+    <script>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-WQLMW4F2');
+    </script>
+    <!-- End Google Tag Manager -->
+
     <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -40,7 +50,11 @@
 </head>
 
 <body class="antialiased text-gray-900 font-sans">
-<x-navigation-menu/>
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WQLMW4F2"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <x-navigation-menu/>
 <main class="flex-grow">
     {{ $slot }}
 </main>
