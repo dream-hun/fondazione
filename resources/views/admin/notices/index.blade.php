@@ -142,7 +142,7 @@
                                         {{ $notice->title }}
                                     </div>
                                     <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                        {{ Str::limit(strip_tags($notice->content), 80) }}
+                                        {{ Str::limit(strip_tags($notice->body), 80) }}
                                     </div>
                                     <div class="text-xs text-gray-400 dark:text-gray-500 mt-1">
                                         UUID: {{ $notice->uuid }}
