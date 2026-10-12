@@ -65,6 +65,10 @@ test('admin can create a notice', function (): void {
 
     expect($notice->slug)->toBe('important-notice')
         ->and($notice->uuid)->not->toBeNull();
+
+    $this->get(route('admin.notices.index'))
+        ->assertSuccessful()
+        ->assertSee('Notice body content');
 });
 
 test('admin can create a notice with an attachment', function (): void {
@@ -115,13 +119,57 @@ test('admin cannot upload an attachment with a disallowed type', function (): vo
 });
 
 test('admin can view a notice', function (): void {
-    $notice = Notice::factory()->create(['title' => 'Visible Notice']);
+    $notice = Notice::factory()->create([
+        'title' => 'Visible Notice',
+        'body' => '<p>Saved notice body</p>',
+    ]);
 
     $this->actingAs($this->admin)
         ->get(route('admin.notices.show', $notice))
         ->assertSuccessful()
-        ->assertSee('Visible Notice');
+        ->assertSee('Visible Notice')
+        ->assertSee('<p>Saved notice body</p>', false);
 });
+
+test('notice quick actions submit the saved body and change status', function (string $initialStatus, string $targetStatus): void {
+    $notice = Notice::factory()->create([
+        'status' => $initialStatus,
+        'body' => '<p>Meeting at "9" & lunch</p>',
+    ]);
+    $response = $this->actingAs($this->admin)
+        ->get(route('admin.notices.show', $notice))
+        ->assertSuccessful();
+
+    $html = $response->getContent();
+    throw_if($html === false, RuntimeException::class, 'The notice detail response has no HTML content.');
+
+    $document = new DOMDocument;
+    @$document->loadHTML($html);
+    $xpath = new DOMXPath($document);
+    $inputs = $xpath->query('//form[input[@name="status" and @value="'.$targetStatus.'"]]/input');
+    assert($inputs !== false);
+    $payload = [];
+    foreach ($inputs as $input) {
+        assert($input instanceof DOMElement);
+        $payload[$input->getAttribute('name')] = $input->getAttribute('value');
+    }
+
+    $this->put(route('admin.notices.update', $notice), $payload)
+        ->assertRedirect(route('admin.notices.index'))
+        ->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('notices', [
+        'id' => $notice->id,
+        'status' => $targetStatus,
+        'body' => '<p>Meeting at "9" & lunch</p>',
+    ]);
+})->with([
+    'publish draft' => ['Draft', 'Published'],
+    'unpublish' => ['Published', 'Unpublished'],
+    'republish' => ['Unpublished', 'Published'],
+    'draft published' => ['Published', 'Draft'],
+    'draft unpublished' => ['Unpublished', 'Draft'],
+]);
 
 test('admin can view edit notice page', function (): void {
     $notice = Notice::factory()->create();

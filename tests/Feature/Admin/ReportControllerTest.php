@@ -76,6 +76,36 @@ test('store validates required title', function (): void {
         ->assertSessionHasErrors('title');
 });
 
+test('admin can create a report at the 10MB limit', function (): void {
+    $file = UploadedFile::fake()->create('report.pdf', 10240, 'application/pdf');
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.reports.store'), [
+            'title' => 'Maximum size report',
+            'file' => $file,
+            'status' => Status::Draft->value,
+        ])
+        ->assertRedirect(route('admin.reports.index'))
+        ->assertSessionHasNoErrors();
+
+    $this->assertDatabaseHas('reports', ['title' => 'Maximum size report']);
+    $report = Report::query()->where('title', 'Maximum size report')->sole();
+    Storage::disk('public')->assertExists($report->file_path);
+});
+
+test('store rejects a report exceeding the 10MB limit without saving it', function (): void {
+    $this->actingAs($this->admin)
+        ->post(route('admin.reports.store'), [
+            'title' => 'Oversized report',
+            'file' => UploadedFile::fake()->create('report.pdf', 10241, 'application/pdf'),
+            'status' => Status::Draft->value,
+        ])
+        ->assertSessionHasErrors(['file' => 'The file may not be larger than 10MB.']);
+
+    $this->assertDatabaseMissing('reports', ['title' => 'Oversized report']);
+    Storage::disk('public')->assertDirectoryEmpty('reports');
+});
+
 test('store validates required file', function (): void {
     $this->actingAs($this->admin)
         ->post(route('admin.reports.store'), [

@@ -81,7 +81,7 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                 <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Content</h3>
                 <div class="prose prose-lg max-w-none dark:prose-invert">
-                    {!! $notice->content !!}
+                    {!! $notice->body !!}
                 </div>
             </div>
 
@@ -163,7 +163,7 @@
                             @method('PUT')
                             <input type="hidden" name="status" value="Published">
                             <input type="hidden" name="title" value="{{ $notice->title }}">
-                            <input type="hidden" name="content" value="{{ $notice->content }}">
+                            <input type="hidden" name="body" value="{{ $notice->body }}">
                             <button type="submit" class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
                                 Publish Now
                             </button>
@@ -174,7 +174,7 @@
                             @method('PUT')
                             <input type="hidden" name="status" value="Unpublished">
                             <input type="hidden" name="title" value="{{ $notice->title }}">
-                            <input type="hidden" name="content" value="{{ $notice->content }}">
+                            <input type="hidden" name="body" value="{{ $notice->body }}">
                             <button type="submit" class="w-full px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors">
                                 Unpublish
                             </button>
@@ -185,7 +185,7 @@
                             @method('PUT')
                             <input type="hidden" name="status" value="Published">
                             <input type="hidden" name="title" value="{{ $notice->title }}">
-                            <input type="hidden" name="content" value="{{ $notice->content }}">
+                            <input type="hidden" name="body" value="{{ $notice->body }}">
                             <button type="submit" class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
                                 Publish
                             </button>
@@ -198,7 +198,7 @@
                             @method('PUT')
                             <input type="hidden" name="status" value="Draft">
                             <input type="hidden" name="title" value="{{ $notice->title }}">
-                            <input type="hidden" name="content" value="{{ $notice->content }}">
+                            <input type="hidden" name="body" value="{{ $notice->body }}">
                             <button type="submit" class="w-full px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors">
                                 Move to Draft
                             </button>

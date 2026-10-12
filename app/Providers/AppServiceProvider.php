@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Models\Project;
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -17,6 +18,9 @@ final class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Model::unguard();
+        Model::preventLazyLoading(! $this->app->isProduction());
+
         View::composer('layouts.app', function (\Illuminate\View\View $view): void {
             $view->with('projects', $this->resolveNavProjects());
         });
