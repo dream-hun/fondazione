@@ -141,9 +141,7 @@ test('notice quick actions submit the saved body and change status', function (s
         ->assertSuccessful();
 
     $html = $response->getContent();
-    if ($html === false) {
-        throw new RuntimeException('The notice detail response has no HTML content.');
-    }
+    throw_if($html === false, RuntimeException::class, 'The notice detail response has no HTML content.');
 
     $document = new DOMDocument;
     @$document->loadHTML($html);
