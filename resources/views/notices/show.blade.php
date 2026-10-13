@@ -51,7 +51,7 @@
                         {{-- {!! str($notice->body)->stripTags() !!} --}}
                         
                         {{-- Option 2: Allow specific safe HTML tags --}}
-                        {!! str($notice->body)->stripTags('<p><br><strong><em><ul><ol><li><h1><h2><h3><h4><h5><h6>') !!}
+                        {!! str($notice->body)->stripTags('<p><br><strong><em><ul><ol><li><h1><h2><h3><h4><h5><h6><a>') !!}
                         
                         {{-- Option 3: For proper HTML sanitization, install mews/purifier package --}}
                         {{-- composer require mews/purifier --}}

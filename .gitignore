@@ -24,3 +24,9 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 .env.before_lerd
+
+# Development AI agents
+.ai/
+.agents/
+.claude/
+.devin/
