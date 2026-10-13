@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $status_label
+ */
 #[Fillable([
     'name',
     'slug',
@@ -38,6 +41,13 @@ final class Department extends Model
     public function slugSourceColumn(): string
     {
         return 'name';
+    }
+
+    protected function statusLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->is_active ? 'Active' : 'Inactive'
+        );
     }
 
     /**
@@ -83,11 +93,6 @@ final class Department extends Model
     protected function ordered(Builder $query): Builder
     {
         return $query->orderBy('display_order')->orderBy('name');
-    }
-
-    protected function statusLabel(): Attribute
-    {
-        return Attribute::make(get: fn (): string => $this->is_active ? 'Active' : 'Inactive');
     }
 
     protected function casts(): array

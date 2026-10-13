@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @property string $formatted_date
+ */
 #[Fillable([
     'uuid',
     'title',
@@ -47,7 +50,9 @@ final class Notice extends Model
 
     protected function formattedDate(): Attribute
     {
-        return Attribute::make(get: fn () => $this->created_at?->format('M j, Y') ?? '');
+        return Attribute::make(
+            get: fn (): string => $this->created_at?->format('M j, Y') ?? ''
+        );
     }
 
     protected function casts(): array

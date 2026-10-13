@@ -37,7 +37,7 @@ final class ProjectController extends Controller
 
     public function show(Project $project): View
     {
-        abort_unless($project->is_active, 404);
+        abort_unless($project->status === 'published', 404);
 
         $relatedProjects = Cache::remember(
             sprintf('project_related_%s', $project->id),

@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @property string|null $image_url
+ */
 #[Fillable([
     'uuid',
     'name',
@@ -34,16 +37,19 @@ final class Team extends Model
 
     protected function imageUrl(): Attribute
     {
-        return Attribute::make(get: function () {
-            if (! $this->image) {
-                return null;
-            }
-            if (str_starts_with($this->image, 'http')) {
-                return $this->image;
-            }
+        return Attribute::make(
+            get: function (): ?string {
+                if (! $this->image) {
+                    return null;
+                }
 
-            return asset('storage/'.$this->image);
-        });
+                if (str_starts_with($this->image, 'http')) {
+                    return $this->image;
+                }
+
+                return asset('storage/'.$this->image);
+            }
+        );
     }
 
     protected function casts(): array

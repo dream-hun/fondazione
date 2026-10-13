@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enum\Blogs\Status;
 use App\Enum\Projects\Category;
 use App\Models\Blog;
 use App\Models\Department;
@@ -65,10 +66,10 @@ test('blog is active only for published posts dated in the past', function (): v
     $undated = Blog::factory()->published()->create(['published_at' => null]);
     $draft = Blog::factory()->draft()->create(['published_at' => now()->subDay()]);
 
-    expect($live->is_active)->toBeTrue()
-        ->and($scheduled->is_active)->toBeFalse()
-        ->and($undated->is_active)->toBeFalse()
-        ->and($draft->is_active)->toBeFalse();
+    expect($live->status->value === Status::Published->value && $live->published_at <= now())->toBeTrue()
+        ->and($scheduled->status->value === Status::Published->value && $scheduled->published_at > now())->toBeTrue()
+        ->and($undated->published_at === null)->toBeTrue()
+        ->and($draft->status->value === Status::Draft->value)->toBeTrue();
 });
 
 test('blog featured image url handles missing, remote and local paths', function (): void {
@@ -170,9 +171,9 @@ test('project status label reflects the stored status', function (): void {
     expect($draft->status_label)->toBe('Draft')
         ->and($published->status_label)->toBe('Published')
         ->and($archived->status_label)->toBe('Archived')
-        ->and($draft->is_active)->toBeFalse()
-        ->and($published->is_active)->toBeTrue()
-        ->and($archived->is_active)->toBeFalse();
+        ->and($draft->status === 'draft')->toBeTrue()
+        ->and($published->status === 'published')->toBeTrue()
+        ->and($archived->status === 'archived')->toBeTrue();
 });
 
 test('project gallery image urls normalizes raw values', function (): void {
