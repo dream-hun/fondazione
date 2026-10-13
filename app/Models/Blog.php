@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\RouteKey;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Enum\Blogs\Status;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Database\Factories\BlogFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -113,7 +113,7 @@ final class Blog extends Model
 
     protected function statusLabel(): Attribute
     {
-        return Attribute::make(get: fn(): string => match ($this->status) {
+        return Attribute::make(get: fn (): string => match ($this->status) {
             Status::Draft->value => 'Draft',
             default => 'Published',
         });
@@ -129,6 +129,7 @@ final class Blog extends Model
             if ($raw === null) {
                 return false;
             }
+
             return $this->asDateTime($raw)->lte(now());
         });
     }
@@ -142,6 +143,7 @@ final class Blog extends Model
             if (str_starts_with($this->featured_image, 'http')) {
                 return $this->featured_image;
             }
+
             return asset('storage/'.$this->featured_image);
         });
     }
@@ -155,6 +157,7 @@ final class Blog extends Model
             if (! $this->tags) {
                 return [];
             }
+
             /** @var list<string> */
             return array_map(trim(...), explode(',', (string) $this->tags));
         });
@@ -170,6 +173,7 @@ final class Blog extends Model
             $raw = $this->attributes['content'] ?? null;
             $content = is_scalar($raw) ? (string) $raw : '';
             $wordCount = str_word_count(strip_tags($content));
+
             return max(1, (int) ceil($wordCount / 200));
         });
     }

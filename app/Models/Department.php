@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\RouteKey;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Database\Factories\DepartmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -87,7 +87,7 @@ final class Department extends Model
 
     protected function statusLabel(): Attribute
     {
-        return Attribute::make(get: fn(): string => $this->is_active ? 'Active' : 'Inactive');
+        return Attribute::make(get: fn (): string => $this->is_active ? 'Active' : 'Inactive');
     }
 
     protected function casts(): array

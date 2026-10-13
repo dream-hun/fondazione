@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\RouteKey;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Enum\Projects\Category;
 use App\Enum\Projects\Status;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Database\Factories\ProjectFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -131,7 +131,7 @@ final class Project extends Model
 
     protected function statusLabel(): Attribute
     {
-        return Attribute::make(get: fn(): string => match ($this->status) {
+        return Attribute::make(get: fn (): string => match ($this->status) {
             'draft' => 'Draft',
             'published' => 'Published',
             default => 'Archived',
@@ -140,7 +140,7 @@ final class Project extends Model
 
     protected function isActive(): Attribute
     {
-        return Attribute::make(get: fn(): bool => $this->status === 'published');
+        return Attribute::make(get: fn (): bool => $this->status === 'published');
     }
 
     protected function featuredImageUrl(): Attribute
@@ -153,6 +153,7 @@ final class Project extends Model
             if (str_starts_with($featured, 'http')) {
                 return $featured;
             }
+
             return asset('storage/'.$featured);
         });
     }
@@ -174,13 +175,14 @@ final class Project extends Model
                 if (! is_string($image) || $image === '') {
                     return null;
                 }
-    
+
                 if (str_starts_with($image, 'http')) {
                     return $image;
                 }
-    
+
                 return asset('storage/'.$image);
             }, $decoded);
+
             /** @var list<string> */
             return array_values(array_filter($normalized, fn (?string $v): bool => $v !== null && $v !== ''));
         });
