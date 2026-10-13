@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enum\Blogs\Status;
 use App\Enum\Projects\Category;
 use App\Models\Blog;
 use App\Models\Department;
