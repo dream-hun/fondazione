@@ -26,7 +26,13 @@ Thumbs.db
 .env.before_lerd
 
 # Development AI agents
-.ai/
-.agents/
-.claude/
-.devin/
+/.ai
+/.claude
+/.devin
+/.mcp.json
+/.junie
+/.agents
+boost.json
+CLAUDE.md
+AGENTS.md
+

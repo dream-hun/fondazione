@@ -2,7 +2,8 @@
     "agents": [
         "codex",
         "kiro",
-        "junie"
+        "junie",
+        "claude_code"
     ],
     "cloud": false,
     "guidelines": true,
@@ -10,10 +11,11 @@
     "nightwatch": false,
     "sail": false,
     "skills": [
+        "infer-conventions",
         "fortify-development",
         "laravel-best-practices",
+        "testing-best-practices",
         "livewire-development",
-        "pest-testing",
         "tailwindcss-development"
     ]
 }
