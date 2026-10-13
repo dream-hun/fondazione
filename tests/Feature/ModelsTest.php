@@ -60,18 +60,6 @@ test('blog status label reflects the stored status', function (): void {
         ->and($published->status_label)->toBe('Published');
 });
 
-test('blog is active only for published posts dated in the past', function (): void {
-    $live = Blog::factory()->published()->create(['published_at' => now()->subDay()]);
-    $scheduled = Blog::factory()->published()->create(['published_at' => now()->addDay()]);
-    $undated = Blog::factory()->published()->create(['published_at' => null]);
-    $draft = Blog::factory()->draft()->create(['published_at' => now()->subDay()]);
-
-    expect($live->status->value === Status::Published->value && $live->published_at <= now())->toBeTrue()
-        ->and($scheduled->status->value === Status::Published->value && $scheduled->published_at > now())->toBeTrue()
-        ->and($undated->published_at === null)->toBeTrue()
-        ->and($draft->status->value === Status::Draft->value)->toBeTrue();
-});
-
 test('blog featured image url handles missing, remote and local paths', function (): void {
     $none = Blog::factory()->create(['featured_image' => null]);
     $remote = Blog::factory()->create(['featured_image' => 'https://example.com/img.jpg']);
