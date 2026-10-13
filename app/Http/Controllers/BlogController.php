@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enum\Blogs\Status;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -42,7 +43,7 @@ final class BlogController extends Controller
 
     public function show(Blog $blog): View
     {
-        abort_unless($blog->is_active, 404);
+        abort_unless($blog->status === Status::Published->value, 404);
 
         $relatedBlogs = Cache::remember(
             sprintf('blog_related_%s', $blog->id),

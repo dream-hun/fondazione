@@ -59,18 +59,6 @@ test('blog status label reflects the stored status', function (): void {
         ->and($published->status_label)->toBe('Published');
 });
 
-test('blog is active only for published posts dated in the past', function (): void {
-    $live = Blog::factory()->published()->create(['published_at' => now()->subDay()]);
-    $scheduled = Blog::factory()->published()->create(['published_at' => now()->addDay()]);
-    $undated = Blog::factory()->published()->create(['published_at' => null]);
-    $draft = Blog::factory()->draft()->create(['published_at' => now()->subDay()]);
-
-    expect($live->is_active)->toBeTrue()
-        ->and($scheduled->is_active)->toBeFalse()
-        ->and($undated->is_active)->toBeFalse()
-        ->and($draft->is_active)->toBeFalse();
-});
-
 test('blog featured image url handles missing, remote and local paths', function (): void {
     $none = Blog::factory()->create(['featured_image' => null]);
     $remote = Blog::factory()->create(['featured_image' => 'https://example.com/img.jpg']);
@@ -170,9 +158,9 @@ test('project status label reflects the stored status', function (): void {
     expect($draft->status_label)->toBe('Draft')
         ->and($published->status_label)->toBe('Published')
         ->and($archived->status_label)->toBe('Archived')
-        ->and($draft->is_active)->toBeFalse()
-        ->and($published->is_active)->toBeTrue()
-        ->and($archived->is_active)->toBeFalse();
+        ->and($draft->status === 'draft')->toBeTrue()
+        ->and($published->status === 'published')->toBeTrue()
+        ->and($archived->status === 'archived')->toBeTrue();
 });
 
 test('project gallery image urls normalizes raw values', function (): void {

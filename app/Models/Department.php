@@ -7,11 +7,16 @@ namespace App\Models;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Database\Factories\DepartmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $status_label
+ */
 #[Fillable([
     'name',
     'slug',
@@ -25,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
     'is_active',
     'display_order',
 ])]
+#[RouteKey('slug')]
 final class Department extends Model
 {
     use GeneratesUniqueSlug;
@@ -37,9 +43,11 @@ final class Department extends Model
         return 'name';
     }
 
-    public function getRouteKeyName(): string
+    protected function statusLabel(): Attribute
     {
-        return 'slug';
+        return Attribute::make(
+            get: fn (): string => $this->is_active ? 'Active' : 'Inactive'
+        );
     }
 
     /**
@@ -85,11 +93,6 @@ final class Department extends Model
     protected function ordered(Builder $query): Builder
     {
         return $query->orderBy('display_order')->orderBy('name');
-    }
-
-    protected function getStatusLabelAttribute(): string
-    {
-        return $this->is_active ? 'Active' : 'Inactive';
     }
 
     protected function casts(): array

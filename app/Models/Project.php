@@ -9,14 +9,19 @@ use App\Enum\Projects\Status;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Database\Factories\ProjectFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property Category $category
  * @property list<string>|null $gallery_images
+ * @property string $status_label
+ * @property string|null $featured_image_url
+ * @property list<string> $gallery_image_urls
  */
 #[Fillable([
     'title',
@@ -34,17 +39,13 @@ use Illuminate\Database\Eloquent\Model;
     'is_featured',
     'category',
 ])]
+#[RouteKey('slug')]
 final class Project extends Model
 {
     use GeneratesUniqueSlug;
 
     /** @use HasFactory<ProjectFactory> */
     use HasFactory;
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
 
     public function publish(): bool
     {
@@ -64,6 +65,72 @@ final class Project extends Model
     public function removeFeatured(): bool
     {
         return $this->update(['is_featured' => false]);
+    }
+
+    protected function statusLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => match ($this->status) {
+                'draft' => 'Draft',
+                'published' => 'Published',
+                default => 'Archived',
+            }
+        );
+    }
+
+    protected function isActive(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): bool => $this->status === 'published'
+        );
+    }
+
+    protected function featuredImageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function (): ?string {
+                $featured = $this->featured_image;
+                if (! is_string($featured) || $featured === '') {
+                    return null;
+                }
+
+                if (str_starts_with($featured, 'http')) {
+                    return $featured;
+                }
+
+                return asset('storage/'.$featured);
+            }
+        );
+    }
+
+    protected function galleryImageUrls(): Attribute
+    {
+        return Attribute::make(
+            get: function (): array {
+                // gallery_images is cast to array; raw attribute may be null
+                $galleryImages = $this->attributes['gallery_images'] ?? null;
+                if ($galleryImages === null) {
+                    return [];
+                }
+
+                /** @var array<mixed> $decoded */
+                $decoded = is_string($galleryImages) ? (json_decode($galleryImages, true) ?? []) : (array) $galleryImages;
+                $normalized = array_map(function (mixed $image): ?string {
+                    if (! is_string($image) || $image === '') {
+                        return null;
+                    }
+
+                    if (str_starts_with($image, 'http')) {
+                        return $image;
+                    }
+
+                    return asset('storage/'.$image);
+                }, $decoded);
+
+                /** @var list<string> */
+                return array_values(array_filter($normalized, fn (?string $v): bool => $v !== null && $v !== ''));
+            }
+        );
     }
 
     /**
@@ -129,66 +196,6 @@ final class Project extends Model
                 ->orWhere('content', 'like', sprintf('%%%s%%', $search))
                 ->orWhere('location', 'like', sprintf('%%%s%%', $search));
         });
-    }
-
-    protected function getStatusLabelAttribute(): string
-    {
-        return match ($this->status) {
-            'draft' => 'Draft',
-            'published' => 'Published',
-            default => 'Archived',
-        };
-    }
-
-    protected function getIsActiveAttribute(): bool
-    {
-        return $this->status === 'published';
-    }
-
-    protected function getFeaturedImageUrlAttribute(): ?string
-    {
-        $featured = $this->featured_image;
-
-        if (! is_string($featured) || $featured === '') {
-            return null;
-        }
-
-        if (str_starts_with($featured, 'http')) {
-            return $featured;
-        }
-
-        return asset('storage/'.$featured);
-    }
-
-    /**
-     * @return list<string>
-     */
-    protected function getGalleryImageUrlsAttribute(): array
-    {
-        // gallery_images is cast to array; raw attribute may be null
-        $galleryImages = $this->attributes['gallery_images'] ?? null;
-
-        if ($galleryImages === null) {
-            return [];
-        }
-
-        /** @var array<mixed> $decoded */
-        $decoded = is_string($galleryImages) ? (json_decode($galleryImages, true) ?? []) : (array) $galleryImages;
-
-        $normalized = array_map(function (mixed $image): ?string {
-            if (! is_string($image) || $image === '') {
-                return null;
-            }
-
-            if (str_starts_with($image, 'http')) {
-                return $image;
-            }
-
-            return asset('storage/'.$image);
-        }, $decoded);
-
-        /** @var list<string> */
-        return array_values(array_filter($normalized, fn (?string $v): bool => $v !== null && $v !== ''));
     }
 
     protected function casts(): array

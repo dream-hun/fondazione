@@ -22,9 +22,9 @@ final class DepartmentController extends Controller
             $query->search($search);
         }
 
-        if ($request->get('status') === 'active') {
+        if ($request->input('status') === 'active') {
             $query->active();
-        } elseif ($request->get('status') === 'inactive') {
+        } elseif ($request->input('status') === 'inactive') {
             $query->inactive();
         }
 

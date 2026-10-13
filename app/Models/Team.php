@@ -6,10 +6,14 @@ namespace App\Models;
 
 use Database\Factories\TeamFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @property string|null $image_url
+ */
 #[Fillable([
     'uuid',
     'name',
@@ -31,17 +35,21 @@ final class Team extends Model
         });
     }
 
-    protected function getImageUrlAttribute(): ?string
+    protected function imageUrl(): Attribute
     {
-        if (! $this->image) {
-            return null;
-        }
+        return Attribute::make(
+            get: function (): ?string {
+                if (! $this->image) {
+                    return null;
+                }
 
-        if (str_starts_with($this->image, 'http')) {
-            return $this->image;
-        }
+                if (str_starts_with($this->image, 'http')) {
+                    return $this->image;
+                }
 
-        return asset('storage/'.$this->image);
+                return asset('storage/'.$this->image);
+            }
+        );
     }
 
     protected function casts(): array

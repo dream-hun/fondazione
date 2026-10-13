@@ -30,9 +30,9 @@ final class UserController extends Controller
             });
         }
 
-        if ($request->get('admin') === '1') {
+        if ($request->input('admin') === '1') {
             $query->where('is_admin', true);
-        } elseif ($request->get('admin') === '0') {
+        } elseif ($request->input('admin') === '0') {
             $query->where('is_admin', false);
         }
 

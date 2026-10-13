@@ -31,7 +31,7 @@ final class BlogController extends Controller
             }
         }
 
-        if ($request->get('featured') === '1') {
+        if ($request->input('featured') === '1') {
             $query->featured();
         }
 

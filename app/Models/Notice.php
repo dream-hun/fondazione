@@ -9,10 +9,14 @@ use App\Models\Concerns\GeneratesUniqueSlug;
 use Database\Factories\NoticeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * @property string $formatted_date
+ */
 #[Fillable([
     'uuid',
     'title',
@@ -44,9 +48,11 @@ final class Notice extends Model
         });
     }
 
-    protected function getFormattedDateAttribute(): string
+    protected function formattedDate(): Attribute
     {
-        return $this->created_at?->format('M j, Y') ?? '';
+        return Attribute::make(
+            get: fn (): string => $this->created_at?->format('M j, Y') ?? ''
+        );
     }
 
     protected function casts(): array

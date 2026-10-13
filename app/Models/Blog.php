@@ -8,11 +8,19 @@ use App\Enum\Blogs\Status;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Database\Factories\BlogFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $status_label
+ * @property string|null $featured_image_url
+ * @property list<string> $tags_array
+ * @property int $reading_time
+ */
 #[Fillable([
     'title',
     'slug',
@@ -27,17 +35,13 @@ use Illuminate\Database\Eloquent\Model;
     'is_featured',
     'reading_time',
 ])]
+#[RouteKey('slug')]
 final class Blog extends Model
 {
     use GeneratesUniqueSlug;
 
     /** @use HasFactory<BlogFactory> */
     use HasFactory;
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
 
     public function publish(): bool
     {
@@ -55,6 +59,83 @@ final class Blog extends Model
     public function removeFeatured(): bool
     {
         return $this->update(['is_featured' => false]);
+    }
+
+    protected function statusLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => match ($this->status) {
+                Status::Draft->value => 'Draft',
+                default => 'Published',
+            }
+        );
+    }
+
+    protected function isActive(): Attribute
+    {
+        return Attribute::make(
+            get: function (): bool {
+                if ($this->status !== 'published') {
+                    return false;
+                }
+
+                $raw = $this->attributes['published_at'] ?? null;
+                if ($raw === null) {
+                    return false;
+                }
+
+                return $this->asDateTime($raw)->lte(now());
+            }
+        );
+    }
+
+    protected function featuredImageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: function (): ?string {
+                if (! $this->featured_image) {
+                    return null;
+                }
+
+                if (str_starts_with($this->featured_image, 'http')) {
+                    return $this->featured_image;
+                }
+
+                return asset('storage/'.$this->featured_image);
+            }
+        );
+    }
+
+    protected function tagsArray(): Attribute
+    {
+        return Attribute::make(
+            get: function (): array {
+                if (! $this->tags) {
+                    return [];
+                }
+
+                /** @var list<string> */
+                return array_map(trim(...), explode(',', (string) $this->tags));
+            }
+        );
+    }
+
+    protected function readingTime(): Attribute
+    {
+        return Attribute::make(
+            get: function (): int {
+                $stored = $this->attributes['reading_time'] ?? null;
+                if (! in_array($stored, [null, false, '', 0], true)) {
+                    return is_scalar($stored) ? (int) $stored : 1;
+                }
+
+                $raw = $this->attributes['content'] ?? null;
+                $content = is_scalar($raw) ? (string) $raw : '';
+                $wordCount = str_word_count(strip_tags($content));
+
+                return max(1, (int) ceil($wordCount / 200));
+            }
+        );
     }
 
     /**
@@ -111,68 +192,6 @@ final class Blog extends Model
     protected function byTag(Builder $query, string $tag): Builder
     {
         return $query->where('tags', 'like', sprintf('%%%s%%', $tag));
-    }
-
-    protected function getStatusLabelAttribute(): string
-    {
-        return match ($this->status) {
-            Status::Draft->value => 'Draft',
-            default => 'Published',
-        };
-    }
-
-    protected function getIsActiveAttribute(): bool
-    {
-        if ($this->status !== 'published') {
-            return false;
-        }
-
-        $raw = $this->attributes['published_at'] ?? null;
-        if ($raw === null) {
-            return false;
-        }
-
-        return $this->asDateTime($raw)->lte(now());
-    }
-
-    protected function getFeaturedImageUrlAttribute(): ?string
-    {
-        if (! $this->featured_image) {
-            return null;
-        }
-
-        if (str_starts_with($this->featured_image, 'http')) {
-            return $this->featured_image;
-        }
-
-        return asset('storage/'.$this->featured_image);
-    }
-
-    /**
-     * @return list<string>
-     */
-    protected function getTagsArrayAttribute(): array
-    {
-        if (! $this->tags) {
-            return [];
-        }
-
-        /** @var list<string> */
-        return array_map(trim(...), explode(',', (string) $this->tags));
-    }
-
-    protected function getReadingTimeAttribute(): int
-    {
-        $stored = $this->attributes['reading_time'] ?? null;
-        if (! in_array($stored, [null, false, '', 0], true)) {
-            return is_scalar($stored) ? (int) $stored : 1;
-        }
-
-        $raw = $this->attributes['content'] ?? null;
-        $content = is_scalar($raw) ? (string) $raw : '';
-        $wordCount = str_word_count(strip_tags($content));
-
-        return max(1, (int) ceil($wordCount / 200));
     }
 
     protected function casts(): array

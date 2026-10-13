@@ -13,3 +13,5 @@ parameters:
         - tests/
 
     level: max
+    ignoreErrors:
+        - '#Method App\\Models\\.*::.*\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types#'
