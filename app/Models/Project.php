@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Enum\Projects\Category;
 use App\Enum\Projects\Status;
 use App\Models\Concerns\GeneratesUniqueSlug;
@@ -34,17 +36,13 @@ use Illuminate\Database\Eloquent\Model;
     'is_featured',
     'category',
 ])]
+#[RouteKey('slug')]
 final class Project extends Model
 {
     use GeneratesUniqueSlug;
 
     /** @use HasFactory<ProjectFactory> */
     use HasFactory;
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
 
     public function publish(): bool
     {
@@ -131,64 +129,61 @@ final class Project extends Model
         });
     }
 
-    protected function getStatusLabelAttribute(): string
+    protected function statusLabel(): Attribute
     {
-        return match ($this->status) {
+        return Attribute::make(get: fn(): string => match ($this->status) {
             'draft' => 'Draft',
             'published' => 'Published',
             default => 'Archived',
-        };
+        });
     }
 
-    protected function getIsActiveAttribute(): bool
+    protected function isActive(): Attribute
     {
-        return $this->status === 'published';
+        return Attribute::make(get: fn(): bool => $this->status === 'published');
     }
 
-    protected function getFeaturedImageUrlAttribute(): ?string
+    protected function featuredImageUrl(): Attribute
     {
-        $featured = $this->featured_image;
-
-        if (! is_string($featured) || $featured === '') {
-            return null;
-        }
-
-        if (str_starts_with($featured, 'http')) {
-            return $featured;
-        }
-
-        return asset('storage/'.$featured);
+        return Attribute::make(get: function (): ?string {
+            $featured = $this->featured_image;
+            if (! is_string($featured) || $featured === '') {
+                return null;
+            }
+            if (str_starts_with($featured, 'http')) {
+                return $featured;
+            }
+            return asset('storage/'.$featured);
+        });
     }
 
     /**
      * @return list<string>
      */
-    protected function getGalleryImageUrlsAttribute(): array
+    protected function galleryImageUrls(): Attribute
     {
-        // gallery_images is cast to array; raw attribute may be null
-        $galleryImages = $this->attributes['gallery_images'] ?? null;
-
-        if ($galleryImages === null) {
-            return [];
-        }
-
-        /** @var array<mixed> $decoded */
-        $decoded = is_string($galleryImages) ? (json_decode($galleryImages, true) ?? []) : (array) $galleryImages;
-
-        $normalized = array_map(function (mixed $image): ?string {
-            if (! is_string($image) || $image === '') {
-                return null;
+        return Attribute::make(get: function (): array {
+            // gallery_images is cast to array; raw attribute may be null
+            $galleryImages = $this->attributes['gallery_images'] ?? null;
+            if ($galleryImages === null) {
+                return [];
             }
-
-            if (str_starts_with($image, 'http')) {
-                return $image;
-            }
-
-            return asset('storage/'.$image);
-        }, $decoded);
-
-        /** @var list<string> */
-        return array_values(array_filter($normalized, fn (?string $v): bool => $v !== null && $v !== ''));
+            /** @var array<mixed> $decoded */
+            $decoded = is_string($galleryImages) ? (json_decode($galleryImages, true) ?? []) : (array) $galleryImages;
+            $normalized = array_map(function (mixed $image): ?string {
+                if (! is_string($image) || $image === '') {
+                    return null;
+                }
+    
+                if (str_starts_with($image, 'http')) {
+                    return $image;
+                }
+    
+                return asset('storage/'.$image);
+            }, $decoded);
+            /** @var list<string> */
+            return array_values(array_filter($normalized, fn (?string $v): bool => $v !== null && $v !== ''));
+        });
     }
 
     protected function casts(): array

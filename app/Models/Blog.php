@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Enum\Blogs\Status;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Database\Factories\BlogFactory;
@@ -27,17 +29,13 @@ use Illuminate\Database\Eloquent\Model;
     'is_featured',
     'reading_time',
 ])]
+#[RouteKey('slug')]
 final class Blog extends Model
 {
     use GeneratesUniqueSlug;
 
     /** @use HasFactory<BlogFactory> */
     use HasFactory;
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
-    }
 
     public function publish(): bool
     {
@@ -113,66 +111,67 @@ final class Blog extends Model
         return $query->where('tags', 'like', sprintf('%%%s%%', $tag));
     }
 
-    protected function getStatusLabelAttribute(): string
+    protected function statusLabel(): Attribute
     {
-        return match ($this->status) {
+        return Attribute::make(get: fn(): string => match ($this->status) {
             Status::Draft->value => 'Draft',
             default => 'Published',
-        };
+        });
     }
 
-    protected function getIsActiveAttribute(): bool
+    protected function isActive(): Attribute
     {
-        if ($this->status !== 'published') {
-            return false;
-        }
-
-        $raw = $this->attributes['published_at'] ?? null;
-        if ($raw === null) {
-            return false;
-        }
-
-        return $this->asDateTime($raw)->lte(now());
+        return Attribute::make(get: function () {
+            if ($this->status !== 'published') {
+                return false;
+            }
+            $raw = $this->attributes['published_at'] ?? null;
+            if ($raw === null) {
+                return false;
+            }
+            return $this->asDateTime($raw)->lte(now());
+        });
     }
 
-    protected function getFeaturedImageUrlAttribute(): ?string
+    protected function featuredImageUrl(): Attribute
     {
-        if (! $this->featured_image) {
-            return null;
-        }
-
-        if (str_starts_with($this->featured_image, 'http')) {
-            return $this->featured_image;
-        }
-
-        return asset('storage/'.$this->featured_image);
+        return Attribute::make(get: function () {
+            if (! $this->featured_image) {
+                return null;
+            }
+            if (str_starts_with($this->featured_image, 'http')) {
+                return $this->featured_image;
+            }
+            return asset('storage/'.$this->featured_image);
+        });
     }
 
     /**
      * @return list<string>
      */
-    protected function getTagsArrayAttribute(): array
+    protected function tagsArray(): Attribute
     {
-        if (! $this->tags) {
-            return [];
-        }
-
-        /** @var list<string> */
-        return array_map(trim(...), explode(',', (string) $this->tags));
+        return Attribute::make(get: function (): array {
+            if (! $this->tags) {
+                return [];
+            }
+            /** @var list<string> */
+            return array_map(trim(...), explode(',', (string) $this->tags));
+        });
     }
 
-    protected function getReadingTimeAttribute(): int
+    protected function readingTime(): Attribute
     {
-        $stored = $this->attributes['reading_time'] ?? null;
-        if (! in_array($stored, [null, false, '', 0], true)) {
-            return is_scalar($stored) ? (int) $stored : 1;
-        }
-
-        $raw = $this->attributes['content'] ?? null;
-        $content = is_scalar($raw) ? (string) $raw : '';
-        $wordCount = str_word_count(strip_tags($content));
-
-        return max(1, (int) ceil($wordCount / 200));
+        return Attribute::make(get: function (): int {
+            $stored = $this->attributes['reading_time'] ?? null;
+            if (! in_array($stored, [null, false, '', 0], true)) {
+                return is_scalar($stored) ? (int) $stored : 1;
+            }
+            $raw = $this->attributes['content'] ?? null;
+            $content = is_scalar($raw) ? (string) $raw : '';
+            $wordCount = str_word_count(strip_tags($content));
+            return max(1, (int) ceil($wordCount / 200));
+        });
     }
 
     protected function casts(): array

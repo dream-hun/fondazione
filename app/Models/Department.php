@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Database\Factories\DepartmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -25,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
     'is_active',
     'display_order',
 ])]
+#[RouteKey('slug')]
 final class Department extends Model
 {
     use GeneratesUniqueSlug;
@@ -35,11 +38,6 @@ final class Department extends Model
     public function slugSourceColumn(): string
     {
         return 'name';
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
     }
 
     /**
@@ -87,9 +85,9 @@ final class Department extends Model
         return $query->orderBy('display_order')->orderBy('name');
     }
 
-    protected function getStatusLabelAttribute(): string
+    protected function statusLabel(): Attribute
     {
-        return $this->is_active ? 'Active' : 'Inactive';
+        return Attribute::make(get: fn(): string => $this->is_active ? 'Active' : 'Inactive');
     }
 
     protected function casts(): array

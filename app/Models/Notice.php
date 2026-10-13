@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Enum\Notices\Status;
 use App\Models\Concerns\GeneratesUniqueSlug;
 use Database\Factories\NoticeFactory;
@@ -44,9 +45,9 @@ final class Notice extends Model
         });
     }
 
-    protected function getFormattedDateAttribute(): string
+    protected function formattedDate(): Attribute
     {
-        return $this->created_at?->format('M j, Y') ?? '';
+        return Attribute::make(get: fn() => $this->created_at?->format('M j, Y') ?? '');
     }
 
     protected function casts(): array
